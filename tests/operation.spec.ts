@@ -25,13 +25,21 @@ const schema = buildASTSchema(gql`
     name: String!
     favoritePizza: Pizza!
     favoriteBook: Book!
+    favoriteFood: Food!
     shelf: [Book!]!
   }
+
+  type Salad {
+    ingredients: [String!]!
+  }
+
+  union Food = Pizza | Salad
 
   type Query {
     me: User
     user(id: ID!): User
     users: [User!]
+    menu: [Food]
   }
 
   schema {
@@ -66,6 +74,15 @@ test('should work with Query', async () => {
           favoriteBook {
             id
           }
+          favoriteFood {
+            ... on Pizza {
+              dough
+              toppings
+            }
+            ... on Salad {
+              ingredients
+            }
+          }
           shelf {
             id
           }
@@ -97,6 +114,15 @@ test('should work with Query and variables', async () => {
           }
           favoriteBook {
             id
+          }
+          favoriteFood {
+            ... on Pizza {
+              dough
+              toppings
+            }
+            ... on Salad {
+              ingredients
+            }
           }
           shelf {
             id
@@ -132,6 +158,15 @@ test('should work with ObjectType', async () => {
             favoriteBook {
               id
             }
+            favoriteFood {
+              ... on Pizza {
+                dough
+                toppings
+              }
+              ... on Salad {
+                ingredients
+              }
+            }
             shelf {
               id
             }
@@ -144,4 +179,31 @@ test('should work with ObjectType', async () => {
   expect(output.variables).toEqual({
     id: 'ID!',
   });
+});
+
+test('should work with Union', async () => {
+  const output = buildOperation({
+    schema,
+    type: schema.getQueryType()!,
+    field: 'menu',
+    models,
+  })!;
+
+  expect(clean(output.operation)).toEqual(
+    clean(gql`
+      query getMenuQuery {
+        menu {
+          ... on Pizza {
+            dough
+            toppings
+          }
+          ... on Salad {
+            ingredients
+          }
+        }
+      }
+    `),
+  );
+
+  expect(output.variables).toEqual({});
 });

@@ -6,6 +6,7 @@ import {
   isScalarType,
   getNamedType,
   GraphQLArgument,
+  isUnionType,
 } from 'graphql';
 import * as changeCase from 'change-case';
 
@@ -45,7 +46,7 @@ function buildModelQuery(config: {
 } {
   const operationName = `get${changeCase.pascal(config.type.name)}Type`;
 
-  const body = resolveModel({
+  const body = resolveAsFragment({
     type: config.type,
     models: config.models,
   });
@@ -123,7 +124,7 @@ function buildRootFieldQuery(config: {
   };
 }
 
-function resolveModel(config: {
+function resolveAsFragment(config: {
   type: GraphQLObjectType;
   models: string[];
 }): string {
@@ -170,7 +171,7 @@ function resolveField(config: {
     }
 
     const fields = config.fieldType.getFields();
-    const inner = Object.keys(fields)
+    const body = Object.keys(fields)
       .map(name =>
         resolveField({
           name,
@@ -181,7 +182,23 @@ function resolveField(config: {
       .join('\n');
 
     return `${config.name} ${args} {
-      ${inner}
+      ${body}
+    }`;
+  }
+
+  if (isUnionType(config.fieldType)) {
+    const types = config.fieldType.getTypes();
+    const body = types
+      .map(type =>
+        resolveAsFragment({
+          type,
+          models: config.models,
+        }),
+      )
+      .join('\n');
+
+    return `${config.name} ${args} {
+      ${body}
     }`;
   }
 
