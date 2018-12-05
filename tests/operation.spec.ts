@@ -1,4 +1,10 @@
-import { buildASTSchema, GraphQLObjectType, print, parse } from 'graphql';
+import {
+  buildASTSchema,
+  GraphQLObjectType,
+  print,
+  parse,
+  DocumentNode,
+} from 'graphql';
 import gql from 'graphql-tag';
 
 import { buildOperation } from '../src/operation';
@@ -35,8 +41,8 @@ const schema = buildASTSchema(gql`
 
 const models = ['User', 'Book'];
 
-function clean(doc: string) {
-  return print(parse(doc));
+function clean(doc: string | DocumentNode) {
+  return print(typeof doc === 'string' ? parse(doc) : doc);
 }
 
 test('should work with Query', async () => {
@@ -48,7 +54,7 @@ test('should work with Query', async () => {
   })!;
 
   expect(clean(output.operation)).toEqual(
-    print(gql`
+    clean(gql`
       query getMeQuery {
         me {
           id
@@ -80,7 +86,7 @@ test('should work with Query and variables', async () => {
   })!;
 
   expect(clean(output.operation)).toEqual(
-    print(gql`
+    clean(gql`
       query getUserQuery($id: ID!) {
         user(id: $id) {
           id
@@ -113,7 +119,7 @@ test('should work with ObjectType', async () => {
   })!;
 
   expect(clean(output.operation)).toEqual(
-    print(gql`
+    clean(gql`
       query getUserType($id: ID!) {
         _getRESTModelById(typename: "User", id: $id) {
           ... on User {
