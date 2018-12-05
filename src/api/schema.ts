@@ -16,6 +16,7 @@ export function extendSchema(config: {
   const resolvers = {
     RESTModel: {
       __resolveType(_: any, _context: any, info: GraphQLResolveInfo) {
+        // we can find the typename thanks to info object and typename argument
         const firstField = info.operation.selectionSet.selections[0];
         if (firstField.kind !== 'Field') {
           throw new Error('RESTModel can be used only with _getRESTModelById!')

@@ -1,9 +1,10 @@
 import * as express from 'express';
 import * as changeCase from 'change-case';
 import { GraphQLSchema, isObjectType, GraphQLObjectType, parse } from 'graphql';
+import { ApolloLink } from 'apollo-link';
+
 import { buildOperation } from './operation';
 import { fetch } from './fetcher';
-import { ApolloLink } from 'apollo-link';
 
 export function createRouter(config: {
   schema: GraphQLSchema;
@@ -53,24 +54,11 @@ function createRoute(config: {
   link: ApolloLink;
 }): void {
   if (config.field) {
-    return createRouteForRootField({
-      schema: config.schema,
-      type: config.type,
-      field: config.field,
-      router: config.router,
-      models: config.models,
-      link: config.link,
-    });
+    return createRouteForRootField(config as any);
   }
 
   if (isObjectType(config.type)) {
-    return createRouteForModel({
-      schema: config.schema,
-      type: config.type,
-      router: config.router,
-      models: config.models,
-      link: config.link,
-    });
+    return createRouteForModel(config);
   }
 }
 

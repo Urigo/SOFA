@@ -24,6 +24,7 @@ export function buildOperation(config: {
     });
   }
 
+  // otherwise it's a model
   return buildModelQuery({
     schema: config.schema,
     type: config.type,
@@ -91,9 +92,11 @@ function buildRootFieldQuery(config: {
     field.args && field.args.length
       ? `(${field.args
           .map(arg => {
+            // $id: ID!
             const val = [`\$${arg.name}: ${arg.type.toString()}`];
 
             if (arg.defaultValue) {
+              // $id: ID! = 12
               val.push(` = ${arg.defaultValue}`);
             }
 
