@@ -1,7 +1,8 @@
-import '../matchers';
-import { buildOperation } from '../../src/api/operation';
+import './matchers';
 import { buildASTSchema, GraphQLObjectType } from 'graphql';
 import gql from 'graphql-tag';
+
+import { buildOperation } from '../src/operation';
 
 const schema = buildASTSchema(gql`
   type Pizza {

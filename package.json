@@ -4,8 +4,7 @@
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
-    "start": "ts-node src/example.ts",
+    "start": "ts-node example/index.ts",
     "test": "jest"
   },
   "devDependencies": {
