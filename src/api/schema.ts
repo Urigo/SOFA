@@ -1,8 +1,6 @@
-import { makeExecutableSchema, addResolveFunctionsToSchema } from 'graphql-tools';
-import { GraphQLSchema, printSchema, GraphQLResolveInfo, StringValueNode } from 'graphql';
+import { GraphQLResolveInfo, StringValueNode } from 'graphql';
 
 export function extendSchema(config: {
-  // schema: GraphQLSchema;
   modelMap: {
     [modelName: string]: (id: any, context: any) => any;
   };
@@ -17,7 +15,7 @@ export function extendSchema(config: {
 
   const resolvers = {
     RESTModel: {
-      __resolveType(model: { typename: string }, context: any, info: GraphQLResolveInfo) {
+      __resolveType(_: any, _context: any, info: GraphQLResolveInfo) {
         const firstField = info.operation.selectionSet.selections[0];
         if (firstField.kind !== 'Field') {
           throw new Error('RESTModel can be used only with _getRESTModelById!')
@@ -48,37 +46,4 @@ export function extendSchema(config: {
     typeDefs,
     resolvers
   };
-
-  // const schemaWithREST = makeExecutableSchema({
-  //   typeDefs: [printSchema(config.schema), typeDefs],
-  //   resolvers: resolvers as any,
-  // });
-
-  // return schemaWithREST;
-
-  // extend type Query {
-  //   _getRESTModelById(typename: String!, id: ID!): RESTModel
-  // }
-  //
-  // union RESTModel = EVERY | SINGLE | TYPE | SPECIFIED | IN | CONFIG.MODELS
-  //
-  // then the resolver created a user decides what how to fetch data for each type, based on `id` and `typename`
-  //
-  // const resolvers = {
-  //   Query: {
-  //     _getRESTModelById(_, {id, typename}, context, info) {
-  //       switch (typename) {
-  //         case 'Post':
-  //           return { typename, data: fetchPost(id) };
-  //         case 'User':
-  //           return { typename, data: fetchUser(id) };
-  //       }
-  //     }
-  //   },
-  //   RESTModel: {
-  //     __resolveType(model: { typename: string }) {
-  //       return model.typename;
-  //     }
-  //   }
-  // };
 }
