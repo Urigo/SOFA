@@ -6,6 +6,12 @@ export const typeDefs = gql`
     toppings: [String!]
   }
 
+  type Salad {
+    ingredients: [String!]!
+  }
+
+  union Food = Pizza | Salad
+
   type Book {
     id: ID!
     title: String!
@@ -16,6 +22,7 @@ export const typeDefs = gql`
     name: String!
     favoritePizza: Pizza!
     favoriteBook: Book!
+    favoriteFood: Food!
     shelf: [Book!]!
   }
 

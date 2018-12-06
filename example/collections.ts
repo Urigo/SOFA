@@ -9,6 +9,7 @@ const users = [
     name: 'User A',
     favoritePizza: pizzas[0],
     favoriteBook: books[0],
+    favoriteFood: pizzas[1],
     shelf: books,
   },
   {
@@ -16,6 +17,9 @@ const users = [
     name: 'User B',
     favoritePizza: pizzas[1],
     favoriteBook: books[1],
+    favoriteFood: {
+      ingredients: ['green shit', 'chicken', 'green shit', 'yellow shit', 'red shit'],
+    },
     shelf: books,
   },
 ];

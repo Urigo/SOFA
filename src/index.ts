@@ -1,9 +1,9 @@
 import { ApolloLink } from 'apollo-link';
+import { GraphQLSchema } from 'graphql';
 import * as express from 'express';
 
 import { createRouter } from './router';
 import { extendSchema } from './schema';
-import { GraphQLSchema } from 'graphql';
 
 interface ModelMap {
   [modelName: string]: (id: any, context: any) => any;

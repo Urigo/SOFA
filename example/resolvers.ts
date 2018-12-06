@@ -12,4 +12,17 @@ export const resolvers = {
       return UsersCollection.all();
     },
   },
+  Food: {
+    __resolveType(obj: any) {
+      if (obj.ingredients) {
+        return 'Salad';
+      }
+
+      if (obj.toppings) {
+        return 'Pizza';
+      }
+
+      return null;
+    },
+  },
 };
