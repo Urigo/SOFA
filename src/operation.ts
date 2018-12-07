@@ -27,6 +27,16 @@ import {
 import * as changeCase from 'change-case';
 import { getOperationType } from './ast';
 
+let operationVariables: any[] = [];
+
+function addOperationVariable(variable: VariableDefinitionNode) {
+  operationVariables.push(variable);
+}
+
+function resetOperationVariables() {
+  operationVariables = [];
+}
+
 export function buildOperation({
   schema,
   type,
@@ -38,20 +48,33 @@ export function buildOperation({
   fieldName?: string;
   models: string[];
 }) {
+  resetOperationVariables();
+
+  let document: DocumentNode;
+
   // if it has a field, it means it's a query or mutation
   if (fieldName) {
-    return buildRootFieldQuery({
+    document = buildRootFieldQuery({
       schema,
       type,
       fieldName,
       models,
     });
+  } else {
+    document = buildModelQuery({
+      type,
+      models,
+    });
   }
 
-  return buildModelQuery({
-    type,
-    models,
-  });
+  // attach variables
+  (document.definitions[0] as any).variableDefinitions = [
+    ...operationVariables,
+  ];
+
+  resetOperationVariables();
+
+  return document;
 }
 
 function buildModelQuery({
@@ -63,6 +86,28 @@ function buildModelQuery({
 }) {
   const operationName = `${changeCase.camel(type.name)}Type`;
 
+  // will be added later
+  addOperationVariable({
+    kind: 'VariableDefinition',
+    variable: {
+      kind: 'Variable',
+      name: {
+        kind: 'Name',
+        value: 'id',
+      },
+    },
+    type: {
+      kind: 'NonNullType',
+      type: {
+        kind: 'NamedType',
+        name: {
+          kind: 'Name',
+          value: 'ID',
+        },
+      },
+    },
+  });
+
   const operationNode: OperationDefinitionNode = {
     kind: 'OperationDefinition',
     operation: 'query',
@@ -70,28 +115,7 @@ function buildModelQuery({
       kind: 'Name',
       value: operationName,
     },
-    variableDefinitions: [
-      {
-        kind: 'VariableDefinition',
-        variable: {
-          kind: 'Variable',
-          name: {
-            kind: 'Name',
-            value: 'id',
-          },
-        },
-        type: {
-          kind: 'NonNullType',
-          type: {
-            kind: 'NamedType',
-            name: {
-              kind: 'Name',
-              value: 'ID',
-            },
-          },
-        },
-      },
-    ],
+    variableDefinitions: [],
     selectionSet: {
       kind: 'SelectionSet',
       selections: [
@@ -142,9 +166,10 @@ function buildModelQuery({
                   },
                 },
                 selectionSet: resolveSelectionSet({
-                  skipModel: true,
+                  firstCall: true,
                   type,
                   models,
+                  path: [],
                 })!,
               },
             ],
@@ -187,6 +212,12 @@ function buildRootFieldQuery({
   )}`;
   const field = type.getFields()[fieldName];
 
+  if (field.args) {
+    field.args.forEach(arg => {
+      addOperationVariable(resolveVariable(arg));
+    });
+  }
+
   const operationNode: OperationDefinitionNode = {
     kind: 'OperationDefinition',
     operation,
@@ -194,15 +225,15 @@ function buildRootFieldQuery({
       kind: 'Name',
       value: operationName,
     },
-    variableDefinitions:
-      field.args && field.args.length ? field.args.map(resolveVariable) : [],
+    variableDefinitions: [],
     selectionSet: {
       kind: 'SelectionSet',
       selections: [
         resolveField({
           field,
           models,
-          skipModel: true,
+          firstCall: true,
+          path: [],
         }),
       ],
     },
@@ -218,11 +249,13 @@ function buildRootFieldQuery({
 function resolveSelectionSet({
   type,
   models,
-  skipModel,
+  firstCall,
+  path,
 }: {
   type: GraphQLNamedType;
   models: string[];
-  skipModel?: boolean;
+  path: string[];
+  firstCall?: boolean;
 }): SelectionSetNode | undefined {
   if (isUnionType(type)) {
     const types = type.getTypes();
@@ -243,10 +276,11 @@ function resolveSelectionSet({
           },
           selectionSet: {
             kind: 'SelectionSet',
-            selections: Object.keys(fields).map(f => {
+            selections: Object.keys(fields).map(fieldName => {
               return resolveField({
-                field: fields[f],
+                field: fields[fieldName],
                 models,
+                path: [...path, fieldName],
               });
             }),
           },
@@ -256,7 +290,7 @@ function resolveSelectionSet({
   }
 
   if (isObjectType(type)) {
-    if (!skipModel && models.includes(type.name)) {
+    if (!firstCall && models.includes(type.name)) {
       return {
         kind: 'SelectionSet',
         selections: [
@@ -279,13 +313,17 @@ function resolveSelectionSet({
         return resolveField({
           field: fields[fieldName],
           models,
+          path: [...path, fieldName],
         });
       }),
     };
   }
 }
 
-function resolveVariable(arg: GraphQLArgument): VariableDefinitionNode {
+function resolveVariable(
+  arg: GraphQLArgument,
+  name?: string
+): VariableDefinitionNode {
   function resolveVariableType(type: GraphQLList<any>): ListTypeNode;
   function resolveVariableType(type: GraphQLNonNull<any>): NonNullTypeNode;
   function resolveVariableType(type: GraphQLInputType): TypeNode;
@@ -319,27 +357,39 @@ function resolveVariable(arg: GraphQLArgument): VariableDefinitionNode {
       kind: 'Variable',
       name: {
         kind: 'Name',
-        value: arg.name,
+        value: name || arg.name,
       },
     },
     type: resolveVariableType(arg.type),
   };
 }
 
+function getArgumentName(name: string, path: string[]): string {
+  return changeCase.camel([...path, name].join('_'));
+}
+
 function resolveField({
   field,
   models,
-  skipModel,
+  firstCall,
+  path,
 }: {
   field: GraphQLField<any, any>;
   models: string[];
-  skipModel?: boolean;
+  path: string[];
+  firstCall?: boolean;
 }): SelectionNode {
   const namedType = getNamedType(field.type);
   let args: ArgumentNode[] = [];
 
   if (field.args && field.args.length) {
     args = field.args.map<ArgumentNode>(arg => {
+      if (!firstCall) {
+        addOperationVariable(
+          resolveVariable(arg, getArgumentName(arg.name, path))
+        );
+      }
+
       return {
         kind: 'Argument',
         name: {
@@ -350,7 +400,7 @@ function resolveField({
           kind: 'Variable',
           name: {
             kind: 'Name',
-            value: arg.name,
+            value: getArgumentName(arg.name, path),
           },
         },
       };
@@ -367,7 +417,8 @@ function resolveField({
       selectionSet: resolveSelectionSet({
         type: namedType,
         models,
-        skipModel,
+        firstCall,
+        path: [...path, field.name],
       }),
       arguments: args,
     };

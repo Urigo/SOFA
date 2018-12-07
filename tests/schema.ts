@@ -27,12 +27,17 @@ export const schema = buildASTSchema(gql`
 
   union Food = Pizza | Salad
 
+  type Post {
+    comments(filter: String!): [String!]!
+  }
+
   type Query {
     me: User
     user(id: ID!): User
     users: [User!]
     menu: [Food]
     menuByIngredients(ingredients: [String!]!): [Food]
+    feed: [Post]
   }
 
   type Mutation {

@@ -219,3 +219,22 @@ test('should work with mutation and unions', async () => {
     `)
   );
 });
+
+test('should work with Query and nested variables', async () => {
+  const document = buildOperation({
+    schema,
+    type: schema.getQueryType()!,
+    fieldName: 'feed',
+    models,
+  })!;
+
+  expect(clean(document)).toEqual(
+    clean(gql`
+      query feedQuery($feedCommentsFilter: String!) {
+        feed {
+          comments(filter: $feedCommentsFilter)
+        }
+      }
+    `)
+  );
+});
