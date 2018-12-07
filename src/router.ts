@@ -5,6 +5,7 @@ import { ApolloLink } from 'apollo-link';
 
 import { buildOperation } from './operation';
 import { fetch } from './fetcher';
+import { getOperationInfo } from './ast';
 
 export function createRouter(config: {
   schema: GraphQLSchema;
@@ -19,7 +20,7 @@ export function createRouter(config: {
 
   // for query
   const fields = queryType.getFields();
-  
+
   Object.keys(fields).forEach(field => {
     createRoute({
       schema: config.schema,
@@ -76,19 +77,21 @@ function createRouteForModel(config: {
     async (req: express.Request, res: express.Response) => {
       const id = req.params.id;
 
-      const op = buildOperation({
+      const query = buildOperation({
         schema: config.schema,
         type: config.type,
         models: config.models,
       });
+      const { name } = getOperationInfo(query)!;
+
       const variables = {
         id,
       };
 
       try {
         const result = await fetch(config.link, {
-          operationName: op.operationName,
-          query: parse(op.operation),
+          operationName: name,
+          query,
           variables,
         });
 
@@ -113,14 +116,15 @@ function createRouteForRootField(config: {
   config.router.get(
     `/${changeCase.camel(config.field)}`,
     async (req: express.Request, res: express.Response) => {
-      const op = buildOperation({
+      const query = buildOperation({
         schema: config.schema,
         type: config.type,
         field: config.field,
         models: config.models,
       });
+      const operation = getOperationInfo(query)!;
 
-      const variables = Object.keys(op.variables).reduce((variables, name) => {
+      const variables = operation.variables.reduce((variables, name) => {
         return {
           ...variables,
           [name]: req.query[name],
@@ -128,8 +132,8 @@ function createRouteForRootField(config: {
       }, {});
 
       const result = await fetch(config.link, {
-        operationName: op.operationName,
-        query: parse(op.operation),
+        operationName: operation.name,
+        query,
         variables,
       });
 
