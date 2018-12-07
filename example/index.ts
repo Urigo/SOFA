@@ -43,7 +43,7 @@ const cantExecuteNeverQuery: ErorHandler = res => {
 const errorLink = new ApolloLink((req, forward) => {
   const op = getOperationAST(req.query, null);
   const field = op!.selectionSet.selections[0] as FieldNode;
-  
+
   if (field.name.value === 'never') {
     throw cantExecuteNeverQuery;
   }
@@ -59,7 +59,7 @@ app.use(
     sofa,
     link,
     schema,
-  }),
+  })
 );
 
 app.use(
@@ -67,7 +67,7 @@ app.use(
   graphqlHTTP({
     schema,
     graphiql: true,
-  }),
+  })
 );
 
 const port = 4000;

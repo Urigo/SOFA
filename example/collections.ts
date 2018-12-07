@@ -18,7 +18,13 @@ const users = [
     favoritePizza: pizzas[1],
     favoriteBook: books[1],
     favoriteFood: {
-      ingredients: ['green shit', 'chicken', 'green shit', 'yellow shit', 'red shit'],
+      ingredients: [
+        'green shit',
+        'chicken',
+        'green shit',
+        'yellow shit',
+        'red shit',
+      ],
     },
     shelf: books,
   },

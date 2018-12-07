@@ -1,7 +1,7 @@
 import { GraphQLResolveInfo, StringValueNode } from 'graphql';
 
 export function extendSchema({
-  modelMap
+  modelMap,
 }: {
   modelMap: {
     [modelName: string]: (id: string, context: any) => any;
@@ -21,9 +21,11 @@ export function extendSchema({
         // we can find the typename thanks to info object and typename argument
         const firstField = info.operation.selectionSet.selections[0];
         if (firstField.kind !== 'Field') {
-          throw new Error('RESTModel can be used only with _getRESTModelById!')
+          throw new Error('RESTModel can be used only with _getRESTModelById!');
         } else {
-          const typename = firstField.arguments!.find(arg => arg.name.value === 'typename')!;
+          const typename = firstField.arguments!.find(
+            arg => arg.name.value === 'typename'
+          )!;
           return (typename.value as StringValueNode).value;
         }
       },
@@ -32,7 +34,7 @@ export function extendSchema({
       _getRESTModelById(
         _: any,
         args: { id: string; typename: string },
-        context: any,
+        context: any
       ) {
         const resolver = modelMap[args.typename];
 
@@ -47,6 +49,6 @@ export function extendSchema({
 
   return {
     typeDefs,
-    resolvers
+    resolvers,
   };
 }

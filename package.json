@@ -10,6 +10,8 @@
     "start": "ts-node example/index.ts",
     "build": "tsc -p tsconfig.build.json",
     "test": "jest",
+    "format": "prettier --write **/*.{ts,js,md,json}",
+    "prebuild": "rm -rf dist/",
     "prepublishOnly": "yarn build"
   },
   "devDependencies": {
@@ -25,8 +27,11 @@
     "graphql": "14.0.2",
     "graphql-tag": "2.10.0",
     "graphql-tools": "4.0.3",
+    "husky": "1.2.0",
     "jest": "23.6.0",
+    "lint-staged": "8.1.0",
     "node-fetch": "2.3.0",
+    "prettier": "1.15.3",
     "ts-jest": "23.10.5",
     "ts-node": "7.0.1",
     "typescript": "3.2.2"
@@ -38,5 +43,16 @@
     "apollo-link": "^1.2.0",
     "express": "^4.0.0",
     "graphql": "^14.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,js,md,json}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }

@@ -183,7 +183,7 @@ function buildRootFieldQuery({
   }
 
   const operationName = `${changeCase.camel(fieldName)}${changeCase.pascal(
-    operation,
+    operation
   )}`;
   const field = type.getFields()[fieldName];
 
@@ -194,7 +194,8 @@ function buildRootFieldQuery({
       kind: 'Name',
       value: operationName,
     },
-    variableDefinitions: field.args && field.args.length ? field.args.map(resolveVariable) : [],
+    variableDefinitions:
+      field.args && field.args.length ? field.args.map(resolveVariable) : [],
     selectionSet: {
       kind: 'SelectionSet',
       selections: [
@@ -285,9 +286,9 @@ function resolveSelectionSet({
 }
 
 function resolveVariable(arg: GraphQLArgument): VariableDefinitionNode {
-  function resolveVariableType(type: GraphQLList<any>): ListTypeNode
-  function resolveVariableType(type: GraphQLNonNull<any>): NonNullTypeNode
-  function resolveVariableType(type: GraphQLInputType): TypeNode
+  function resolveVariableType(type: GraphQLList<any>): ListTypeNode;
+  function resolveVariableType(type: GraphQLNonNull<any>): NonNullTypeNode;
+  function resolveVariableType(type: GraphQLInputType): TypeNode;
   function resolveVariableType(type: GraphQLInputType): TypeNode {
     if (isListType(type)) {
       return {
@@ -307,8 +308,8 @@ function resolveVariable(arg: GraphQLArgument): VariableDefinitionNode {
       kind: 'NamedType',
       name: {
         kind: 'Name',
-        value: type.name
-      }
+        value: type.name,
+      },
     };
   }
 
@@ -363,7 +364,11 @@ function resolveField({
         kind: 'Name',
         value: field.name,
       },
-      selectionSet: resolveSelectionSet({ type: namedType, models, skipModel }),
+      selectionSet: resolveSelectionSet({
+        type: namedType,
+        models,
+        skipModel,
+      }),
       arguments: args,
     };
   }

@@ -6,7 +6,7 @@ import {
 } from 'graphql';
 
 export function getOperationInfo(
-  doc: DocumentNode,
+  doc: DocumentNode
 ):
   | {
       variables: string[];
@@ -27,7 +27,10 @@ export function getOperationInfo(
   };
 }
 
-export function getOperationType(type: GraphQLObjectType, schema: GraphQLSchema) {
+export function getOperationType(
+  type: GraphQLObjectType,
+  schema: GraphQLSchema
+) {
   const query = schema.getQueryType();
   const mutation = schema.getMutationType();
   const subscription = schema.getSubscriptionType();

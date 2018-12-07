@@ -43,7 +43,7 @@ test('should work with Query', async () => {
           }
         }
       }
-    `),
+    `)
   );
 });
 
@@ -82,7 +82,7 @@ test('should work with Query and variables', async () => {
           }
         }
       }
-    `),
+    `)
   );
 });
 
@@ -107,7 +107,7 @@ test('should work with Query and complicated variable', async () => {
           }
         }
       }
-    `),
+    `)
   );
 });
 
@@ -147,7 +147,7 @@ test('should work with ObjectType', async () => {
           }
         }
       }
-    `),
+    `)
   );
 });
 
@@ -172,7 +172,7 @@ test('should work with Union', async () => {
           }
         }
       }
-    `),
+    `)
   );
 });
 
@@ -191,7 +191,7 @@ test('should work with mutation', async () => {
           ingredients
         }
       }
-    `),
+    `)
   );
 });
 
@@ -216,6 +216,6 @@ test('should work with mutation and unions', async () => {
           }
         }
       }
-    `),
+    `)
   );
 });

@@ -30,7 +30,7 @@ app.use(
   graphqlHTTP({
     schema,
     graphiql: true,
-  }),
+  })
 );
 ```
 
@@ -48,6 +48,6 @@ app.use(
     sofa,
     link,
     schema,
-  }),
+  })
 );
 ```

@@ -27,7 +27,7 @@ test('should work with Query and variables', async () => {
 
 test('should work with Model', async () => {
   const found = router.stack.find(
-    r => r.route && r.route.path === '/model/user/:id',
+    r => r.route && r.route.path === '/model/user/:id'
   );
 
   expect(found).toBeDefined();
@@ -46,7 +46,7 @@ test('should work with Model', async () => {
 
 test('should work with Mutation', async () => {
   const found = router.stack.find(
-    r => r.route && r.route.path === '/add-random-food',
+    r => r.route && r.route.path === '/add-random-food'
   );
 
   expect(found).toBeDefined();

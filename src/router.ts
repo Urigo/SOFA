@@ -20,9 +20,8 @@ export function createRouter({
   const queryType = schema.getQueryType()!;
   const mutationType = schema.getMutationType();
   const modelTypes = models.map(
-    name => schema.getType(name) as GraphQLObjectType,
+    name => schema.getType(name) as GraphQLObjectType
   );
-
   [queryType, mutationType].forEach(type => {
     if (type) {
       Object.keys(type.getFields()).forEach(fieldName => {
