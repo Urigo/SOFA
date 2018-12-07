@@ -1,54 +1,8 @@
-import {
-  buildASTSchema,
-  GraphQLObjectType,
-  print,
-  parse,
-  DocumentNode,
-} from 'graphql';
+import { GraphQLObjectType, print, parse, DocumentNode } from 'graphql';
 import gql from 'graphql-tag';
 
+import { schema, models } from './schema';
 import { buildOperation } from '../src/operation';
-
-const schema = buildASTSchema(gql`
-  type Pizza {
-    dough: String!
-    toppings: [String!]
-  }
-
-  type Book {
-    id: ID!
-    title: String!
-  }
-
-  type User {
-    id: ID!
-    name: String!
-    favoritePizza: Pizza!
-    favoriteBook: Book!
-    favoriteFood: Food!
-    shelf: [Book!]!
-  }
-
-  type Salad {
-    ingredients: [String!]!
-  }
-
-  union Food = Pizza | Salad
-
-  type Query {
-    me: User
-    user(id: ID!): User
-    users: [User!]
-    menu: [Food]
-    menuByIngredients(ingredients: [String!]!): [Food]
-  }
-
-  schema {
-    query: Query
-  }
-`);
-
-const models = ['User', 'Book'];
 
 function clean(doc: string | DocumentNode) {
   return print(typeof doc === 'string' ? parse(doc) : doc);
@@ -64,7 +18,7 @@ test('should work with Query', async () => {
 
   expect(clean(document)).toEqual(
     clean(gql`
-      query getMeQuery {
+      query meQuery {
         me {
           id
           name
@@ -103,7 +57,7 @@ test('should work with Query and variables', async () => {
 
   expect(clean(document)).toEqual(
     clean(gql`
-      query getUserQuery($id: ID!) {
+      query userQuery($id: ID!) {
         user(id: $id) {
           id
           name
@@ -142,7 +96,7 @@ test('should work with Query and complicated variable', async () => {
 
   expect(clean(document)).toEqual(
     clean(gql`
-      query getMenuByIngredientsQuery($ingredients: [String!]!) {
+      query menuByIngredientsQuery($ingredients: [String!]!) {
         menuByIngredients(ingredients: $ingredients) {
           ... on Pizza {
             dough
@@ -166,7 +120,7 @@ test('should work with ObjectType', async () => {
 
   expect(clean(operation)).toEqual(
     clean(gql`
-      query getUserType($id: ID!) {
+      query userType($id: ID!) {
         _getRESTModelById(typename: "User", id: $id) {
           ... on User {
             id
@@ -207,8 +161,52 @@ test('should work with Union', async () => {
 
   expect(clean(document)).toEqual(
     clean(gql`
-      query getMenuQuery {
+      query menuQuery {
         menu {
+          ... on Pizza {
+            dough
+            toppings
+          }
+          ... on Salad {
+            ingredients
+          }
+        }
+      }
+    `),
+  );
+});
+
+test('should work with mutation', async () => {
+  const document = buildOperation({
+    schema,
+    type: schema.getMutationType()!,
+    fieldName: 'addSalad',
+    models,
+  })!;
+
+  expect(clean(document)).toEqual(
+    clean(gql`
+      mutation addSaladMutation($ingredients: [String!]!) {
+        addSalad(ingredients: $ingredients) {
+          ingredients
+        }
+      }
+    `),
+  );
+});
+
+test('should work with mutation and unions', async () => {
+  const document = buildOperation({
+    schema,
+    type: schema.getMutationType()!,
+    fieldName: 'addRandomFood',
+    models,
+  })!;
+
+  expect(clean(document)).toEqual(
+    clean(gql`
+      mutation addRandomFoodMutation {
+        addRandomFood {
           ... on Pizza {
             dough
             toppings

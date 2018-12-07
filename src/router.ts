@@ -5,7 +5,7 @@ import { ApolloLink } from 'apollo-link';
 
 import { buildOperation } from './operation';
 import { fetch } from './fetcher';
-import { getOperationInfo } from './ast';
+import { getOperationInfo, getOperationType } from './ast';
 
 export function createRouter({
   schema,
@@ -15,56 +15,43 @@ export function createRouter({
   schema: GraphQLSchema;
   models: string[];
   link: ApolloLink;
-}) {
+}): express.Router {
   const router = express.Router();
   const queryType = schema.getQueryType()!;
+  const mutationType = schema.getMutationType();
   const modelTypes = models.map(
     name => schema.getType(name) as GraphQLObjectType,
   );
 
-  // for query
-  const fields = queryType.getFields();
-
-  Object.keys(fields).forEach(field => {
-    createRoute({
-      schema,
-      type: queryType,
-      field,
-      models,
-      link,
-      router,
-    });
+  [queryType, mutationType].forEach(type => {
+    if (type) {
+      Object.keys(type.getFields()).forEach(fieldName => {
+        createRouteForRootField({
+          schema,
+          type,
+          fieldName,
+          models,
+          link,
+          router,
+        });
+      });
+    }
   });
 
   // for models
-  modelTypes.forEach(modelType => {
-    createRoute({
-      schema,
-      type: modelType,
-      models,
-      link,
-      router,
-    });
+  modelTypes.forEach(type => {
+    if (isObjectType(type)) {
+      createRouteForModel({
+        schema,
+        type,
+        models,
+        link,
+        router,
+      });
+    }
   });
 
   return router;
-}
-
-function createRoute(config: {
-  schema: GraphQLSchema;
-  type: GraphQLObjectType;
-  field?: string;
-  router: express.Router;
-  models: string[];
-  link: ApolloLink;
-}): void {
-  if (config.field) {
-    return createRouteForRootField(config as any);
-  }
-
-  if (isObjectType(config.type)) {
-    return createRouteForModel(config);
-  }
 }
 
 function createRouteForModel({
@@ -81,38 +68,36 @@ function createRouteForModel({
   link: ApolloLink;
 }) {
   const typename = type.name;
+  const path = `/model/${changeCase.param(typename)}/:id`;
 
-  router.get(
-    `/model/${changeCase.camel(typename)}/:id`,
-    async (req: express.Request, res: express.Response) => {
-      const id = req.params.id;
+  router.get(path, async (req: express.Request, res: express.Response) => {
+    const id = req.params.id;
 
-      const query = buildOperation({
-        schema,
-        type,
-        models,
+    const query = buildOperation({
+      schema,
+      type,
+      models,
+    });
+    const { name } = getOperationInfo(query)!;
+
+    const variables = {
+      id,
+    };
+
+    try {
+      const result = await fetch(link, {
+        operationName: name,
+        query,
+        variables,
       });
-      const { name } = getOperationInfo(query)!;
 
-      const variables = {
-        id,
-      };
+      res.send(JSON.stringify(result.data && result.data._getRESTModelById));
+    } catch (e) {
+      console.log(e);
 
-      try {
-        const result = await fetch(link, {
-          operationName: name,
-          query,
-          variables,
-        });
-
-        res.send(JSON.stringify(result.data && result.data._getRESTModelById));
-      } catch (e) {
-        console.log(e);
-
-        res.sendStatus(500);
-      }
-    },
-  );
+      res.sendStatus(500);
+    }
+  });
 }
 
 function createRouteForRootField({
@@ -130,31 +115,47 @@ function createRouteForRootField({
   models: string[];
   link: ApolloLink;
 }) {
-  router.get(
-    `/${changeCase.camel(fieldName)}`,
-    async (req: express.Request, res: express.Response) => {
-      const query = buildOperation({
-        schema,
-        type,
-        fieldName,
-        models,
-      });
-      const operation = getOperationInfo(query)!;
+  const path = `/${changeCase.param(fieldName)}`;
+  const operation = getOperationType(type, schema);
+  const methodMap = {
+    query: 'get',
+    mutation: 'post',
+    subscription: undefined,
+  };
 
-      const variables = operation.variables.reduce((variables, name) => {
-        return {
-          ...variables,
-          [name]: req.query[name],
-        };
-      }, {});
+  if (!operation) {
+    throw new Error(`Type '${type}' is not a query, mutation or subscription`);
+  }
 
-      const result = await fetch(link, {
-        operationName: operation.name,
-        query,
-        variables,
-      });
+  const method = methodMap[operation];
 
-      res.send(JSON.stringify(result.data && result.data[fieldName]));
-    },
-  );
+  if (!method) {
+    throw new Error('Subscription is not supported yet');
+  }
+
+  const fn = method === 'get' ? router.get : router.post;
+  const query = buildOperation({
+    schema,
+    type,
+    fieldName,
+    models,
+  });
+  const info = getOperationInfo(query)!;
+
+  fn.call(router, path, async (req: express.Request, res: express.Response) => {
+    const variables = info.variables.reduce((variables, name) => {
+      return {
+        ...variables,
+        [name]: req.query[name] || req.body[name],
+      };
+    }, {});
+
+    const result = await fetch(link, {
+      operationName: info.name,
+      query,
+      variables,
+    });
+
+    res.send(JSON.stringify(result.data && result.data[fieldName]));
+  });
 }

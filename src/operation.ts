@@ -61,7 +61,7 @@ function buildModelQuery({
   type: GraphQLObjectType;
   models: string[];
 }) {
-  const operationName = `get${changeCase.pascal(type.name)}Type`;
+  const operationName = `${changeCase.camel(type.name)}Type`;
 
   const operationNode: OperationDefinitionNode = {
     kind: 'OperationDefinition',
@@ -182,7 +182,7 @@ function buildRootFieldQuery({
     throw new Error('Subscription is not supported');
   }
 
-  const operationName = `get${changeCase.pascal(fieldName)}${changeCase.pascal(
+  const operationName = `${changeCase.camel(fieldName)}${changeCase.pascal(
     operation,
   )}`;
   const field = type.getFields()[fieldName];
