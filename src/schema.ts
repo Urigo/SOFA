@@ -1,12 +1,14 @@
 import { GraphQLResolveInfo, StringValueNode } from 'graphql';
 
-export function extendSchema(config: {
+export function extendSchema({
+  modelMap
+}: {
   modelMap: {
     [modelName: string]: (id: any, context: any) => any;
   };
 }) {
   const typeDefs = `
-    union RESTModel = ${Object.keys(config.modelMap).join(' | ')}
+    union RESTModel = ${Object.keys(modelMap).join(' | ')}
 
     extend type Query {
       _getRESTModelById(typename: String!, id: ID!): RESTModel
@@ -32,7 +34,7 @@ export function extendSchema(config: {
         args: { id: any; typename: string },
         context: any,
       ) {
-        const resolver = config.modelMap[args.typename];
+        const resolver = modelMap[args.typename];
 
         if (!resolver) {
           throw new Error(`Missing resolver for ${args.typename} model`);

@@ -17,37 +17,45 @@ import {
   isListType,
   ArgumentNode,
   GraphQLField,
+  isEqualType,
 } from 'graphql';
 import * as changeCase from 'change-case';
 
-export function buildOperation(config: {
+export function buildOperation({
+  schema,
+  type,
+  fieldName,
+  models,
+}: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
-  field?: string;
+  fieldName?: string;
   models: string[];
 }) {
   // if it has a field, it means it's a query or mutation
-  if (config.field) {
+  if (fieldName) {
     return buildRootFieldQuery({
-      schema: config.schema,
-      field: config.field,
-      models: config.models,
+      schema,
+      type,
+      fieldName,
+      models,
     });
   }
 
   return buildModelQuery({
-    schema: config.schema,
-    type: config.type,
-    models: config.models,
+    type,
+    models,
   });
 }
 
-function buildModelQuery(config: {
-  schema: GraphQLSchema;
+function buildModelQuery({
+  type,
+  models,
+}: {
   type: GraphQLObjectType;
   models: string[];
 }) {
-  const operationName = `get${changeCase.pascal(config.type.name)}Type`;
+  const operationName = `get${changeCase.pascal(type.name)}Type`;
 
   const operationNode: OperationDefinitionNode = {
     kind: 'OperationDefinition',
@@ -97,7 +105,7 @@ function buildModelQuery(config: {
               value: {
                 kind: 'StringValue',
                 block: false,
-                value: config.type.name,
+                value: type.name,
               },
             },
             {
@@ -124,13 +132,13 @@ function buildModelQuery(config: {
                   kind: 'NamedType',
                   name: {
                     kind: 'Name',
-                    value: config.type.name,
+                    value: type.name,
                   },
                 },
                 selectionSet: resolveSelectionSet({
                   skipModel: true,
-                  type: config.type,
-                  models: config.models,
+                  type,
+                  models,
                 })!,
               },
             ],
@@ -147,17 +155,35 @@ function buildModelQuery(config: {
   return document;
 }
 
-function buildRootFieldQuery(config: {
+function buildRootFieldQuery({
+  schema,
+  type,
+  fieldName,
+  models,
+}: {
   schema: GraphQLSchema;
-  field: string;
+  type: GraphQLObjectType;
+  fieldName: string;
   models: string[];
 }) {
-  const operationName = `get${changeCase.pascal(config.field)}Query`;
-  const field = config.schema.getQueryType()!.getFields()[config.field];
+  let operation: 'query' | 'mutation';
+
+  if (isEqualType(type, schema.getQueryType()!)) {
+    operation = 'query';
+  } else if (isEqualType(type, schema.getMutationType()!)) {
+    operation = 'mutation';
+  } else {
+    throw new Error('Subscription is not supported');
+  }
+
+  const operationName = `get${changeCase.pascal(fieldName)}${changeCase.pascal(
+    operation,
+  )}`;
+  const field = type.getFields()[fieldName];
 
   const operationNode: OperationDefinitionNode = {
     kind: 'OperationDefinition',
-    operation: 'query',
+    operation,
     name: {
       kind: 'Name',
       value: operationName,
@@ -217,8 +243,8 @@ function buildRootFieldQuery(config: {
       kind: 'SelectionSet',
       selections: [
         resolveFieldNode({
-          field: field,
-          models: config.models,
+          field,
+          models,
           skipModel: true,
         }),
       ],

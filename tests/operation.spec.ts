@@ -57,7 +57,7 @@ test('should work with Query', async () => {
   const document = buildOperation({
     schema,
     type: schema.getQueryType()!,
-    field: 'me',
+    fieldName: 'me',
     models,
   })!;
 
@@ -96,7 +96,7 @@ test('should work with Query and variables', async () => {
   const document = buildOperation({
     schema,
     type: schema.getQueryType()!,
-    field: 'user',
+    fieldName: 'user',
     models,
   })!;
 
@@ -175,7 +175,7 @@ test('should work with Union', async () => {
   const document = buildOperation({
     schema,
     type: schema.getQueryType()!,
-    field: 'menu',
+    fieldName: 'menu',
     models,
   })!;
 

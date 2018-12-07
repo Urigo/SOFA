@@ -7,15 +7,19 @@ import { buildOperation } from './operation';
 import { fetch } from './fetcher';
 import { getOperationInfo } from './ast';
 
-export function createRouter(config: {
+export function createRouter({
+  schema,
+  models,
+  link,
+}: {
   schema: GraphQLSchema;
   models: string[];
   link: ApolloLink;
 }) {
   const router = express.Router();
-  const queryType = config.schema.getQueryType()!;
-  const modelTypes = config.models.map(
-    name => config.schema.getType(name) as GraphQLObjectType,
+  const queryType = schema.getQueryType()!;
+  const modelTypes = models.map(
+    name => schema.getType(name) as GraphQLObjectType,
   );
 
   // for query
@@ -23,11 +27,11 @@ export function createRouter(config: {
 
   Object.keys(fields).forEach(field => {
     createRoute({
-      schema: config.schema,
+      schema,
       type: queryType,
       field,
-      models: config.models,
-      link: config.link,
+      models,
+      link,
       router,
     });
   });
@@ -35,10 +39,10 @@ export function createRouter(config: {
   // for models
   modelTypes.forEach(modelType => {
     createRoute({
-      schema: config.schema,
+      schema,
       type: modelType,
-      models: config.models,
-      link: config.link,
+      models,
+      link,
       router,
     });
   });
@@ -63,24 +67,30 @@ function createRoute(config: {
   }
 }
 
-function createRouteForModel(config: {
+function createRouteForModel({
+  schema,
+  type,
+  router,
+  models,
+  link,
+}: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
   router: express.Router;
   models: string[];
   link: ApolloLink;
 }) {
-  const typename = config.type.name;
+  const typename = type.name;
 
-  config.router.get(
+  router.get(
     `/model/${changeCase.camel(typename)}/:id`,
     async (req: express.Request, res: express.Response) => {
       const id = req.params.id;
 
       const query = buildOperation({
-        schema: config.schema,
-        type: config.type,
-        models: config.models,
+        schema,
+        type,
+        models,
       });
       const { name } = getOperationInfo(query)!;
 
@@ -89,7 +99,7 @@ function createRouteForModel(config: {
       };
 
       try {
-        const result = await fetch(config.link, {
+        const result = await fetch(link, {
           operationName: name,
           query,
           variables,
@@ -105,22 +115,29 @@ function createRouteForModel(config: {
   );
 }
 
-function createRouteForRootField(config: {
+function createRouteForRootField({
+  schema,
+  type,
+  fieldName,
+  router,
+  models,
+  link,
+}: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
-  field: string;
+  fieldName: string;
   router: express.Router;
   models: string[];
   link: ApolloLink;
 }) {
-  config.router.get(
-    `/${changeCase.camel(config.field)}`,
+  router.get(
+    `/${changeCase.camel(fieldName)}`,
     async (req: express.Request, res: express.Response) => {
       const query = buildOperation({
-        schema: config.schema,
-        type: config.type,
-        field: config.field,
-        models: config.models,
+        schema,
+        type,
+        fieldName,
+        models,
       });
       const operation = getOperationInfo(query)!;
 
@@ -131,13 +148,13 @@ function createRouteForRootField(config: {
         };
       }, {});
 
-      const result = await fetch(config.link, {
+      const result = await fetch(link, {
         operationName: operation.name,
         query,
         variables,
       });
 
-      res.send(JSON.stringify(result.data && result.data[config.field]));
+      res.send(JSON.stringify(result.data && result.data[fieldName]));
     },
   );
 }
