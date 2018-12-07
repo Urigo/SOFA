@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node example/index.ts",
+    "prod": "webpack && node dist/bundle.js",
     "build": "tsc -p tsconfig.build.json",
     "test": "jest",
     "format": "prettier --write **/*.{ts,js,md,json}",
@@ -20,6 +21,7 @@
     "@types/graphql": "14.0.3",
     "@types/jest": "23.3.10",
     "@types/node-fetch": "2.1.4",
+    "@types/webpack": "4.4.20",
     "apollo-link": "1.2.4",
     "apollo-link-http": "1.5.7",
     "express": "4.16.4",
@@ -33,8 +35,11 @@
     "node-fetch": "2.3.0",
     "prettier": "1.15.3",
     "ts-jest": "23.10.5",
+    "ts-loader": "5.3.1",
     "ts-node": "7.0.1",
-    "typescript": "3.2.2"
+    "typescript": "3.2.2",
+    "webpack": "4.27.1",
+    "webpack-cli": "3.1.2"
   },
   "dependencies": {
     "change-case": "3.0.2"

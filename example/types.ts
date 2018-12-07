@@ -26,11 +26,16 @@ export const typeDefs = gql`
     shelf: [Book!]!
   }
 
+  type Post {
+    comments(filter: String!): [String!]!
+  }
+
   type Query {
     me: User
     user(id: ID!): User
     users: [User!]
     never: String
+    feed: [Post]
   }
 
   schema {

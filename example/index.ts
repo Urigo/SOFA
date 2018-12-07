@@ -4,7 +4,7 @@ import { getOperationAST, FieldNode } from 'graphql';
 import { HttpLink } from 'apollo-link-http';
 import { ApolloLink } from 'apollo-link';
 import * as graphqlHTTP from 'express-graphql';
-import * as fetch from 'node-fetch';
+import fetch from 'node-fetch';
 import { BooksCollection, UsersCollection } from './collections';
 import { typeDefs } from './types';
 import { resolvers } from './resolvers';
