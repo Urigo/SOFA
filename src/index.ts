@@ -5,6 +5,8 @@ import * as express from 'express';
 import { createRouter } from './router';
 import { extendSchema } from './schema';
 
+export { ErorHandler } from './fetcher';
+
 interface ModelMap {
   [modelName: string]: (id: any, context: any) => any;
 }
@@ -46,6 +48,6 @@ export function useSofa({
   return createRouter({
     schema,
     models: Object.keys(sofa.models),
-    link
+    link,
   });
 }

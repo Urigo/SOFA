@@ -4,7 +4,7 @@ import { GraphQLSchema, isObjectType, GraphQLObjectType } from 'graphql';
 import { ApolloLink } from 'apollo-link';
 
 import { buildOperation } from './operation';
-import { fetch } from './fetcher';
+import { fetch, ErorHandler } from './fetcher';
 import { getOperationInfo, getOperationType } from './ast';
 
 export function createRouter({
@@ -85,17 +85,25 @@ function createRouteForModel({
     };
 
     try {
-      const result = await fetch(link, {
-        operationName: name,
-        query,
-        variables,
+      const result = await fetch({
+        req,
+        link,
+        operation: {
+          operationName: name,
+          query,
+          variables,
+        },
       });
 
-      res.send(JSON.stringify(result.data && result.data._getRESTModelById));
+      res.json(result.data && result.data._getRESTModelById);
     } catch (e) {
-      console.log(e);
-
-      res.sendStatus(500);
+      if (e instanceof Error) {
+        // TODO: allow use to handle errors
+        console.log(e);
+        res.sendStatus(500);
+      } else {
+        (e as ErorHandler)(res);
+      }
     }
   });
 }
@@ -150,13 +158,26 @@ function createRouteForRootField({
       };
     }, {});
 
-    const result = await fetch(link, {
-      operationName: info.name,
-      query,
-      variables,
-    });
+    try {
+      const result = await fetch({
+        req,
+        link,
+        operation: {
+          operationName: info.name,
+          query,
+          variables,
+        },
+      });
 
-    res.send(JSON.stringify(result.data && result.data[fieldName]));
+      res.json(result.data && result.data[fieldName]);
+    } catch (e) {
+      if (e instanceof Error) {
+        console.log(e);
+        res.sendStatus(500);
+      } else {
+        (e as ErorHandler)(res);
+      }
+    }
   });
 }
 
