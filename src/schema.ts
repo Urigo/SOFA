@@ -4,7 +4,7 @@ export function extendSchema({
   modelMap
 }: {
   modelMap: {
-    [modelName: string]: (id: any, context: any) => any;
+    [modelName: string]: (id: string, context: any) => any;
   };
 }) {
   const typeDefs = `
@@ -31,7 +31,7 @@ export function extendSchema({
     Query: {
       _getRESTModelById(
         _: any,
-        args: { id: any; typename: string },
+        args: { id: string; typename: string },
         context: any,
       ) {
         const resolver = modelMap[args.typename];

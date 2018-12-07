@@ -146,7 +146,7 @@ function createRouteForRootField({
     const variables = info.variables.reduce((variables, name) => {
       return {
         ...variables,
-        [name]: req.query[name] || req.body[name],
+        [name]: pickParam(req, name),
       };
     }, {});
 
@@ -158,4 +158,14 @@ function createRouteForRootField({
 
     res.send(JSON.stringify(result.data && result.data[fieldName]));
   });
+}
+
+function pickParam(req: express.Request, name: string) {
+  if (req.query && req.query[name]) {
+    return req.query[name];
+  }
+
+  if (req.body && req.body[name]) {
+    return req.body[name];
+  }
 }
