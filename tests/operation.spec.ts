@@ -54,14 +54,14 @@ function clean(doc: string | DocumentNode) {
 }
 
 test('should work with Query', async () => {
-  const output = buildOperation({
+  const document = buildOperation({
     schema,
     type: schema.getQueryType()!,
     field: 'me',
     models,
   })!;
 
-  expect(clean(output.operation)).toEqual(
+  expect(clean(document)).toEqual(
     clean(gql`
       query getMeQuery {
         me {
@@ -90,19 +90,17 @@ test('should work with Query', async () => {
       }
     `),
   );
-
-  expect(output.variables).toEqual({});
 });
 
 test('should work with Query and variables', async () => {
-  const output = buildOperation({
+  const document = buildOperation({
     schema,
     type: schema.getQueryType()!,
     field: 'user',
     models,
   })!;
 
-  expect(clean(output.operation)).toEqual(
+  expect(clean(document)).toEqual(
     clean(gql`
       query getUserQuery($id: ID!) {
         user(id: $id) {
@@ -131,20 +129,16 @@ test('should work with Query and variables', async () => {
       }
     `),
   );
-
-  expect(output.variables).toEqual({
-    id: 'ID!',
-  });
 });
 
 test('should work with ObjectType', async () => {
-  const output = buildOperation({
+  const operation = buildOperation({
     schema,
     type: schema.getType('User') as GraphQLObjectType,
     models,
   })!;
 
-  expect(clean(output.operation)).toEqual(
+  expect(clean(operation)).toEqual(
     clean(gql`
       query getUserType($id: ID!) {
         _getRESTModelById(typename: "User", id: $id) {
@@ -175,21 +169,17 @@ test('should work with ObjectType', async () => {
       }
     `),
   );
-
-  expect(output.variables).toEqual({
-    id: 'ID!',
-  });
 });
 
 test('should work with Union', async () => {
-  const output = buildOperation({
+  const document = buildOperation({
     schema,
     type: schema.getQueryType()!,
     field: 'menu',
     models,
   })!;
 
-  expect(clean(output.operation)).toEqual(
+  expect(clean(document)).toEqual(
     clean(gql`
       query getMenuQuery {
         menu {
@@ -204,6 +194,4 @@ test('should work with Union', async () => {
       }
     `),
   );
-
-  expect(output.variables).toEqual({});
 });

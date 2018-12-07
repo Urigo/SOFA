@@ -2,11 +2,21 @@ import {
   GraphQLSchema,
   GraphQLObjectType,
   isObjectType,
-  GraphQLNamedType,
-  isScalarType,
   getNamedType,
-  GraphQLArgument,
   isUnionType,
+  DocumentNode,
+  OperationDefinitionNode,
+  VariableDefinitionNode,
+  isNonNullType,
+  SelectionNode,
+  InlineFragmentNode,
+  GraphQLNamedType,
+  SelectionSetNode,
+  isScalarType,
+  TypeNode,
+  isListType,
+  ArgumentNode,
+  GraphQLField,
 } from 'graphql';
 import * as changeCase from 'change-case';
 
@@ -25,7 +35,6 @@ export function buildOperation(config: {
     });
   }
 
-  // otherwise it's a model
   return buildModelQuery({
     schema: config.schema,
     type: config.type,
@@ -37,176 +46,311 @@ function buildModelQuery(config: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
   models: string[];
-}): {
-  operationName: string;
-  operation: string;
-  variables: {
-    id: string;
-  };
-} {
+}) {
   const operationName = `get${changeCase.pascal(config.type.name)}Type`;
 
-  const body = resolveAsFragment({
-    type: config.type,
-    models: config.models,
-  });
-
-  return {
-    operationName,
-    operation: `
-      query ${operationName}($id: ID!) {
-        _getRESTModelById(typename: "${config.type.name}", id: $id) {
-          ${body}
-        }
-      }
-    `,
-    variables: {
-      id: 'ID!',
+  const operationNode: OperationDefinitionNode = {
+    kind: 'OperationDefinition',
+    operation: 'query',
+    name: {
+      kind: 'Name',
+      value: operationName,
+    },
+    variableDefinitions: [
+      {
+        kind: 'VariableDefinition',
+        variable: {
+          kind: 'Variable',
+          name: {
+            kind: 'Name',
+            value: 'id',
+          },
+        },
+        type: {
+          kind: 'NonNullType',
+          type: {
+            kind: 'NamedType',
+            name: {
+              kind: 'Name',
+              value: 'ID',
+            },
+          },
+        },
+      },
+    ],
+    selectionSet: {
+      kind: 'SelectionSet',
+      selections: [
+        {
+          kind: 'Field',
+          name: {
+            kind: 'Name',
+            value: '_getRESTModelById',
+          },
+          arguments: [
+            {
+              kind: 'Argument',
+              name: {
+                kind: 'Name',
+                value: 'typename',
+              },
+              value: {
+                kind: 'StringValue',
+                block: false,
+                value: config.type.name,
+              },
+            },
+            {
+              kind: 'Argument',
+              name: {
+                kind: 'Name',
+                value: 'id',
+              },
+              value: {
+                kind: 'Variable',
+                name: {
+                  kind: 'Name',
+                  value: 'id',
+                },
+              },
+            },
+          ],
+          selectionSet: {
+            kind: 'SelectionSet',
+            selections: [
+              {
+                kind: 'InlineFragment',
+                typeCondition: {
+                  kind: 'NamedType',
+                  name: {
+                    kind: 'Name',
+                    value: config.type.name,
+                  },
+                },
+                selectionSet: resolveSelectionSet({
+                  skipModel: true,
+                  type: config.type,
+                  models: config.models,
+                })!,
+              },
+            ],
+          },
+        },
+      ],
     },
   };
+  const document: DocumentNode = {
+    kind: 'Document',
+    definitions: [operationNode],
+  };
+
+  return document;
 }
 
 function buildRootFieldQuery(config: {
   schema: GraphQLSchema;
   field: string;
   models: string[];
-}): {
-  operationName: string;
-  operation: string;
-  variables: {
-    [name: string]: string;
-  };
-} {
+}) {
   const operationName = `get${changeCase.pascal(config.field)}Query`;
   const field = config.schema.getQueryType()!.getFields()[config.field];
-  const type = getNamedType(field.type);
 
-  const body = resolveField({
-    name: config.field,
-    fieldType: type,
-    args: field.args,
-    parent: config.schema.getQueryType()!,
-    models: config.models,
-  });
+  const operationNode: OperationDefinitionNode = {
+    kind: 'OperationDefinition',
+    operation: 'query',
+    name: {
+      kind: 'Name',
+      value: operationName,
+    },
+    variableDefinitions:
+      field.args && field.args.length
+        ? field.args.map<VariableDefinitionNode>(arg => {
+            let typeNode: TypeNode;
 
-  const args =
-    field.args && field.args.length
-      ? `(${field.args
-          .map(arg => {
-            // $id: ID!
-            const val = [`\$${arg.name}: ${arg.type.toString()}`];
-
-            if (arg.defaultValue) {
-              // $id: ID! = 12
-              val.push(` = ${arg.defaultValue}`);
+            if (isNonNullType(arg.type)) {
+              typeNode = {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType', // TODO: possible ListType and even more nested types
+                  name: {
+                    kind: 'Name',
+                    value: arg.type.ofType.toString(),
+                  },
+                },
+              };
+            } else if (isListType(arg.type)) {
+              typeNode = {
+                kind: 'ListType',
+                type: {
+                  kind: 'NamedType',
+                  name: {
+                    kind: 'Name',
+                    value: arg.type.ofType.toString(),
+                  },
+                },
+              };
+            } else {
+              typeNode = {
+                kind: 'NamedType',
+                name: {
+                  kind: 'Name',
+                  value: arg.type.name,
+                },
+              };
             }
 
-            return val.join('');
+            return {
+              kind: 'VariableDefinition',
+              variable: {
+                kind: 'Variable',
+                name: {
+                  kind: 'Name',
+                  value: arg.name,
+                },
+              },
+              type: typeNode,
+              defaultValue: arg.defaultValue,
+            };
           })
-          .join(', ')})`
-      : '';
+        : [],
+    selectionSet: {
+      kind: 'SelectionSet',
+      selections: [
+        resolveFieldNode({
+          field: field,
+          models: config.models,
+          skipModel: true,
+        }),
+      ],
+    },
+  };
+  const document: DocumentNode = {
+    kind: 'Document',
+    definitions: [operationNode],
+  };
+
+  return document;
+}
+
+function resolveSelectionSet({
+  type,
+  models,
+  skipModel,
+}: {
+  type: GraphQLNamedType;
+  models: string[];
+  skipModel?: boolean;
+}): SelectionSetNode | undefined {
+  if (isUnionType(type)) {
+    const types = type.getTypes();
+
+    return {
+      kind: 'SelectionSet',
+      selections: types.map<InlineFragmentNode>(t => {
+        const fields = t.getFields();
+
+        return {
+          kind: 'InlineFragment',
+          typeCondition: {
+            kind: 'NamedType',
+            name: {
+              kind: 'Name',
+              value: t.name,
+            },
+          },
+          selectionSet: {
+            kind: 'SelectionSet',
+            selections: Object.keys(fields).map(f => {
+              return resolveFieldNode({
+                field: fields[f],
+                models,
+              });
+            }),
+          },
+        };
+      }),
+    };
+  }
+
+  if (isObjectType(type)) {
+    if (!skipModel && models.includes(type.name)) {
+      return {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: {
+              kind: 'Name',
+              value: 'id',
+            },
+          },
+        ],
+      };
+    }
+
+    const fields = type.getFields();
+
+    return {
+      kind: 'SelectionSet',
+      selections: Object.keys(fields).map(fieldName => {
+        return resolveFieldNode({
+          field: fields[fieldName],
+          models,
+        });
+      }),
+    };
+  }
+}
+
+function resolveFieldNode({
+  field,
+  models,
+  skipModel,
+}: {
+  field: GraphQLField<any, any>;
+  models: string[];
+  skipModel?: boolean;
+}): SelectionNode {
+  const namedType = getNamedType(field.type);
+  let args: ArgumentNode[] = [];
+
+  if (field.args && field.args.length) {
+    args = field.args.map<ArgumentNode>(arg => {
+      return {
+        kind: 'Argument',
+        name: {
+          kind: 'Name',
+          value: arg.name,
+        },
+        value: {
+          kind: 'Variable',
+          name: {
+            kind: 'Name',
+            value: arg.name,
+          },
+        },
+      };
+    });
+  }
+
+  if (!isScalarType(namedType)) {
+    return {
+      kind: 'Field',
+      name: {
+        kind: 'Name',
+        value: field.name,
+      },
+      selectionSet: resolveSelectionSet({ type: namedType, models, skipModel }),
+      arguments: args,
+    };
+  }
 
   return {
-    operationName,
-    operation: `
-      query ${operationName} ${args} {
-        ${body}
-      }
-    `,
-    variables: field.args.length
-      ? field.args.reduce((variables, arg) => {
-          return {
-            ...variables,
-            [arg.name]: arg.type.toString(),
-          };
-        }, {})
-      : {},
+    kind: 'Field',
+    name: {
+      kind: 'Name',
+      value: field.name,
+    },
+    arguments: args,
   };
-}
-
-function resolveAsFragment(config: {
-  type: GraphQLObjectType;
-  models: string[];
-}): string {
-  const fields = config.type.getFields();
-
-  const body = Object.keys(fields)
-    .map(name => {
-      return resolveField({
-        name,
-        fieldType: getNamedType(fields[name].type),
-        models: config.models,
-      });
-    })
-    .join('\n');
-
-  return `
-    ... on ${config.type.name} {
-      ${body}
-    }
-  `;
-}
-
-function resolveField(config: {
-  name: string;
-  fieldType: GraphQLNamedType;
-  parent?: GraphQLObjectType;
-  args?: GraphQLArgument[];
-  models: string[];
-}): string {
-  const args =
-    config.args && config.args.length
-      ? `(${config.args
-          .map(arg => {
-            return `${arg.name}: \$${arg.name}`;
-          })
-          .join(', ')})`
-      : '';
-
-  if (isObjectType(config.fieldType)) {
-    if (!config.parent && config.models.includes(config.fieldType.name)) {
-      return `${config.name} {
-        id
-      }`;
-    }
-
-    const fields = config.fieldType.getFields();
-    const body = Object.keys(fields)
-      .map(name =>
-        resolveField({
-          name,
-          fieldType: getNamedType(fields[name].type),
-          models: config.models,
-        }),
-      )
-      .join('\n');
-
-    return `${config.name} ${args} {
-      ${body}
-    }`;
-  }
-
-  if (isUnionType(config.fieldType)) {
-    const types = config.fieldType.getTypes();
-    const body = types
-      .map(type =>
-        resolveAsFragment({
-          type,
-          models: config.models,
-        }),
-      )
-      .join('\n');
-
-    return `${config.name} ${args} {
-      ${body}
-    }`;
-  }
-
-  if (isScalarType(config.fieldType)) {
-    return `
-      ${config.name} ${args}
-    `;
-  }
-
-  return '';
 }
