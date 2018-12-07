@@ -27,7 +27,7 @@ import {
 import * as changeCase from 'change-case';
 import { getOperationType } from './ast';
 
-let operationVariables: any[] = [];
+let operationVariables: VariableDefinitionNode[] = [];
 
 function addOperationVariable(variable: VariableDefinitionNode) {
   operationVariables.push(variable);
