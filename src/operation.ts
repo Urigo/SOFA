@@ -17,7 +17,6 @@ import {
   isListType,
   ArgumentNode,
   GraphQLField,
-  isEqualType,
   GraphQLArgument,
   GraphQLInputType,
   GraphQLList,
@@ -26,6 +25,7 @@ import {
   NonNullTypeNode,
 } from 'graphql';
 import * as changeCase from 'change-case';
+import { getOperationType } from './ast';
 
 export function buildOperation({
   schema,
@@ -172,14 +172,14 @@ function buildRootFieldQuery({
   fieldName: string;
   models: string[];
 }) {
-  let operation: 'query' | 'mutation';
+  const operation = getOperationType(type, schema);
 
-  if (isEqualType(type, schema.getQueryType()!)) {
-    operation = 'query';
-  } else if (isEqualType(type, schema.getMutationType()!)) {
-    operation = 'mutation';
-  } else {
-    throw new Error('Subscription is not supported');
+  if (!operation) {
+    throw new Error(`Type '${type.name}' is not a query or mutation`);
+  }
+
+  if (operation === 'subscription') {
+    throw new Error('Subscriptions are not supported');
   }
 
   const operationName = `${changeCase.camel(fieldName)}${changeCase.pascal(
