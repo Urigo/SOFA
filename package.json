@@ -1,10 +1,14 @@
 {
-  "name": "graphql-to-rest",
-  "version": "1.0.0",
+  "name": "@kamilkisiela/sofa",
+  "description": "Experiment",
+  "version": "0.0.2",
   "main": "dist/index.js",
+  "typings": "dest/index.d.ts",
+  "sideEffects": false,
   "license": "MIT",
   "scripts": {
     "start": "ts-node example/index.ts",
+    "build": "tsc -p tsconfig.build.json",
     "test": "jest"
   },
   "devDependencies": {
@@ -24,12 +28,14 @@
     "node-fetch": "2.3.0",
     "ts-jest": "23.10.5",
     "ts-node": "7.0.1",
-    "typescript": "3.2.1"
+    "typescript": "3.2.2"
   },
   "dependencies": {
     "change-case": "3.0.2"
   },
   "peerDependencies": {
+    "apollo-link": "^1.2.0",
+    "express": "^4.0.0",
     "graphql": "^14.0.0"
   }
 }
