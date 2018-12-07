@@ -37,6 +37,10 @@ function resetOperationVariables() {
   operationVariables = [];
 }
 
+function buildOperationName(name: string) {
+  return changeCase.camel(name);
+}
+
 export function buildOperation({
   schema,
   type,
@@ -84,7 +88,7 @@ function buildModelQuery({
   type: GraphQLObjectType;
   models: string[];
 }) {
-  const operationName = `${changeCase.camel(type.name)}Type`;
+  const operationName = `${buildOperationName(type.name)}Type`;
 
   // will be added later
   addOperationVariable({
@@ -207,9 +211,7 @@ function buildRootFieldQuery({
     throw new Error('Subscriptions are not supported');
   }
 
-  const operationName = `${changeCase.camel(fieldName)}${changeCase.pascal(
-    operation
-  )}`;
+  const operationName = buildOperationName(`${fieldName}_${operation}`);
   const field = type.getFields()[fieldName];
 
   if (field.args) {
