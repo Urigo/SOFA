@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as changeCase from 'change-case';
-import { GraphQLSchema, isObjectType, GraphQLObjectType, parse } from 'graphql';
+import { GraphQLSchema, isObjectType, GraphQLObjectType } from 'graphql';
 import { ApolloLink } from 'apollo-link';
 
 import { buildOperation } from './operation';

@@ -18,6 +18,12 @@ import {
   ArgumentNode,
   GraphQLField,
   isEqualType,
+  GraphQLArgument,
+  GraphQLInputType,
+  GraphQLList,
+  ListTypeNode,
+  GraphQLNonNull,
+  NonNullTypeNode,
 } from 'graphql';
 import * as changeCase from 'change-case';
 
@@ -188,61 +194,11 @@ function buildRootFieldQuery({
       kind: 'Name',
       value: operationName,
     },
-    variableDefinitions:
-      field.args && field.args.length
-        ? field.args.map<VariableDefinitionNode>(arg => {
-            let typeNode: TypeNode;
-
-            if (isNonNullType(arg.type)) {
-              typeNode = {
-                kind: 'NonNullType',
-                type: {
-                  kind: 'NamedType', // TODO: possible ListType and even more nested types
-                  name: {
-                    kind: 'Name',
-                    value: arg.type.ofType.toString(),
-                  },
-                },
-              };
-            } else if (isListType(arg.type)) {
-              typeNode = {
-                kind: 'ListType',
-                type: {
-                  kind: 'NamedType',
-                  name: {
-                    kind: 'Name',
-                    value: arg.type.ofType.toString(),
-                  },
-                },
-              };
-            } else {
-              typeNode = {
-                kind: 'NamedType',
-                name: {
-                  kind: 'Name',
-                  value: arg.type.name,
-                },
-              };
-            }
-
-            return {
-              kind: 'VariableDefinition',
-              variable: {
-                kind: 'Variable',
-                name: {
-                  kind: 'Name',
-                  value: arg.name,
-                },
-              },
-              type: typeNode,
-              defaultValue: arg.defaultValue,
-            };
-          })
-        : [],
+    variableDefinitions: field.args && field.args.length ? field.args.map(resolveVariable) : [],
     selectionSet: {
       kind: 'SelectionSet',
       selections: [
-        resolveFieldNode({
+        resolveField({
           field,
           models,
           skipModel: true,
@@ -287,7 +243,7 @@ function resolveSelectionSet({
           selectionSet: {
             kind: 'SelectionSet',
             selections: Object.keys(fields).map(f => {
-              return resolveFieldNode({
+              return resolveField({
                 field: fields[f],
                 models,
               });
@@ -319,7 +275,7 @@ function resolveSelectionSet({
     return {
       kind: 'SelectionSet',
       selections: Object.keys(fields).map(fieldName => {
-        return resolveFieldNode({
+        return resolveField({
           field: fields[fieldName],
           models,
         });
@@ -328,7 +284,48 @@ function resolveSelectionSet({
   }
 }
 
-function resolveFieldNode({
+function resolveVariable(arg: GraphQLArgument): VariableDefinitionNode {
+  function resolveVariableType(type: GraphQLList<any>): ListTypeNode
+  function resolveVariableType(type: GraphQLNonNull<any>): NonNullTypeNode
+  function resolveVariableType(type: GraphQLInputType): TypeNode
+  function resolveVariableType(type: GraphQLInputType): TypeNode {
+    if (isListType(type)) {
+      return {
+        kind: 'ListType',
+        type: resolveVariableType(type.ofType),
+      };
+    }
+
+    if (isNonNullType(type)) {
+      return {
+        kind: 'NonNullType',
+        type: resolveVariableType(type.ofType),
+      };
+    }
+
+    return {
+      kind: 'NamedType',
+      name: {
+        kind: 'Name',
+        value: type.name
+      }
+    };
+  }
+
+  return {
+    kind: 'VariableDefinition',
+    variable: {
+      kind: 'Variable',
+      name: {
+        kind: 'Name',
+        value: arg.name,
+      },
+    },
+    type: resolveVariableType(arg.type),
+  };
+}
+
+function resolveField({
   field,
   models,
   skipModel,

@@ -40,6 +40,7 @@ const schema = buildASTSchema(gql`
     user(id: ID!): User
     users: [User!]
     menu: [Food]
+    menuByIngredients(ingredients: [String!]!): [Food]
   }
 
   schema {
@@ -124,6 +125,31 @@ test('should work with Query and variables', async () => {
           }
           shelf {
             id
+          }
+        }
+      }
+    `),
+  );
+});
+
+test('should work with Query and complicated variable', async () => {
+  const document = buildOperation({
+    schema,
+    type: schema.getQueryType()!,
+    fieldName: 'menuByIngredients',
+    models,
+  })!;
+
+  expect(clean(document)).toEqual(
+    clean(gql`
+      query getMenuByIngredientsQuery($ingredients: [String!]!) {
+        menuByIngredients(ingredients: $ingredients) {
+          ... on Pizza {
+            dough
+            toppings
+          }
+          ... on Salad {
+            ingredients
           }
         }
       }
