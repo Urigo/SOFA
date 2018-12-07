@@ -2,7 +2,7 @@ import { ApolloLink } from 'apollo-link';
 import { GraphQLSchema } from 'graphql';
 import * as express from 'express';
 
-import { createRouter } from './router';
+import { createRouter, ErrorHandler } from './router';
 import { extendSchema } from './schema';
 
 export { ErrorFunction } from './fetcher';
@@ -36,6 +36,7 @@ export function useSofa({
   sofa,
   link,
   schema,
+  handleError,
 }: {
   sofa: {
     typeDefs: string;
@@ -44,10 +45,12 @@ export function useSofa({
   };
   schema: GraphQLSchema;
   link: ApolloLink;
+  handleError?: ErrorHandler;
 }): express.Router {
   return createRouter({
     schema,
     models: Object.keys(sofa.models),
     link,
+    handleError,
   });
 }

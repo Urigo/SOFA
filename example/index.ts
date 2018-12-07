@@ -59,6 +59,10 @@ app.use(
     sofa,
     link,
     schema,
+    handleError(res, error) {
+      console.log(error);
+      res.status(500).send('Error occured');
+    },
   })
 );
 
