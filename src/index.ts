@@ -5,7 +5,7 @@ import * as express from 'express';
 import { createRouter } from './router';
 import { extendSchema } from './schema';
 
-export { ErorHandler } from './fetcher';
+export { ErrorFunction } from './fetcher';
 
 interface ModelMap {
   [modelName: string]: (id: any, context: any) => any;

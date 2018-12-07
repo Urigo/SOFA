@@ -1,7 +1,7 @@
 import { execute, ApolloLink, GraphQLRequest, FetchResult } from 'apollo-link';
 import { Request, Response } from 'express';
 
-export type ErorHandler = (res: Response) => void;
+export type ErrorFunction = (res: Response) => void;
 
 function attachRequest(req: Request) {
   return new ApolloLink((operation, forward) => {

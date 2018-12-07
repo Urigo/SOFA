@@ -1,19 +1,28 @@
 import * as express from 'express';
 import * as changeCase from 'change-case';
-import { GraphQLSchema, isObjectType, GraphQLObjectType } from 'graphql';
+import {
+  GraphQLSchema,
+  isObjectType,
+  GraphQLObjectType,
+  DocumentNode,
+} from 'graphql';
 import { ApolloLink } from 'apollo-link';
 
 import { buildOperation } from './operation';
-import { fetch, ErorHandler } from './fetcher';
+import { fetch, ErrorFunction } from './fetcher';
 import { getOperationInfo, getOperationType } from './ast';
+
+export type ErrorHandler = (res: express.Response, error: any) => void;
 
 export function createRouter({
   schema,
   models,
   link,
+  handleError,
 }: {
   schema: GraphQLSchema;
   models: string[];
+  handleError?: ErrorHandler;
   link: ApolloLink;
 }): express.Router {
   const router = express.Router();
@@ -32,6 +41,7 @@ export function createRouter({
           models,
           link,
           router,
+          handleError,
         });
       });
     }
@@ -46,6 +56,7 @@ export function createRouter({
         models,
         link,
         router,
+        handleError,
       });
     }
   });
@@ -59,52 +70,84 @@ function createRouteForModel({
   router,
   models,
   link,
+  handleError,
 }: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
   router: express.Router;
   models: string[];
   link: ApolloLink;
+  handleError?: ErrorHandler;
 }) {
   const typename = type.name;
   const path = `/model/${changeCase.param(typename)}/:id`;
 
   router.get(path, async (req: express.Request, res: express.Response) => {
     const id = req.params.id;
-
     const query = buildOperation({
       schema,
       type,
       models,
     });
     const { name } = getOperationInfo(query)!;
-
     const variables = {
       id,
     };
 
-    try {
-      const result = await fetch({
-        req,
-        link,
-        operation: {
-          operationName: name,
-          query,
-          variables,
-        },
-      });
+    await requester({
+      req,
+      res,
+      link,
+      handleError,
+      key: '_getRESTModelById',
+      operation: {
+        query,
+        operationName: name,
+        variables,
+      },
+    });
+  });
+}
 
-      res.json(result.data && result.data._getRESTModelById);
-    } catch (e) {
-      if (e instanceof Error) {
-        // TODO: allow use to handle errors
+async function requester({
+  req,
+  res,
+  link,
+  operation,
+  handleError,
+  key,
+}: {
+  req: express.Request;
+  res: express.Response;
+  link: ApolloLink;
+  handleError?: ErrorHandler;
+  key: string;
+  operation: {
+    operationName: string;
+    query: DocumentNode;
+    variables: Record<string, any>;
+  };
+}) {
+  try {
+    const result = await fetch({
+      req,
+      link,
+      operation,
+    });
+
+    res.json(result.data && result.data[key]);
+  } catch (e) {
+    if (e instanceof Error) {
+      if (handleError) {
+        handleError(res, e);
+      } else {
         console.log(e);
         res.sendStatus(500);
-      } else {
-        (e as ErorHandler)(res);
       }
+    } else {
+      (e as ErrorFunction)(res);
     }
-  });
+  }
 }
 
 function createRouteForRootField({
@@ -114,6 +157,7 @@ function createRouteForRootField({
   router,
   models,
   link,
+  handleError,
 }: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
@@ -121,6 +165,7 @@ function createRouteForRootField({
   router: express.Router;
   models: string[];
   link: ApolloLink;
+  handleError?: ErrorHandler;
 }) {
   const path = `/${changeCase.param(fieldName)}`;
   const operation = getOperationType(type, schema);
@@ -157,26 +202,18 @@ function createRouteForRootField({
       };
     }, {});
 
-    try {
-      const result = await fetch({
-        req,
-        link,
-        operation: {
-          operationName: info.name,
-          query,
-          variables,
-        },
-      });
-
-      res.json(result.data && result.data[fieldName]);
-    } catch (e) {
-      if (e instanceof Error) {
-        console.log(e);
-        res.sendStatus(500);
-      } else {
-        (e as ErorHandler)(res);
-      }
-    }
+    await requester({
+      req,
+      res,
+      link,
+      handleError,
+      key: fieldName,
+      operation: {
+        query,
+        operationName: info.name,
+        variables,
+      },
+    });
   });
 }
 

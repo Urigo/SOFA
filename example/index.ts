@@ -11,7 +11,7 @@ import { resolvers } from './resolvers';
 
 // Sofa
 
-import { useSofa, createSofa, ErorHandler } from '../src';
+import { useSofa, createSofa, ErrorFunction } from '../src';
 
 const app = express();
 
@@ -36,7 +36,7 @@ const fetchLink = new HttpLink({
   fetch,
 });
 
-const cantExecuteNeverQuery: ErorHandler = res => {
+const cantExecuteNeverQuery: ErrorFunction = res => {
   res.status(500).send('Query.never is disallowed');
 };
 
