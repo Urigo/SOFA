@@ -37,6 +37,7 @@ export function useSofa({
   link,
   schema,
   handleError,
+  routes,
 }: {
   sofa: {
     typeDefs: string;
@@ -46,11 +47,19 @@ export function useSofa({
   schema: GraphQLSchema;
   link: ApolloLink;
   handleError?: ErrorHandler;
+  routes?: {
+    [type: string]:
+      | {
+          [field: string]: string;
+        }
+      | string;
+  };
 }): express.Router {
   return createRouter({
     schema,
     models: Object.keys(sofa.models),
     link,
     handleError,
+    rename: routes,
   });
 }

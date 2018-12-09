@@ -63,6 +63,9 @@ app.use(
       console.log(error);
       res.status(500).send('Error occured');
     },
+    routes: {
+      Book: '/book',
+    },
   })
 );
 
@@ -93,6 +96,6 @@ app.listen(port, () => {
     Models:
       User #1:      ${url}/api/model/user/1
       User #2:      ${url}/api/model/user/2
-      Book #1:      ${url}/api/model/book/1
+      Book #1:      ${url}/api/book/1         <- renamed
   `);
 });

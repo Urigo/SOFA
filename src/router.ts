@@ -19,11 +19,19 @@ export function createRouter({
   models,
   link,
   handleError,
+  rename,
 }: {
   schema: GraphQLSchema;
   models: string[];
   handleError?: ErrorHandler;
   link: ApolloLink;
+  rename?: {
+    [type: string]:
+      | {
+          [field: string]: string;
+        }
+      | string;
+  };
 }): express.Router {
   const router = express.Router();
   const queryType = schema.getQueryType()!;
@@ -31,6 +39,19 @@ export function createRouter({
   const modelTypes = models.map(
     name => schema.getType(name) as GraphQLObjectType
   );
+
+  function pickCustomPath(typeName: string, fieldName?: string) {
+    const result = rename && rename[typeName];
+
+    if (!fieldName && typeof result === 'string') {
+      return result;
+    }
+
+    if (fieldName && result && typeof result !== 'string') {
+      return result[fieldName];
+    }
+  }
+
   [queryType, mutationType].forEach(type => {
     if (type) {
       Object.keys(type.getFields()).forEach(fieldName => {
@@ -42,6 +63,7 @@ export function createRouter({
           link,
           router,
           handleError,
+          customPath: pickCustomPath(type.name, fieldName),
         });
       });
     }
@@ -57,6 +79,7 @@ export function createRouter({
         link,
         router,
         handleError,
+        customPath: pickCustomPath(type.name),
       });
     }
   });
@@ -71,6 +94,7 @@ function createRouteForModel({
   models,
   link,
   handleError,
+  customPath,
 }: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
@@ -78,9 +102,12 @@ function createRouteForModel({
   models: string[];
   link: ApolloLink;
   handleError?: ErrorHandler;
+  customPath?: string;
 }) {
   const typename = type.name;
-  const path = `/model/${changeCase.param(typename)}/:id`;
+  const path = customPath
+    ? `${customPath}/:id`
+    : `/model/${changeCase.param(typename)}/:id`;
 
   router.get(path, async (req: express.Request, res: express.Response) => {
     const id = req.params.id;
@@ -158,16 +185,18 @@ function createRouteForRootField({
   models,
   link,
   handleError,
+  customPath,
 }: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
   fieldName: string;
+  customPath?: string;
   router: express.Router;
   models: string[];
   link: ApolloLink;
   handleError?: ErrorHandler;
 }) {
-  const path = `/${changeCase.param(fieldName)}`;
+  const path = customPath || `/${changeCase.param(fieldName)}`;
   const operation = getOperationType(type, schema);
   const methodMap = {
     query: 'get',
