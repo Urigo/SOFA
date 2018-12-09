@@ -13,6 +13,12 @@ import { fetch, ErrorFunction } from './fetcher';
 import { getOperationInfo, getOperationType } from './ast';
 
 export type ErrorHandler = (res: express.Response, error: any) => void;
+export interface RouteInfo {
+  document: DocumentNode;
+  path: string;
+  method: string;
+}
+export type OnRoute = (info: RouteInfo) => void;
 
 export function createRouter({
   schema,
@@ -20,6 +26,7 @@ export function createRouter({
   link,
   handleError,
   rename,
+  onRoute,
 }: {
   schema: GraphQLSchema;
   models: string[];
@@ -32,6 +39,7 @@ export function createRouter({
         }
       | string;
   };
+  onRoute?: OnRoute;
 }): express.Router {
   const router = express.Router();
   const queryType = schema.getQueryType()!;
@@ -64,6 +72,7 @@ export function createRouter({
           router,
           handleError,
           customPath: pickCustomPath(type.name, fieldName),
+          onRoute,
         });
       });
     }
@@ -80,6 +89,7 @@ export function createRouter({
         router,
         handleError,
         customPath: pickCustomPath(type.name),
+        onRoute,
       });
     }
   });
@@ -95,6 +105,7 @@ function createRouteForModel({
   link,
   handleError,
   customPath,
+  onRoute,
 }: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
@@ -103,20 +114,22 @@ function createRouteForModel({
   link: ApolloLink;
   handleError?: ErrorHandler;
   customPath?: string;
+  onRoute?: OnRoute;
 }) {
   const typename = type.name;
   const path = customPath
     ? `${customPath}/:id`
     : `/model/${changeCase.param(typename)}/:id`;
 
+  const query = buildOperation({
+    schema,
+    type,
+    models,
+  });
+  const { name } = getOperationInfo(query)!;
+
   router.get(path, async (req: express.Request, res: express.Response) => {
     const id = req.params.id;
-    const query = buildOperation({
-      schema,
-      type,
-      models,
-    });
-    const { name } = getOperationInfo(query)!;
     const variables = {
       id,
     };
@@ -134,6 +147,14 @@ function createRouteForModel({
       },
     });
   });
+
+  if (onRoute) {
+    onRoute({
+      document: query,
+      path,
+      method: 'GET',
+    });
+  }
 }
 
 async function requester({
@@ -186,6 +207,7 @@ function createRouteForRootField({
   link,
   handleError,
   customPath,
+  onRoute,
 }: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
@@ -195,12 +217,13 @@ function createRouteForRootField({
   models: string[];
   link: ApolloLink;
   handleError?: ErrorHandler;
+  onRoute?: OnRoute;
 }) {
   const path = customPath || `/${changeCase.param(fieldName)}`;
   const operation = getOperationType(type, schema);
   const methodMap = {
-    query: 'get',
-    mutation: 'post',
+    query: 'GET',
+    mutation: 'POST',
     subscription: undefined,
   };
 
@@ -214,7 +237,7 @@ function createRouteForRootField({
     throw new Error('Subscription is not supported yet');
   }
 
-  const fn = method === 'get' ? router.get : router.post;
+  const fn = method === 'GET' ? router.get : router.post;
   const query = buildOperation({
     schema,
     type,
@@ -244,6 +267,14 @@ function createRouteForRootField({
       },
     });
   });
+
+  if (onRoute) {
+    onRoute({
+      document: query,
+      path,
+      method,
+    });
+  }
 }
 
 function pickParam(req: express.Request, name: string) {
