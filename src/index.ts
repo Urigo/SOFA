@@ -2,10 +2,11 @@ import { ApolloLink } from 'apollo-link';
 import { GraphQLSchema } from 'graphql';
 import * as express from 'express';
 
-import { createRouter, ErrorHandler } from './router';
+import { createRouter, ErrorHandler, OnRoute } from './router';
 import { extendSchema } from './schema';
 
 export { ErrorFunction } from './fetcher';
+export { OpenAPI } from './open-api';
 
 interface ModelMap {
   [modelName: string]: (id: any, context: any) => any;
@@ -38,6 +39,7 @@ export function useSofa({
   schema,
   handleError,
   routes,
+  onRoute,
 }: {
   sofa: {
     typeDefs: string;
@@ -54,6 +56,7 @@ export function useSofa({
         }
       | string;
   };
+  onRoute?: OnRoute;
 }): express.Router {
   return createRouter({
     schema,
@@ -61,5 +64,6 @@ export function useSofa({
     link,
     handleError,
     rename: routes,
+    onRoute,
   });
 }
