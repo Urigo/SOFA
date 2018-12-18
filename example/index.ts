@@ -5,13 +5,14 @@ import { HttpLink } from 'apollo-link-http';
 import { ApolloLink } from 'apollo-link';
 import * as graphqlHTTP from 'express-graphql';
 import fetch from 'node-fetch';
+import { resolve } from 'path';
 import { BooksCollection, UsersCollection } from './collections';
 import { typeDefs } from './types';
 import { resolvers } from './resolvers';
 
 // Sofa
 
-import { useSofa, createSofa, ErrorFunction } from '../src';
+import { useSofa, createSofa, ErrorFunction, OpenAPI } from '../src';
 
 const app = express();
 
@@ -29,6 +30,14 @@ const sofa = createSofa({
 const schema = makeExecutableSchema({
   typeDefs: [typeDefs, sofa.typeDefs],
   resolvers: [resolvers, sofa.resolvers as any],
+});
+
+const openApi = OpenAPI({
+  schema,
+  info: {
+    title: 'Example API',
+    version: '3.0.0',
+  },
 });
 
 const fetchLink = new HttpLink({
@@ -66,8 +75,13 @@ app.use(
     routes: {
       Book: '/book',
     },
+    onRoute(info) {
+      openApi.addRoute(info);
+    },
   })
 );
+
+openApi.save(resolve(__dirname, './swagger.yml'));
 
 app.use(
   '/graphql',

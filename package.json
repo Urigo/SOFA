@@ -22,6 +22,7 @@
     "@types/jest": "23.3.10",
     "@types/node-fetch": "2.1.4",
     "@types/webpack": "4.4.20",
+    "@types/yamljs": "0.2.30",
     "apollo-link": "1.2.4",
     "apollo-link-http": "1.5.7",
     "express": "4.16.4",
@@ -42,7 +43,8 @@
     "webpack-cli": "3.1.2"
   },
   "dependencies": {
-    "change-case": "3.0.2"
+    "change-case": "3.0.2",
+    "yamljs": "0.3.0"
   },
   "peerDependencies": {
     "apollo-link": "^1.2.0",
