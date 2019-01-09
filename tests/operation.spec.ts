@@ -238,3 +238,45 @@ test('should work with Query and nested variables', async () => {
     `)
   );
 });
+
+test.only('should be able to skip or force using models when requested', async () => {
+  const document = buildOperation({
+    schema,
+    type: schema.getQueryType()!,
+    fieldName: 'user',
+    models,
+    skip: ['User.favoriteBook', 'User.shelf'],
+    force: ['User.favoritePizza'],
+  })!;
+
+  expect(clean(document)).toEqual(
+    clean(gql`
+      query userQuery($id: ID!) {
+        user(id: $id) {
+          id
+          name
+          favoritePizza {
+            id
+          }
+          favoriteBook {
+            id
+            title
+          }
+          favoriteFood {
+            ... on Pizza {
+              dough
+              toppings
+            }
+            ... on Salad {
+              ingredients
+            }
+          }
+          shelf {
+            id
+            title
+          }
+        }
+      }
+    `)
+  );
+});

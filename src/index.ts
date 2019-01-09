@@ -4,6 +4,7 @@ import * as express from 'express';
 
 import { createRouter, ErrorHandler, OnRoute } from './router';
 import { extendSchema } from './schema';
+import { Skip, Force } from './operation';
 
 export { ErrorFunction } from './fetcher';
 export { OpenAPI } from './open-api';
@@ -40,6 +41,8 @@ export function useSofa({
   handleError,
   routes,
   onRoute,
+  skip,
+  force,
 }: {
   sofa: {
     typeDefs: string;
@@ -56,11 +59,15 @@ export function useSofa({
         }
       | string;
   };
+  skip?: Skip;
+  force?: Force;
   onRoute?: OnRoute;
 }): express.Router {
   return createRouter({
     schema,
     models: Object.keys(sofa.models),
+    skip,
+    force,
     link,
     handleError,
     rename: routes,

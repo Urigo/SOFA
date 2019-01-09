@@ -8,7 +8,7 @@ import {
 } from 'graphql';
 import { ApolloLink } from 'apollo-link';
 
-import { buildOperation } from './operation';
+import { buildOperation, Skip, Force } from './operation';
 import { fetch, ErrorFunction } from './fetcher';
 import { getOperationInfo, getOperationType } from './ast';
 
@@ -27,9 +27,13 @@ export function createRouter({
   handleError,
   rename,
   onRoute,
+  skip,
+  force,
 }: {
   schema: GraphQLSchema;
   models: string[];
+  skip?: Skip;
+  force?: Force;
   handleError?: ErrorHandler;
   link: ApolloLink;
   rename?: {
@@ -73,6 +77,8 @@ export function createRouter({
           handleError,
           customPath: pickCustomPath(type.name, fieldName),
           onRoute,
+          skip,
+          force,
         });
       });
     }
@@ -90,6 +96,8 @@ export function createRouter({
         handleError,
         customPath: pickCustomPath(type.name),
         onRoute,
+        skip,
+        force,
       });
     }
   });
@@ -106,6 +114,8 @@ function createRouteForModel({
   handleError,
   customPath,
   onRoute,
+  skip,
+  force,
 }: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
@@ -115,6 +125,8 @@ function createRouteForModel({
   handleError?: ErrorHandler;
   customPath?: string;
   onRoute?: OnRoute;
+  skip?: Skip;
+  force?: Force;
 }) {
   const typename = type.name;
   const path = customPath
@@ -125,6 +137,8 @@ function createRouteForModel({
     schema,
     type,
     models,
+    skip,
+    force,
   });
   const { name } = getOperationInfo(query)!;
 
@@ -208,6 +222,8 @@ function createRouteForRootField({
   handleError,
   customPath,
   onRoute,
+  skip,
+  force,
 }: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
@@ -218,6 +234,8 @@ function createRouteForRootField({
   link: ApolloLink;
   handleError?: ErrorHandler;
   onRoute?: OnRoute;
+  skip?: Skip;
+  force?: Force;
 }) {
   const path = customPath || `/${changeCase.param(fieldName)}`;
   const operation = getOperationType(type, schema);
@@ -243,6 +261,8 @@ function createRouteForRootField({
     type,
     fieldName,
     models,
+    skip,
+    force,
   });
   const info = getOperationInfo(query)!;
 

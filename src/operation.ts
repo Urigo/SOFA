@@ -41,16 +41,23 @@ function buildOperationName(name: string) {
   return changeCase.camel(name);
 }
 
+export type Skip = string[];
+export type Force = string[];
+
 export function buildOperation({
   schema,
   type,
   fieldName,
   models,
+  skip,
+  force,
 }: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
   fieldName?: string;
   models: string[];
+  skip?: Skip;
+  force?: Force;
 }) {
   resetOperationVariables();
 
@@ -63,11 +70,15 @@ export function buildOperation({
       type,
       fieldName,
       models,
+      force,
+      skip,
     });
   } else {
     document = buildModelQuery({
       type,
       models,
+      skip,
+      force,
     });
   }
 
@@ -84,9 +95,13 @@ export function buildOperation({
 function buildModelQuery({
   type,
   models,
+  skip,
+  force,
 }: {
   type: GraphQLObjectType;
   models: string[];
+  skip?: Skip;
+  force?: Force;
 }) {
   const operationName = `${buildOperationName(type.name)}Type`;
 
@@ -171,9 +186,12 @@ function buildModelQuery({
                 },
                 selectionSet: resolveSelectionSet({
                   firstCall: true,
+                  parent: type,
                   type,
                   models,
                   path: [],
+                  skip,
+                  force,
                 })!,
               },
             ],
@@ -195,11 +213,15 @@ function buildRootFieldQuery({
   type,
   fieldName,
   models,
+  skip,
+  force,
 }: {
   schema: GraphQLSchema;
   type: GraphQLObjectType;
   fieldName: string;
   models: string[];
+  skip?: Skip;
+  force?: Force;
 }) {
   const operation = getOperationType(type, schema);
 
@@ -232,10 +254,13 @@ function buildRootFieldQuery({
       kind: 'SelectionSet',
       selections: [
         resolveField({
+          type,
           field,
           models,
           firstCall: true,
           path: [],
+          skip,
+          force,
         }),
       ],
     },
@@ -249,15 +274,21 @@ function buildRootFieldQuery({
 }
 
 function resolveSelectionSet({
+  parent,
   type,
   models,
   firstCall,
   path,
+  skip,
+  force,
 }: {
+  parent: GraphQLNamedType;
   type: GraphQLNamedType;
   models: string[];
   path: string[];
   firstCall?: boolean;
+  skip?: Skip;
+  force?: Force;
 }): SelectionSetNode | undefined {
   if (isUnionType(type)) {
     const types = type.getTypes();
@@ -280,9 +311,12 @@ function resolveSelectionSet({
             kind: 'SelectionSet',
             selections: Object.keys(fields).map(fieldName => {
               return resolveField({
+                type: t,
                 field: fields[fieldName],
                 models,
                 path: [...path, fieldName],
+                skip,
+                force,
               });
             }),
           },
@@ -292,7 +326,14 @@ function resolveSelectionSet({
   }
 
   if (isObjectType(type)) {
-    if (!firstCall && models.includes(type.name)) {
+    // type is not parent, it's current object
+    const skipModel =
+      skip && skip.includes(`${parent.name}.${path[path.length - 1]}`);
+    const forceModel =
+      force && force.includes(`${parent.name}.${path[path.length - 1]}`);
+    const isModel = models.includes(type.name);
+
+    if (!firstCall && (forceModel || (isModel && !skipModel))) {
       return {
         kind: 'SelectionSet',
         selections: [
@@ -313,9 +354,12 @@ function resolveSelectionSet({
       kind: 'SelectionSet',
       selections: Object.keys(fields).map(fieldName => {
         return resolveField({
+          type: type,
           field: fields[fieldName],
           models,
           path: [...path, fieldName],
+          skip,
+          force,
         });
       }),
     };
@@ -371,15 +415,21 @@ function getArgumentName(name: string, path: string[]): string {
 }
 
 function resolveField({
+  type,
   field,
   models,
   firstCall,
   path,
+  skip,
+  force,
 }: {
+  type: GraphQLObjectType;
   field: GraphQLField<any, any>;
   models: string[];
   path: string[];
   firstCall?: boolean;
+  skip?: Skip;
+  force?: Force;
 }): SelectionNode {
   const namedType = getNamedType(field.type);
   let args: ArgumentNode[] = [];
@@ -417,10 +467,13 @@ function resolveField({
         value: field.name,
       },
       selectionSet: resolveSelectionSet({
+        parent: type,
         type: namedType,
         models,
         firstCall,
         path: [...path, field.name],
+        skip,
+        force,
       }),
       arguments: args,
     };
