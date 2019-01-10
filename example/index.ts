@@ -1,6 +1,8 @@
 import * as express from 'express';
 import { makeExecutableSchema } from 'graphql-tools';
 import * as bodyParser from 'body-parser';
+import * as useGraphQL from 'express-graphql';
+import chalk from 'chalk';
 import { resolve } from 'path';
 import { typeDefs } from './types';
 import { resolvers } from './resolvers';
@@ -39,15 +41,36 @@ app.use(
 
 openApi.save(resolve(__dirname, './swagger.yml'));
 
+app.use(
+  '/graphql',
+  useGraphQL({
+    schema,
+    graphiql: true,
+  })
+);
+
 const port = 4000;
 
 app.listen(port, () => {
   const url = `http://localhost:${4000}`;
 
+  function printUrl(path: string) {
+    return chalk.gray(url + path);
+  }
+
   console.log(`
-    Queries:
-      me:           ${url}/api/me
-      users:        ${url}/api/users
-      user:         ${url}/api/user/1
+    ${chalk.bold('GraphQL:')}        ${printUrl('/graphql')}
+
+    ${chalk.bold('Queries:')}
+      me:           ${printUrl('/api/me')}
+      users:        ${printUrl('/api/users')}
+      user:         ${printUrl('/api/user/1')}
+      books:        ${printUrl('/api/books')}
+      book:         ${printUrl('/api/book/1')}
+
+    ${chalk.bold('Mutations:')}
+      addBook:      ${printUrl('/api/add-book')} ${chalk.italic.gray(
+    'POST: {title}'
+  )}
   `);
 });
