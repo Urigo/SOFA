@@ -4,7 +4,7 @@ import { writeFileSync } from 'fs';
 
 import { buildSchemaObjectFromType } from './types';
 import { buildPathFromOperation } from './operations';
-import { RouteInfo } from '../express';
+import { RouteInfo } from '../types';
 import { OpenAPI } from './interfaces';
 
 export function OpenAPI({
