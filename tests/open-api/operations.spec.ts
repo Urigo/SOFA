@@ -27,9 +27,10 @@ const schema = buildASTSchema(gql`
 test('handle query', async () => {
   const operation = buildOperation({
     schema,
-    type: schema.getQueryType()!,
-    fieldName: 'feed',
+    kind: 'query',
+    field: 'feed',
     models: [],
+    ignore: [],
   });
 
   const result = buildPathFromOperation({
@@ -58,9 +59,10 @@ test('handle query', async () => {
 test('handle mutation', async () => {
   const operation = buildOperation({
     schema,
-    type: schema.getMutationType()!,
-    fieldName: 'addPost',
+    kind: 'mutation',
+    field: 'addPost',
     models: [],
+    ignore: [],
   });
 
   const result = buildPathFromOperation({
