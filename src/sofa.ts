@@ -10,7 +10,7 @@ import {
   GraphQLOutputType,
 } from 'graphql';
 
-import { Ignore, Context, ExecuteFn } from './types';
+import { Ignore, Context, ExecuteFn, OnRoute } from './types';
 import { convertName } from './common';
 
 // user passes:
@@ -24,6 +24,7 @@ export interface SofaConfig {
   context?: Context;
   execute?: ExecuteFn;
   ignore?: Ignore; // treat an Object with an ID as not a model - accepts ['User', 'Message.author']
+  onRoute?: OnRoute;
 }
 
 export interface Sofa {
@@ -32,6 +33,7 @@ export interface Sofa {
   models: string[];
   ignore: Ignore;
   execute: ExecuteFn;
+  onRoute?: OnRoute;
 }
 
 export function createSofa(config: SofaConfig): Sofa {
@@ -50,7 +52,7 @@ export function createSofa(config: SofaConfig): Sofa {
 // and both might contain an ID
 // We don't treat Unions as models because
 // they might represent an Object that is not a model
-// We check it later, when an operation is built
+// We check it later, when an operation is being built
 function extractsModels(schema: GraphQLSchema): string[] {
   const modelMap: {
     [name: string]: {

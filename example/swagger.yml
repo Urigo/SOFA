@@ -3,7 +3,7 @@ info:
   title: 'Example API'
   version: 3.0.0
 paths:
-  /me:
+  '/me/:id':
     {
       get:
         {
@@ -23,7 +23,7 @@ paths:
             },
         },
     }
-  /user:
+  '/user/:id':
     {
       get:
         {
@@ -70,6 +70,60 @@ paths:
                             {
                               type: array,
                               items: { $ref: '#/components/schemas/User' },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    }
+  '/book/:id':
+    {
+      get:
+        {
+          operationId: bookQuery,
+          parameters:
+            [
+              {
+                in: query,
+                name: id,
+                required: true,
+                schema: { $ref: '#/components/schemas/ID' },
+              },
+            ],
+          requestBody: null,
+          responses:
+            {
+              '200':
+                {
+                  content:
+                    {
+                      application/json:
+                        { schema: { $ref: '#/components/schemas/Book' } },
+                    },
+                },
+            },
+        },
+    }
+  /books:
+    {
+      get:
+        {
+          operationId: booksQuery,
+          parameters: [],
+          requestBody: null,
+          responses:
+            {
+              '200':
+                {
+                  content:
+                    {
+                      application/json:
+                        {
+                          schema:
+                            {
+                              type: array,
+                              items: { $ref: '#/components/schemas/Book' },
                             },
                         },
                     },
@@ -125,77 +179,27 @@ paths:
             },
         },
     }
-  /get-rest-model-by-id:
+  /add-book:
     {
-      get:
+      post:
         {
-          operationId: getRestModelByIdQuery,
-          parameters:
-            [
-              {
-                in: query,
-                name: typename,
-                required: true,
-                schema: { type: string },
-              },
-              {
-                in: query,
-                name: id,
-                required: true,
-                schema: { $ref: '#/components/schemas/ID' },
-              },
-            ],
-          requestBody: null,
-          responses:
+          operationId: addBookMutation,
+          parameters: [],
+          requestBody:
             {
-              '200':
-                { content: { application/json: { schema: { type: object } } } },
-            },
-        },
-    }
-  '/model/user/:id':
-    {
-      get:
-        {
-          operationId: userType,
-          parameters:
-            [
-              {
-                in: query,
-                name: id,
-                required: true,
-                schema: { $ref: '#/components/schemas/ID' },
-              },
-            ],
-          requestBody: null,
-          responses:
-            {
-              '200':
+              content:
                 {
-                  content:
+                  application/json:
                     {
-                      application/json:
-                        { schema: { $ref: '#/components/schemas/User' } },
+                      schema:
+                        {
+                          type: object,
+                          required: [title],
+                          properties: { title: { type: string } },
+                        },
                     },
                 },
             },
-        },
-    }
-  '/book/:id':
-    {
-      get:
-        {
-          operationId: bookType,
-          parameters:
-            [
-              {
-                in: query,
-                name: id,
-                required: true,
-                schema: { $ref: '#/components/schemas/ID' },
-              },
-            ],
-          requestBody: null,
           responses:
             {
               '200':
@@ -222,10 +226,12 @@ components:
               user: { $ref: '#/components/schemas/User' },
               users:
                 { type: array, items: { $ref: '#/components/schemas/User' } },
+              book: { $ref: '#/components/schemas/Book' },
+              books:
+                { type: array, items: { $ref: '#/components/schemas/Book' } },
               never: { type: string },
               feed:
                 { type: array, items: { $ref: '#/components/schemas/Post' } },
-              _getRESTModelById: { type: object },
             },
         },
       User:
@@ -271,5 +277,11 @@ components:
           type: object,
           required: [comments],
           properties: { comments: { type: array, items: { type: string } } },
+        },
+      Mutation:
+        {
+          type: object,
+          required: [],
+          properties: { addBook: { $ref: '#/components/schemas/Book' } },
         },
     }

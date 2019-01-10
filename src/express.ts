@@ -4,16 +4,10 @@ import { DocumentNode, print, isObjectType, isNonNullType } from 'graphql';
 import { buildOperation } from './operation';
 import { getOperationInfo, OperationInfo } from './ast';
 import { Sofa } from './sofa';
-import { ContextFn } from './types';
+import { ContextFn, RouteInfo } from './types';
 import { convertName } from './common';
 
 export type ErrorHandler = (res: express.Response, error: any) => void;
-export interface RouteInfo {
-  document: DocumentNode;
-  path: string;
-  method: string;
-}
-export type OnRoute = (info: RouteInfo) => void;
 
 export function createRouter(sofa: Sofa): express.Router {
   const router = express.Router();
@@ -23,13 +17,21 @@ export function createRouter(sofa: Sofa): express.Router {
 
   if (queryType) {
     Object.keys(queryType.getFields()).forEach(fieldName => {
-      createQueryRoute({ sofa, router, fieldName });
+      const route = createQueryRoute({ sofa, router, fieldName });
+
+      if (sofa.onRoute) {
+        sofa.onRoute(route);
+      }
     });
   }
 
   if (mutationType) {
     Object.keys(mutationType.getFields()).forEach(fieldName => {
-      createMutationRoute({ sofa, router, fieldName });
+      const route = createMutationRoute({ sofa, router, fieldName });
+
+      if (sofa.onRoute) {
+        sofa.onRoute(route);
+      }
     });
   }
 
@@ -44,7 +46,7 @@ function createQueryRoute({
   sofa: Sofa;
   router: express.Router;
   fieldName: string;
-}) {
+}): RouteInfo {
   const queryType = sofa.schema.getQueryType()!;
   const operation = buildOperation({
     kind: 'query',
@@ -61,6 +63,12 @@ function createQueryRoute({
   const path = getPath(fieldName, isSingle);
 
   router.get(path, useHandler({ info, fieldName, sofa, operation }));
+
+  return {
+    document: operation,
+    path,
+    method: 'GET',
+  };
 }
 
 function createMutationRoute({
@@ -71,7 +79,7 @@ function createMutationRoute({
   sofa: Sofa;
   router: express.Router;
   fieldName: string;
-}) {
+}): RouteInfo {
   const operation = buildOperation({
     kind: 'mutation',
     schema: sofa.schema,
@@ -83,6 +91,12 @@ function createMutationRoute({
   const path = getPath(fieldName);
 
   router.post(path, useHandler({ info, fieldName, sofa, operation }));
+
+  return {
+    document: operation,
+    path,
+    method: 'POST',
+  };
 }
 
 function useHandler(config: {

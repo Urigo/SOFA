@@ -1,12 +1,13 @@
 import * as express from 'express';
 import { makeExecutableSchema } from 'graphql-tools';
 import * as bodyParser from 'body-parser';
+import { resolve } from 'path';
 import { typeDefs } from './types';
 import { resolvers } from './resolvers';
 
 // Sofa
 
-import { useSofa } from '../src';
+import { useSofa, OpenAPI } from '../src';
 
 const app = express();
 
@@ -17,13 +18,26 @@ const schema = makeExecutableSchema({
   resolvers,
 });
 
+const openApi = OpenAPI({
+  schema,
+  info: {
+    title: 'Example API',
+    version: '3.0.0',
+  },
+});
+
 app.use(
   '/api',
   useSofa({
     schema,
     ignore: ['User.favoriteBook'],
+    onRoute(info) {
+      openApi.addRoute(info);
+    },
   })
 );
+
+openApi.save(resolve(__dirname, './swagger.yml'));
 
 const port = 4000;
 
