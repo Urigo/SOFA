@@ -34,6 +34,8 @@ export const typeDefs = gql`
     me: User
     user(id: ID!): User
     users: [User!]
+    book(id: ID!): Book
+    books: [Book!]
     never: String
     feed: [Post]
   }

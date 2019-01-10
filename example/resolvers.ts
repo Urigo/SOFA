@@ -1,4 +1,4 @@
-import { UsersCollection } from './collections';
+import { UsersCollection, BooksCollection } from './collections';
 
 export const resolvers = {
   Query: {
@@ -10,6 +10,12 @@ export const resolvers = {
     },
     users() {
       return UsersCollection.all();
+    },
+    book(_: any, { id }: any) {
+      return BooksCollection.get(id);
+    },
+    books() {
+      return BooksCollection.all();
     },
   },
   Food: {
