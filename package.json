@@ -1,7 +1,7 @@
 {
-  "name": "@kamilkisiela/sofa",
-  "description": "Experiment",
-  "version": "0.0.3-alpha.3",
+  "name": "sofa-api",
+  "description": "Create REST APIs with GraphQL",
+  "version": "0.0.1",
   "main": "dist/index.js",
   "typings": "dest/index.d.ts",
   "sideEffects": false,
