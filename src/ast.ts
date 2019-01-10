@@ -1,20 +1,18 @@
 import {
   getOperationAST,
   DocumentNode,
-  GraphQLObjectType,
-  GraphQLSchema,
   OperationDefinitionNode,
 } from 'graphql';
 
-export function getOperationInfo(
-  doc: DocumentNode
-):
+export type OperationInfo =
   | {
       operation: OperationDefinitionNode;
       variables: string[];
       name: string;
     }
-  | undefined {
+  | undefined;
+
+export function getOperationInfo(doc: DocumentNode): OperationInfo {
   const op = getOperationAST(doc, null);
 
   if (!op) {
@@ -28,25 +26,4 @@ export function getOperationInfo(
       ? op.variableDefinitions.map(variable => variable.variable.name.value)
       : [],
   };
-}
-
-export function getOperationType(
-  type: GraphQLObjectType,
-  schema: GraphQLSchema
-) {
-  const query = schema.getQueryType();
-  const mutation = schema.getMutationType();
-  const subscription = schema.getSubscriptionType();
-
-  if (query && query.name === type.name) {
-    return 'query';
-  }
-
-  if (mutation && mutation.name === type.name) {
-    return 'mutation';
-  }
-
-  if (subscription && subscription.name === type.name) {
-    return 'subscription';
-  }
 }

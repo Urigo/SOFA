@@ -1,4 +1,4 @@
-import { GraphQLObjectType, print, parse, DocumentNode } from 'graphql';
+import { print, parse, DocumentNode } from 'graphql';
 import gql from 'graphql-tag';
 
 import { schema, models } from './schema';
@@ -11,9 +11,10 @@ function clean(doc: string | DocumentNode) {
 test('should work with Query', async () => {
   const document = buildOperation({
     schema,
-    type: schema.getQueryType()!,
-    fieldName: 'me',
+    kind: 'query',
+    field: 'me',
     models,
+    ignore: [],
   })!;
 
   expect(clean(document)).toEqual(
@@ -50,9 +51,10 @@ test('should work with Query', async () => {
 test('should work with Query and variables', async () => {
   const document = buildOperation({
     schema,
-    type: schema.getQueryType()!,
-    fieldName: 'user',
+    kind: 'query',
+    field: 'user',
     models,
+    ignore: [],
   })!;
 
   expect(clean(document)).toEqual(
@@ -89,9 +91,10 @@ test('should work with Query and variables', async () => {
 test('should work with Query and complicated variable', async () => {
   const document = buildOperation({
     schema,
-    type: schema.getQueryType()!,
-    fieldName: 'menuByIngredients',
+    kind: 'query',
+    field: 'menuByIngredients',
     models,
+    ignore: [],
   })!;
 
   expect(clean(document)).toEqual(
@@ -111,52 +114,13 @@ test('should work with Query and complicated variable', async () => {
   );
 });
 
-test('should work with ObjectType', async () => {
-  const operation = buildOperation({
-    schema,
-    type: schema.getType('User') as GraphQLObjectType,
-    models,
-  })!;
-
-  expect(clean(operation)).toEqual(
-    clean(gql`
-      query userType($id: ID!) {
-        _getRESTModelById(typename: "User", id: $id) {
-          ... on User {
-            id
-            name
-            favoritePizza {
-              dough
-              toppings
-            }
-            favoriteBook {
-              id
-            }
-            favoriteFood {
-              ... on Pizza {
-                dough
-                toppings
-              }
-              ... on Salad {
-                ingredients
-              }
-            }
-            shelf {
-              id
-            }
-          }
-        }
-      }
-    `)
-  );
-});
-
 test('should work with Union', async () => {
   const document = buildOperation({
     schema,
-    type: schema.getQueryType()!,
-    fieldName: 'menu',
+    kind: 'query',
+    field: 'menu',
     models,
+    ignore: [],
   })!;
 
   expect(clean(document)).toEqual(
@@ -179,9 +143,10 @@ test('should work with Union', async () => {
 test('should work with mutation', async () => {
   const document = buildOperation({
     schema,
-    type: schema.getMutationType()!,
-    fieldName: 'addSalad',
+    kind: 'mutation',
+    field: 'addSalad',
     models,
+    ignore: [],
   })!;
 
   expect(clean(document)).toEqual(
@@ -198,9 +163,10 @@ test('should work with mutation', async () => {
 test('should work with mutation and unions', async () => {
   const document = buildOperation({
     schema,
-    type: schema.getMutationType()!,
-    fieldName: 'addRandomFood',
+    kind: 'mutation',
+    field: 'addRandomFood',
     models,
+    ignore: [],
   })!;
 
   expect(clean(document)).toEqual(
@@ -223,9 +189,10 @@ test('should work with mutation and unions', async () => {
 test('should work with Query and nested variables', async () => {
   const document = buildOperation({
     schema,
-    type: schema.getQueryType()!,
-    fieldName: 'feed',
+    kind: 'query',
+    field: 'feed',
     models,
+    ignore: [],
   })!;
 
   expect(clean(document)).toEqual(
@@ -233,6 +200,48 @@ test('should work with Query and nested variables', async () => {
       query feedQuery($feedCommentsFilter: String!) {
         feed {
           comments(filter: $feedCommentsFilter)
+        }
+      }
+    `)
+  );
+});
+
+test('should be able to skip or force using models when requested', async () => {
+  const document = buildOperation({
+    schema,
+    kind: 'query',
+    field: 'user',
+    models,
+    ignore: ['User.favoriteBook', 'User.shelf'],
+  })!;
+
+  expect(clean(document)).toEqual(
+    clean(gql`
+      query userQuery($id: ID!) {
+        user(id: $id) {
+          id
+          name
+          favoritePizza {
+            dough
+            toppings
+          }
+          favoriteBook {
+            id
+            title
+          }
+          favoriteFood {
+            ... on Pizza {
+              dough
+              toppings
+            }
+            ... on Salad {
+              ingredients
+            }
+          }
+          shelf {
+            id
+            title
+          }
         }
       }
     `)

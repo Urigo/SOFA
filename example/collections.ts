@@ -50,4 +50,19 @@ export const BooksCollection = {
   all() {
     return books;
   },
+  add(title: string) {
+    const book = {
+      id: parseInt(
+        Math.random()
+          .toString(10)
+          .substr(2),
+        10
+      ),
+      title,
+    };
+
+    books.push(book);
+
+    return book;
+  },
 };

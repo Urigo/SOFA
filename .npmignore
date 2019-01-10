@@ -8,3 +8,4 @@ example/
 jest.config.js
 tsconfig.json
 tsconfig.build.json
+webpack.config.js

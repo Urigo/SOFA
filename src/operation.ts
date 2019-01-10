@@ -23,9 +23,11 @@ import {
   ListTypeNode,
   GraphQLNonNull,
   NonNullTypeNode,
+  OperationTypeNode,
 } from 'graphql';
 import * as changeCase from 'change-case';
-import { getOperationType } from './ast';
+
+import { Ignore } from './types';
 
 let operationVariables: VariableDefinitionNode[] = [];
 
@@ -41,35 +43,31 @@ function buildOperationName(name: string) {
   return changeCase.camel(name);
 }
 
+export type Skip = string[];
+export type Force = string[];
+
 export function buildOperation({
   schema,
-  type,
-  fieldName,
+  kind,
+  field,
   models,
+  ignore,
 }: {
   schema: GraphQLSchema;
-  type: GraphQLObjectType;
-  fieldName?: string;
+  kind: OperationTypeNode;
+  field: string;
   models: string[];
+  ignore: Ignore;
 }) {
   resetOperationVariables();
 
-  let document: DocumentNode;
-
-  // if it has a field, it means it's a query or mutation
-  if (fieldName) {
-    document = buildRootFieldQuery({
-      schema,
-      type,
-      fieldName,
-      models,
-    });
-  } else {
-    document = buildModelQuery({
-      type,
-      models,
-    });
-  }
+  const document = buildDocumentNode({
+    schema,
+    fieldName: field,
+    kind,
+    models,
+    ignore,
+  });
 
   // attach variables
   (document.definitions[0] as any).variableDefinitions = [
@@ -81,138 +79,27 @@ export function buildOperation({
   return document;
 }
 
-function buildModelQuery({
-  type,
-  models,
-}: {
-  type: GraphQLObjectType;
-  models: string[];
-}) {
-  const operationName = `${buildOperationName(type.name)}Type`;
-
-  // will be added later
-  addOperationVariable({
-    kind: 'VariableDefinition',
-    variable: {
-      kind: 'Variable',
-      name: {
-        kind: 'Name',
-        value: 'id',
-      },
-    },
-    type: {
-      kind: 'NonNullType',
-      type: {
-        kind: 'NamedType',
-        name: {
-          kind: 'Name',
-          value: 'ID',
-        },
-      },
-    },
-  });
-
-  const operationNode: OperationDefinitionNode = {
-    kind: 'OperationDefinition',
-    operation: 'query',
-    name: {
-      kind: 'Name',
-      value: operationName,
-    },
-    variableDefinitions: [],
-    selectionSet: {
-      kind: 'SelectionSet',
-      selections: [
-        {
-          kind: 'Field',
-          name: {
-            kind: 'Name',
-            value: '_getRESTModelById',
-          },
-          arguments: [
-            {
-              kind: 'Argument',
-              name: {
-                kind: 'Name',
-                value: 'typename',
-              },
-              value: {
-                kind: 'StringValue',
-                block: false,
-                value: type.name,
-              },
-            },
-            {
-              kind: 'Argument',
-              name: {
-                kind: 'Name',
-                value: 'id',
-              },
-              value: {
-                kind: 'Variable',
-                name: {
-                  kind: 'Name',
-                  value: 'id',
-                },
-              },
-            },
-          ],
-          selectionSet: {
-            kind: 'SelectionSet',
-            selections: [
-              {
-                kind: 'InlineFragment',
-                typeCondition: {
-                  kind: 'NamedType',
-                  name: {
-                    kind: 'Name',
-                    value: type.name,
-                  },
-                },
-                selectionSet: resolveSelectionSet({
-                  firstCall: true,
-                  type,
-                  models,
-                  path: [],
-                })!,
-              },
-            ],
-          },
-        },
-      ],
-    },
-  };
-  const document: DocumentNode = {
-    kind: 'Document',
-    definitions: [operationNode],
-  };
-
-  return document;
-}
-
-function buildRootFieldQuery({
+function buildDocumentNode({
   schema,
-  type,
   fieldName,
+  kind,
   models,
+  ignore,
 }: {
   schema: GraphQLSchema;
-  type: GraphQLObjectType;
   fieldName: string;
+  kind: OperationTypeNode;
   models: string[];
+  ignore: Ignore;
 }) {
-  const operation = getOperationType(type, schema);
-
-  if (!operation) {
-    throw new Error(`Type '${type.name}' is not a query or mutation`);
-  }
-
-  if (operation === 'subscription') {
-    throw new Error('Subscriptions are not supported');
-  }
-
-  const operationName = buildOperationName(`${fieldName}_${operation}`);
+  const typeMap: Record<OperationTypeNode, GraphQLObjectType> = {
+    query: schema.getQueryType()!,
+    mutation: schema.getMutationType()!,
+    subscription: schema.getSubscriptionType()!,
+  };
+  const type = typeMap[kind];
   const field = type.getFields()[fieldName];
+  const operationName = buildOperationName(`${fieldName}_${kind}`);
 
   if (field.args) {
     field.args.forEach(arg => {
@@ -222,7 +109,7 @@ function buildRootFieldQuery({
 
   const operationNode: OperationDefinitionNode = {
     kind: 'OperationDefinition',
-    operation,
+    operation: kind,
     name: {
       kind: 'Name',
       value: operationName,
@@ -232,10 +119,12 @@ function buildRootFieldQuery({
       kind: 'SelectionSet',
       selections: [
         resolveField({
+          type,
           field,
           models,
           firstCall: true,
           path: [],
+          ignore,
         }),
       ],
     },
@@ -249,15 +138,19 @@ function buildRootFieldQuery({
 }
 
 function resolveSelectionSet({
+  parent,
   type,
   models,
   firstCall,
   path,
+  ignore,
 }: {
+  parent: GraphQLNamedType;
   type: GraphQLNamedType;
   models: string[];
   path: string[];
   firstCall?: boolean;
+  ignore: Ignore;
 }): SelectionSetNode | undefined {
   if (isUnionType(type)) {
     const types = type.getTypes();
@@ -280,9 +173,11 @@ function resolveSelectionSet({
             kind: 'SelectionSet',
             selections: Object.keys(fields).map(fieldName => {
               return resolveField({
+                type: t,
                 field: fields[fieldName],
                 models,
                 path: [...path, fieldName],
+                ignore,
               });
             }),
           },
@@ -292,7 +187,12 @@ function resolveSelectionSet({
   }
 
   if (isObjectType(type)) {
-    if (!firstCall && models.includes(type.name)) {
+    const isIgnored =
+      ignore.includes(type.name) ||
+      ignore.includes(`${parent.name}.${path[path.length - 1]}`);
+    const isModel = models.includes(type.name);
+
+    if (!firstCall && isModel && !isIgnored) {
       return {
         kind: 'SelectionSet',
         selections: [
@@ -313,9 +213,11 @@ function resolveSelectionSet({
       kind: 'SelectionSet',
       selections: Object.keys(fields).map(fieldName => {
         return resolveField({
+          type: type,
           field: fields[fieldName],
           models,
           path: [...path, fieldName],
+          ignore,
         });
       }),
     };
@@ -371,15 +273,19 @@ function getArgumentName(name: string, path: string[]): string {
 }
 
 function resolveField({
+  type,
   field,
   models,
   firstCall,
   path,
+  ignore,
 }: {
+  type: GraphQLObjectType;
   field: GraphQLField<any, any>;
   models: string[];
   path: string[];
   firstCall?: boolean;
+  ignore: Ignore;
 }): SelectionNode {
   const namedType = getNamedType(field.type);
   let args: ArgumentNode[] = [];
@@ -417,10 +323,12 @@ function resolveField({
         value: field.name,
       },
       selectionSet: resolveSelectionSet({
+        parent: type,
         type: namedType,
         models,
         firstCall,
         path: [...path, field.name],
+        ignore,
       }),
       arguments: args,
     };
