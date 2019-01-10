@@ -18,6 +18,11 @@ export const resolvers = {
       return BooksCollection.all();
     },
   },
+  Mutation: {
+    addBook(_: any, { title }: any) {
+      return BooksCollection.add(title);
+    },
+  },
   Food: {
     __resolveType(obj: any) {
       if (obj.ingredients) {

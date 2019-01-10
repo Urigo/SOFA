@@ -4,15 +4,15 @@ import {
   OperationDefinitionNode,
 } from 'graphql';
 
-export function getOperationInfo(
-  doc: DocumentNode
-):
+export type OperationInfo =
   | {
       operation: OperationDefinitionNode;
       variables: string[];
       name: string;
     }
-  | undefined {
+  | undefined;
+
+export function getOperationInfo(doc: DocumentNode): OperationInfo {
   const op = getOperationAST(doc, null);
 
   if (!op) {

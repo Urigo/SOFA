@@ -2,7 +2,7 @@ import * as express from 'express';
 import { DocumentNode, print, isObjectType, isNonNullType } from 'graphql';
 
 import { buildOperation } from './operation';
-import { getOperationInfo } from './ast';
+import { getOperationInfo, OperationInfo } from './ast';
 import { Sofa } from './sofa';
 import { ContextFn } from './types';
 import { convertName } from './common';
@@ -18,11 +18,20 @@ export type OnRoute = (info: RouteInfo) => void;
 export function createRouter(sofa: Sofa): express.Router {
   const router = express.Router();
 
-  const queryType = sofa.schema.getQueryType()!;
+  const queryType = sofa.schema.getQueryType();
+  const mutationType = sofa.schema.getMutationType();
 
-  Object.keys(queryType.getFields()).forEach(fieldName => {
-    createQueryRoute({ sofa, router, fieldName });
-  });
+  if (queryType) {
+    Object.keys(queryType.getFields()).forEach(fieldName => {
+      createQueryRoute({ sofa, router, fieldName });
+    });
+  }
+
+  if (mutationType) {
+    Object.keys(mutationType.getFields()).forEach(fieldName => {
+      createMutationRoute({ sofa, router, fieldName });
+    });
+  }
 
   return router;
 }
@@ -37,23 +46,55 @@ function createQueryRoute({
   fieldName: string;
 }) {
   const queryType = sofa.schema.getQueryType()!;
-  const query = buildOperation({
+  const operation = buildOperation({
     kind: 'query',
     schema: sofa.schema,
     field: fieldName,
     models: sofa.models,
     ignore: sofa.ignore,
   });
-  const info = getOperationInfo(query)!;
+  const info = getOperationInfo(operation)!;
   const fieldType = queryType.getFields()[fieldName].type;
   const isSingle =
     isObjectType(fieldType) ||
     (isNonNullType(fieldType) && isObjectType(fieldType.ofType));
   const path = getPath(fieldName, isSingle);
 
-  console.log(path);
+  router.get(path, useHandler({ info, fieldName, sofa, operation }));
+}
 
-  router.get(path, async (req: express.Request, res: express.Response) => {
+function createMutationRoute({
+  sofa,
+  router,
+  fieldName,
+}: {
+  sofa: Sofa;
+  router: express.Router;
+  fieldName: string;
+}) {
+  const operation = buildOperation({
+    kind: 'mutation',
+    schema: sofa.schema,
+    field: fieldName,
+    models: sofa.models,
+    ignore: sofa.ignore,
+  });
+  const info = getOperationInfo(operation)!;
+  const path = getPath(fieldName);
+
+  router.post(path, useHandler({ info, fieldName, sofa, operation }));
+}
+
+function useHandler(config: {
+  sofa: Sofa;
+  info: OperationInfo;
+  operation: DocumentNode;
+  fieldName: string;
+}) {
+  const { sofa, operation, fieldName } = config;
+  const info = config.info!;
+
+  return useAsync(async (req: express.Request, res: express.Response) => {
     const variableValues = info.variables.reduce((variables, name) => {
       return {
         ...variables,
@@ -61,24 +102,22 @@ function createQueryRoute({
       };
     }, {});
 
-    try {
-      const result = await sofa.execute({
-        schema: sofa.schema,
-        source: print(query),
-        contextValue: isContextFn(sofa.context)
-          ? sofa.context({ req })
-          : sofa.context,
-        variableValues,
-        operationName: info.operation.name && info.operation.name.value,
-      });
+    const result = await sofa.execute({
+      schema: sofa.schema,
+      source: print(operation),
+      contextValue: isContextFn(sofa.context)
+        ? sofa.context({ req })
+        : sofa.context,
+      variableValues,
+      operationName: info.operation.name && info.operation.name.value,
+    });
 
-      // TODO: add error handling for result.errors
-
-      res.json(result.data && result.data[fieldName]);
-    } catch (e) {
-      // TODO: add error handling
-      res.sendStatus(500);
+    // TODO: add error handling for result.errors
+    if (result.errors) {
+      throw new Error(result.errors.toString());
     }
+
+    res.json(result.data && result.data[fieldName]);
   });
 }
 
@@ -102,4 +141,23 @@ function pickParam(req: express.Request, name: string) {
   if (req.body && req.body[name]) {
     return req.body[name];
   }
+}
+
+function useAsync<T = any>(
+  handler: (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => Promise<T>
+) {
+  return (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    Promise.resolve(handler(req, res, next)).catch(e => {
+      console.log(e);
+      next(e);
+    });
+  };
 }

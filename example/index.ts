@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { makeExecutableSchema } from 'graphql-tools';
+import * as bodyParser from 'body-parser';
 import { typeDefs } from './types';
 import { resolvers } from './resolvers';
 
@@ -8,6 +9,8 @@ import { resolvers } from './resolvers';
 import { useSofa } from '../src';
 
 const app = express();
+
+app.use(bodyParser.json());
 
 const schema = makeExecutableSchema({
   typeDefs,

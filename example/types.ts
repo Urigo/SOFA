@@ -40,7 +40,12 @@ export const typeDefs = gql`
     feed: [Post]
   }
 
+  type Mutation {
+    addBook(title: String!): Book
+  }
+
   schema {
     query: Query
+    mutation: Mutation
   }
 `;
