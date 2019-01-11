@@ -6,6 +6,29 @@
   "typings": "dest/index.d.ts",
   "sideEffects": false,
   "license": "MIT",
+  "keywords": [
+    "api",
+    "rest",
+    "graphql",
+    "sofa"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "Urigo/sofa"
+  },
+  "author": {
+    "name": "Uri Goldshtein",
+    "email": "uri.goldshtein@gmail.com",
+    "url": "https://github.com/Urigo"
+  },
+  "peerDependencies": {
+    "express": "^4.0.0",
+    "graphql": "^0.13.2 || ^14.0.0"
+  },
+  "dependencies": {
+    "change-case": "3.0.2",
+    "yamljs": "0.3.0"
+  },
   "scripts": {
     "start": "ts-node example/index.ts",
     "prod": "webpack && node dist/bundle.js",
@@ -40,14 +63,6 @@
     "typescript": "3.2.2",
     "webpack": "4.27.1",
     "webpack-cli": "3.1.2"
-  },
-  "dependencies": {
-    "change-case": "3.0.2",
-    "yamljs": "0.3.0"
-  },
-  "peerDependencies": {
-    "express": "^4.0.0",
-    "graphql": "^14.0.0"
   },
   "husky": {
     "hooks": {
