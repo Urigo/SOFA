@@ -1,0 +1,12 @@
+{
+  "extends": ["config:js-lib"],
+  "circleci": true,
+  "automerge": true,
+  "major": {
+    "automerge": false
+  },
+  "minor": {
+    "automerge": false
+  },
+  "enabledManagers": ["yarn"]
+}
