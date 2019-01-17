@@ -68,8 +68,6 @@ export function createRouter(sofa: Sofa): express.Router {
       const id: string = req.params.id;
       const variables: any = req.body.variables;
 
-      console.log(`Update subscription #${id}`);
-
       try {
         const result = await subscriptionManager.update({
           id,
@@ -92,8 +90,6 @@ export function createRouter(sofa: Sofa): express.Router {
     '/webhook/:id',
     useAsync(async (req, res) => {
       const id: string = req.params.id;
-
-      console.log(`Stop subscription #${id}`);
 
       try {
         const result = await subscriptionManager.stop(id);
