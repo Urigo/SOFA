@@ -69,20 +69,23 @@ export class SubscriptionManager {
 
   public async start(event: StartSubscriptionEvent) {
     const id = uuid();
-    // TODO: make sure we catch undefined operation
-    const { document, operationName, variables } = this.operations.get(
-      event.subscription
-    )!;
+    const name = event.subscription;
+
+    if (!this.operations.has(name)) {
+      throw new Error(`Subscription '${name}' is not available`);
+    }
+
+    const { document, operationName, variables } = this.operations.get(name)!;
 
     console.log(
-      `[Subscription] Start ${id}. Listen to ${
-        event.subscription
-      } and send results to ${event.url}`
+      `[Subscription] Start ${id}. Listen to ${name} and send results to ${
+        event.url
+      }`
     );
 
     const result = await this.execute({
       id,
-      name: event.subscription,
+      name,
       url: event.url,
       document,
       operationName,
@@ -98,7 +101,11 @@ export class SubscriptionManager {
 
   public async stop(id: ID): Promise<StopSubscriptionResponse> {
     console.log(`[Subscription] Stop ${id}`);
-    // TODO: make sure we catch undefined client
+
+    if (!this.clients.has(id)) {
+      throw new Error(`Subscription with ID '${id}' does not exist`);
+    }
+
     const execution = this.clients.get(id)!;
 
     if (execution.iterator.return) {
@@ -111,16 +118,22 @@ export class SubscriptionManager {
   }
 
   public async update(event: UpdateSubscriptionEvent) {
-    console.log(`[Subscription] Update ${event.id}`);
-    // TODO: make sure we catch undefined client
-    const { name: subscription, url } = this.clients.get(event.id)!;
+    const { variables, id } = event;
 
-    this.stop(event.id);
+    console.log(`[Subscription] Update ${id}`);
+
+    if (!this.clients.has(id)) {
+      throw new Error(`Subscription with ID '${id}' does not exist`);
+    }
+
+    const { name: subscription, url } = this.clients.get(id)!;
+
+    this.stop(id);
 
     return this.start({
       url,
       subscription,
-      variables: event.variables,
+      variables,
     });
   }
 
@@ -179,7 +192,10 @@ export class SubscriptionManager {
   }
 
   private async sendData({ id, result }: { id: ID; result: any }) {
-    // TODO: make sure we catch undefined client
+    if (!this.clients.has(id)) {
+      throw new Error(`Subscription with ID '${id}' does not exist`);
+    }
+
     const { url } = this.clients.get(id)!;
 
     console.log(`[Subscription] Trigger ${id}`);
