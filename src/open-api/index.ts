@@ -33,14 +33,20 @@ export function OpenAPI({
   }
 
   return {
-    addRoute(info: RouteInfo) {
-      if (!swagger.paths[info.path]) {
-        swagger.paths[info.path] = {};
+    addRoute(
+      info: RouteInfo,
+      config?: {
+        basePath?: string;
+      }
+    ) {
+      const basePath = (config && config.basePath) || '';
+      const path = basePath + info.path;
+
+      if (!swagger.paths[path]) {
+        swagger.paths[path] = {};
       }
 
-      swagger.paths[info.path][
-        info.method.toLowerCase()
-      ] = buildPathFromOperation({
+      swagger.paths[path][info.method.toLowerCase()] = buildPathFromOperation({
         operation: info.document,
         schema,
       });
