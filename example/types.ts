@@ -27,13 +27,14 @@ export const typeDefs = gql`
   }
 
   type Post {
-    comments(filter: String!): [String!]!
+    comments(filter: String!): [String!]
   }
 
   type Query {
     me: User
     user(id: ID!): User
     users: [User!]
+    allUsers(limit: Int!): [User!]
     book(id: ID!): Book
     books: [Book!]
     never: String

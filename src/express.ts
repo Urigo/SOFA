@@ -6,6 +6,7 @@ import { getOperationInfo, OperationInfo } from './ast';
 import { Sofa } from './sofa';
 import { ContextFn, RouteInfo } from './types';
 import { convertName } from './common';
+import { parseVariable } from './parse';
 
 export type ErrorHandler = (res: express.Response, error: any) => void;
 
@@ -109,10 +110,21 @@ function useHandler(config: {
   const info = config.info!;
 
   return useAsync(async (req: express.Request, res: express.Response) => {
-    const variableValues = info.variables.reduce((variables, name) => {
+    const variableValues = info.variables.reduce((variables, variable) => {
+      const name = variable.variable.name.value;
+      const value = parseVariable({
+        value: pickParam(req, name),
+        variable,
+        schema: sofa.schema,
+      });
+
+      if (typeof value === 'undefined') {
+        return variables;
+      }
+
       return {
         ...variables,
-        [name]: pickParam(req, name),
+        [name]: value,
       };
     }, {});
 
