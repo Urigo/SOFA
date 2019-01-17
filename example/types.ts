@@ -34,7 +34,8 @@ export const typeDefs = gql`
     me: User
     user(id: ID!): User
     users: [User!]
-    allUsers(limit: Int!): [User!]
+    usersLimit(limit: Int!): [User!]
+    usersSort(sort: Boolean!): [User!]
     book(id: ID!): Book
     books: [Book!]
     never: String

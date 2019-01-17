@@ -15,8 +15,12 @@ export const resolvers = {
     users() {
       return UsersCollection.all();
     },
-    allUsers(_: any, { limit }: any) {
+    usersLimit(_: any, { limit }: any) {
       return UsersCollection.all().slice(0, limit);
+    },
+    usersSort(_: any, { sort }: any) {
+      const users = UsersCollection.all();
+      return sort ? users.sort((a, b) => b.id - a.id) : users;
     },
     book(_: any, { id }: any) {
       return BooksCollection.get(id);
