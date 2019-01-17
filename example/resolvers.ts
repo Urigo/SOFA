@@ -1,4 +1,8 @@
-import { UsersCollection, BooksCollection } from './collections';
+import {
+  UsersCollection,
+  BooksCollection,
+  PostsCollection,
+} from './collections';
 
 export const resolvers = {
   Query: {
@@ -11,11 +15,21 @@ export const resolvers = {
     users() {
       return UsersCollection.all();
     },
+    usersLimit(_: any, { limit }: any) {
+      return UsersCollection.all().slice(0, limit);
+    },
+    usersSort(_: any, { sort }: any) {
+      const users = UsersCollection.all();
+      return sort ? users.sort((a, b) => b.id - a.id) : users;
+    },
     book(_: any, { id }: any) {
       return BooksCollection.get(id);
     },
     books() {
       return BooksCollection.all();
+    },
+    feed() {
+      return PostsCollection.all();
     },
   },
   Mutation: {
@@ -34,6 +48,14 @@ export const resolvers = {
       }
 
       return null;
+    },
+  },
+  Post: {
+    comments(post: { comments: string[] }, { filter }: { filter: string }) {
+      return post.comments.filter(
+        comment =>
+          !filter || comment.toLowerCase().indexOf(filter.toLowerCase()) > -1
+      );
     },
   },
 };

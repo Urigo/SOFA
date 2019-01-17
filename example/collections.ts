@@ -30,6 +30,12 @@ const users = [
   },
 ];
 
+const posts = [
+  {
+    comments: ['Foo', 'Bar', 'Baz', 'Foo Bar', 'Foo Baz', 'Bar Baz'],
+  },
+];
+
 export const UsersCollection = {
   get(id: string | number) {
     const uid = typeof id === 'string' ? parseInt(id, 10) : id;
@@ -64,5 +70,11 @@ export const BooksCollection = {
     books.push(book);
 
     return book;
+  },
+};
+
+export const PostsCollection = {
+  all() {
+    return posts;
   },
 };
