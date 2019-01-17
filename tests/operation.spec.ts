@@ -206,7 +206,7 @@ test('should work with Query and nested variables', async () => {
   );
 });
 
-test('should be able to skip or force using models when requested', async () => {
+test('should be able to ignore using models when requested', async () => {
   const document = buildOperation({
     schema,
     kind: 'query',
@@ -241,6 +241,32 @@ test('should be able to skip or force using models when requested', async () => 
           shelf {
             id
             title
+          }
+        }
+      }
+    `)
+  );
+});
+
+test('should work with Subscription', async () => {
+  const document = buildOperation({
+    schema,
+    kind: 'subscription',
+    field: 'onFood',
+    models,
+    ignore: [],
+  })!;
+
+  expect(clean(document)).toEqual(
+    clean(`
+      subscription onFoodSubscription {
+        onFood {
+          ... on Pizza {
+            dough
+            toppings
+          }
+          ... on Salad {
+            ingredients
           }
         }
       }

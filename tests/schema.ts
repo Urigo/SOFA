@@ -45,9 +45,14 @@ export const schema = buildASTSchema(gql`
     addRandomFood: Food
   }
 
+  type Subscription {
+    onFood: Food
+  }
+
   schema {
     query: Query
     mutation: Mutation
+    subscription: Subscription
   }
 `);
 
