@@ -40,9 +40,13 @@ function resolveVariable({
     const scalar = schema.getType(type.name.value);
 
     if (isScalarType(scalar)) {
-      return isEqualType(scalar, GraphQLBoolean)
-        ? value === 'true'
-        : scalar.serialize(value);
+      // GraphQLBoolean.serialize expects a boolean or a number only
+      if (isEqualType(GraphQLBoolean, scalar)) {
+        // we don't support TRUE
+        value = value === 'true';
+      }
+
+      return scalar.serialize(value);
     }
 
     return value;
