@@ -3,6 +3,8 @@ import {
   GraphQLSchema,
   TypeNode,
   isScalarType,
+  isEqualType,
+  GraphQLBoolean,
 } from 'graphql';
 
 export function parseVariable({
@@ -38,7 +40,9 @@ function resolveVariable({
     const scalar = schema.getType(type.name.value);
 
     if (isScalarType(scalar)) {
-      return scalar.serialize(value);
+      return isEqualType(scalar, GraphQLBoolean)
+        ? value === 'true'
+        : scalar.serialize(value);
     }
 
     return value;
