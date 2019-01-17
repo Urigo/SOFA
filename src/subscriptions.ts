@@ -10,6 +10,7 @@ import { forAwaitEach, isAsyncIterable } from 'iterall';
 import { buildOperation } from './operation';
 import { Sofa } from './sofa';
 import { getOperationInfo } from './ast';
+import { parseVariable } from './parse';
 
 // To start subscription:
 //   - an url that Sofa should trigger
@@ -150,13 +151,31 @@ export class SubscriptionManager {
     url: string;
     document: DocumentNode;
     operationName: string;
-    variables: any;
+    variables: Record<string, any>;
   }) {
+    const variableNodes = this.operations.get(name)!.variables;
+    const variableValues = variableNodes.reduce((values, variable) => {
+      const value = parseVariable({
+        value: variables[variable.variable.name.value],
+        variable,
+        schema: this.sofa.schema,
+      });
+
+      if (typeof value === 'undefined') {
+        return values;
+      }
+
+      return {
+        ...values,
+        [name]: value,
+      };
+    }, {});
+
     const execution = await subscribe({
       schema: this.sofa.schema,
       document,
       operationName,
-      variableValues: variables,
+      variableValues,
     });
 
     if (isAsyncIterable(execution)) {
