@@ -34,7 +34,9 @@ app.use(
     schema,
     ignore: ['User.favoriteBook'],
     onRoute(info) {
-      openApi.addRoute(info);
+      openApi.addRoute(info, {
+        basePath: '/api',
+      });
     },
   })
 );

@@ -1,9 +1,9 @@
 {
   "name": "sofa-api",
   "description": "Create REST APIs with GraphQL",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "dist/index.js",
-  "typings": "dest/index.d.ts",
+  "typings": "dist/index.d.ts",
   "sideEffects": false,
   "license": "MIT",
   "keywords": [
