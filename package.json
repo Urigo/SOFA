@@ -27,6 +27,11 @@
   },
   "dependencies": {
     "change-case": "3.0.2",
+    "graphql-subscriptions": "1.0.0",
+    "iterall": "1.2.2",
+    "request": "2.88.0",
+    "request-promise-native": "1.0.5",
+    "uuid": "3.3.2",
     "yamljs": "0.3.0"
   },
   "scripts": {
@@ -45,6 +50,8 @@
     "@types/express-graphql": "0.6.2",
     "@types/graphql": "14.0.3",
     "@types/jest": "23.3.10",
+    "@types/request-promise-native": "1.0.15",
+    "@types/uuid": "3.4.4",
     "@types/webpack": "4.4.20",
     "@types/yamljs": "0.2.30",
     "body-parser": "1.18.3",

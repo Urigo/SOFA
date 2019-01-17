@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 
 const schema = makeExecutableSchema({
   typeDefs,
-  resolvers,
+  resolvers: resolvers as any,
 });
 
 const openApi = OpenAPI({
@@ -46,6 +46,14 @@ app.use(
 openApi.save(resolve(__dirname, './swagger.json'));
 
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.use('/webhook', (req, res) => {
+  console.log('Received a webhook', req.body);
+
+  res.statusCode = 200;
+  res.statusMessage = 'OK';
+  res.send();
+});
 
 app.use(
   '/graphql',

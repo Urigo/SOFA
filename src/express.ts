@@ -7,6 +7,7 @@ import { Sofa } from './sofa';
 import { ContextFn, RouteInfo } from './types';
 import { convertName } from './common';
 import { parseVariable } from './parse';
+import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
 
 export type ErrorHandler = (res: express.Response, error: any) => void;
 
@@ -15,6 +16,7 @@ export function createRouter(sofa: Sofa): express.Router {
 
   const queryType = sofa.schema.getQueryType();
   const mutationType = sofa.schema.getMutationType();
+  const subscriptionManager = new SubscriptionManager(sofa);
 
   if (queryType) {
     Object.keys(queryType.getFields()).forEach(fieldName => {
@@ -35,6 +37,78 @@ export function createRouter(sofa: Sofa): express.Router {
       }
     });
   }
+
+  router.post(
+    '/webhook',
+    useAsync(async (req, res) => {
+      const { subscription, variables, url }: StartSubscriptionEvent = req.body;
+
+      try {
+        const result = await subscriptionManager.start({
+          subscription,
+          variables,
+          url,
+        });
+
+        res.statusCode = 200;
+        res.statusMessage = 'OK';
+        res.json(result);
+      } catch (e) {
+        console.log(e);
+        res.statusCode = 500;
+        res.statusMessage = 'Subscription failed';
+        res.json(e);
+      }
+    })
+  );
+
+  router.post(
+    '/webhook/:id',
+    useAsync(async (req, res) => {
+      const id: string = req.params.id;
+      const variables: any = req.body.variables;
+
+      console.log(`Update subscription #${id}`);
+
+      try {
+        const result = await subscriptionManager.update({
+          id,
+          variables,
+        });
+
+        res.statusCode = 200;
+        res.statusMessage = 'OK';
+        res.json(result);
+      } catch (e) {
+        console.log(e);
+        res.statusCode = 500;
+        res.statusMessage = 'Subscription failed to update';
+        res.json(e);
+      }
+    })
+  );
+
+  router.delete(
+    '/webhook/:id',
+    useAsync(async (req, res) => {
+      const id: string = req.params.id;
+
+      console.log(`Stop subscription #${id}`);
+
+      try {
+        const result = await subscriptionManager.stop(id);
+
+        res.statusCode = 200;
+        res.statusMessage = 'OK';
+        res.json(result);
+      } catch (e) {
+        console.log(e);
+        res.statusCode = 500;
+        res.statusMessage = 'Subscription failed to stop';
+        res.json(e);
+      }
+    })
+  );
 
   return router;
 }
