@@ -158,7 +158,9 @@ app.use(
   sofa({
     schema,
     onRoute(info) {
-      openApi.addRoute(info);
+      openApi.addRoute(info, {
+        basePath: '/api',
+      });
     },
   })
 );
