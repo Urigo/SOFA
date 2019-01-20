@@ -10,7 +10,8 @@
     "outDir": "dist",
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "resolveJsonModule": true
   },
   "exclude": ["node_modules", "dist"]
 }

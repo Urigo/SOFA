@@ -61,9 +61,17 @@ function resolveParameters(
     return [];
   }
 
-  return variables.map(variable => {
+  return variables.map((variable: any) => {
+    console.log('variable.type: ', variable.type);
+    console.log('variable.variable: ', variable.variable);
+    console.log('----------------------');
+
     return {
-      in: 'query',
+      in:
+        variable.variable.name.value === 'id' &&
+        variable.type.type.name.value === 'ID'
+          ? 'path'
+          : 'query',
       name: variable.variable.name.value,
       required: variable.type.kind === 'NonNullType',
       schema: resolveParamSchema(variable.type),
