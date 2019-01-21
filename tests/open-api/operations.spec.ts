@@ -34,6 +34,7 @@ test('handle query', async () => {
   });
 
   const result = buildPathFromOperation({
+    url: '/api/feed',
     operation,
     schema,
   });
@@ -66,6 +67,7 @@ test('handle mutation', async () => {
   });
 
   const result = buildPathFromOperation({
+    url: '/api/add-post',
     operation,
     schema,
   });
