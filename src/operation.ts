@@ -28,6 +28,7 @@ import {
 import * as changeCase from 'change-case';
 
 import { Ignore } from './types';
+import { logger } from './logger';
 
 let operationVariables: VariableDefinitionNode[] = [];
 
@@ -60,6 +61,8 @@ export function buildOperation({
   ignore: Ignore;
 }) {
   resetOperationVariables();
+
+  logger.debug(`[Sofa] Building ${field} ${kind}`);
 
   const document = buildDocumentNode({
     schema,

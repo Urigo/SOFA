@@ -32,6 +32,7 @@
     "request": "2.88.0",
     "request-promise-native": "1.0.5",
     "uuid": "3.3.2",
+    "winston": "3.1.0",
     "yamljs": "0.3.0"
   },
   "scripts": {

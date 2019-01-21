@@ -11,6 +11,7 @@ import { buildOperation } from './operation';
 import { Sofa } from './sofa';
 import { getOperationInfo } from './ast';
 import { parseVariable } from './parse';
+import { logger } from './logger';
 
 // To start subscription:
 //   - an url that Sofa should trigger
@@ -46,23 +47,21 @@ export interface StopSubscriptionResponse {
   id: ID;
 }
 
+interface BuiltOperation {
+  operationName: string;
+  document: DocumentNode;
+  variables: ReadonlyArray<VariableDefinitionNode>;
+}
+
+interface StoredClient {
+  name: SubscriptionFieldName;
+  url: string;
+  iterator: AsyncIterator<any>;
+}
+
 export class SubscriptionManager {
-  private operations = new Map<
-    SubscriptionFieldName,
-    {
-      operationName: string;
-      document: DocumentNode;
-      variables: ReadonlyArray<VariableDefinitionNode>;
-    }
-  >();
-  private clients = new Map<
-    ID,
-    {
-      name: SubscriptionFieldName;
-      url: string;
-      iterator: AsyncIterator<any>;
-    }
-  >();
+  private operations = new Map<SubscriptionFieldName, BuiltOperation>();
+  private clients = new Map<ID, StoredClient>();
 
   constructor(private sofa: Sofa) {
     this.buildOperations();
@@ -78,7 +77,7 @@ export class SubscriptionManager {
 
     const { document, operationName, variables } = this.operations.get(name)!;
 
-    console.log(
+    logger.info(
       `[Subscription] Start ${id}. Listen to ${name} and send results to ${
         event.url
       }`
@@ -101,7 +100,7 @@ export class SubscriptionManager {
   }
 
   public async stop(id: ID): Promise<StopSubscriptionResponse> {
-    console.log(`[Subscription] Stop ${id}`);
+    logger.info(`[Subscription] Stop ${id}`);
 
     if (!this.clients.has(id)) {
       throw new Error(`Subscription with ID '${id}' does not exist`);
@@ -121,7 +120,7 @@ export class SubscriptionManager {
   public async update(event: UpdateSubscriptionEvent) {
     const { variables, id } = event;
 
-    console.log(`[Subscription] Update ${id}`);
+    logger.info(`[Subscription] Update ${id}`);
 
     if (!this.clients.has(id)) {
       throw new Error(`Subscription with ID '${id}' does not exist`);
@@ -200,7 +199,7 @@ export class SubscriptionManager {
           this.stop(id);
         },
         e => {
-          console.log(`Subscription #${id} closed`);
+          logger.info(`Subscription #${id} closed`);
           console.log(e);
           this.stop(id);
         }
@@ -217,7 +216,7 @@ export class SubscriptionManager {
 
     const { url } = this.clients.get(id)!;
 
-    console.log(`[Subscription] Trigger ${id}`);
+    logger.info(`[Subscription] Trigger ${id}`);
 
     await request.post(url, {
       json: result,
