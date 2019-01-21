@@ -2,16 +2,17 @@ import * as express from 'express';
 import { makeExecutableSchema } from 'graphql-tools';
 import * as bodyParser from 'body-parser';
 import * as useGraphQL from 'express-graphql';
+import * as swaggerUi from 'swagger-ui-express';
 import chalk from 'chalk';
 import { resolve } from 'path';
 import { typeDefs } from './types';
 import { resolvers } from './resolvers';
-import * as swaggerUi from 'swagger-ui-express';
 import * as swaggerDocument from './swagger.json';
 
 // Sofa
 
-import { useSofa, OpenAPI } from '../src';
+import sofa, { OpenAPI } from '../src';
+import { logger } from '../src/logger';
 
 const app = express();
 
@@ -32,7 +33,7 @@ const openApi = OpenAPI({
 
 app.use(
   '/api',
-  useSofa({
+  sofa({
     schema,
     ignore: ['User.favoriteBook'],
     onRoute(info) {
@@ -48,7 +49,7 @@ openApi.save(resolve(__dirname, './swagger.json'));
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/webhook', (req, res) => {
-  console.log('Received a webhook', req.body);
+  logger.info('Received a webhook', req.body);
 
   res.statusCode = 200;
   res.statusMessage = 'OK';

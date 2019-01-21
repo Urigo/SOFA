@@ -77,11 +77,7 @@ export class SubscriptionManager {
 
     const { document, operationName, variables } = this.operations.get(name)!;
 
-    logger.info(
-      `[Subscription] Start ${id}. Listen to ${name} and send results to ${
-        event.url
-      }`
-    );
+    logger.info(`[Subscription] Start ${id}`, event);
 
     const result = await this.execute({
       id,
@@ -120,7 +116,7 @@ export class SubscriptionManager {
   public async update(event: UpdateSubscriptionEvent) {
     const { variables, id } = event;
 
-    logger.info(`[Subscription] Update ${id}`);
+    logger.info(`[Subscription] Update ${id}`, event);
 
     if (!this.clients.has(id)) {
       throw new Error(`Subscription with ID '${id}' does not exist`);
