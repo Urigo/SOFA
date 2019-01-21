@@ -40,13 +40,19 @@ export function OpenAPI({
       }
     ) {
       const basePath = (config && config.basePath) || '';
-      const path = basePath + info.path;
+      const path =
+        basePath +
+        info.path.replace(
+          /\:[a-z0-9]+\w/i,
+          param => `{${param.replace(':', '')}}`
+        );
 
       if (!swagger.paths[path]) {
         swagger.paths[path] = {};
       }
 
       swagger.paths[path][info.method.toLowerCase()] = buildPathFromOperation({
+        url: path,
         operation: info.document,
         schema,
       });

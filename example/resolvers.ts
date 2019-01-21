@@ -4,7 +4,7 @@ import {
   PostsCollection,
 } from './collections';
 
-export const resolvers = {
+export const resolvers: any = {
   Query: {
     me() {
       return UsersCollection.get(1);

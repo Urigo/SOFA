@@ -6,6 +6,8 @@ import chalk from 'chalk';
 import { resolve } from 'path';
 import { typeDefs } from './types';
 import { resolvers } from './resolvers';
+import * as swaggerUi from 'swagger-ui-express';
+import * as swaggerDocument from './swagger.json';
 
 // Sofa
 
@@ -41,7 +43,9 @@ app.use(
   })
 );
 
-openApi.save(resolve(__dirname, './swagger.yml'));
+openApi.save(resolve(__dirname, './swagger.json'));
+
+app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(
   '/graphql',
