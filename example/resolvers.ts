@@ -1,8 +1,14 @@
+import { PubSub } from 'graphql-subscriptions';
+
+const pubsub = new PubSub();
+
 import {
   UsersCollection,
   BooksCollection,
   PostsCollection,
 } from './collections';
+
+const BOOK_ADDED = 'BOOK_ADDED';
 
 export const resolvers: any = {
   Query: {
@@ -34,7 +40,16 @@ export const resolvers: any = {
   },
   Mutation: {
     addBook(_: any, { title }: any) {
-      return BooksCollection.add(title);
+      const book = BooksCollection.add(title);
+
+      pubsub.publish(BOOK_ADDED, { onBook: book });
+
+      return book;
+    },
+  },
+  Subscription: {
+    onBook: {
+      subscribe: () => pubsub.asyncIterator([BOOK_ADDED]),
     },
   },
   Food: {

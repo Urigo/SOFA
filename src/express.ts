@@ -3,18 +3,23 @@ import { DocumentNode, print, isObjectType, isNonNullType } from 'graphql';
 
 import { buildOperation } from './operation';
 import { getOperationInfo, OperationInfo } from './ast';
-import { Sofa } from './sofa';
-import { ContextFn, RouteInfo } from './types';
+import { Sofa, isContextFn } from './sofa';
+import { RouteInfo } from './types';
 import { convertName } from './common';
 import { parseVariable } from './parse';
+import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
+import { logger } from './logger';
 
 export type ErrorHandler = (res: express.Response, error: any) => void;
 
 export function createRouter(sofa: Sofa): express.Router {
+  logger.debug('[Sofa] Creating router');
+
   const router = express.Router();
 
   const queryType = sofa.schema.getQueryType();
   const mutationType = sofa.schema.getMutationType();
+  const subscriptionManager = new SubscriptionManager(sofa);
 
   if (queryType) {
     Object.keys(queryType.getFields()).forEach(fieldName => {
@@ -36,6 +41,82 @@ export function createRouter(sofa: Sofa): express.Router {
     });
   }
 
+  router.post(
+    '/webhook',
+    useAsync(async (req, res) => {
+      const { subscription, variables, url }: StartSubscriptionEvent = req.body;
+
+      try {
+        const result = await subscriptionManager.start(
+          {
+            subscription,
+            variables,
+            url,
+          },
+          { req }
+        );
+
+        res.statusCode = 200;
+        res.statusMessage = 'OK';
+        res.json(result);
+      } catch (e) {
+        console.log(e);
+        res.statusCode = 500;
+        res.statusMessage = 'Subscription failed';
+        res.json(e);
+      }
+    })
+  );
+
+  router.post(
+    '/webhook/:id',
+    useAsync(async (req, res) => {
+      const id: string = req.params.id;
+      const variables: any = req.body.variables;
+
+      try {
+        const result = await subscriptionManager.update(
+          {
+            id,
+            variables,
+          },
+          {
+            req,
+          }
+        );
+
+        res.statusCode = 200;
+        res.statusMessage = 'OK';
+        res.json(result);
+      } catch (e) {
+        console.log(e);
+        res.statusCode = 500;
+        res.statusMessage = 'Subscription failed to update';
+        res.json(e);
+      }
+    })
+  );
+
+  router.delete(
+    '/webhook/:id',
+    useAsync(async (req, res) => {
+      const id: string = req.params.id;
+
+      try {
+        const result = await subscriptionManager.stop(id);
+
+        res.statusCode = 200;
+        res.statusMessage = 'OK';
+        res.json(result);
+      } catch (e) {
+        console.log(e);
+        res.statusCode = 500;
+        res.statusMessage = 'Subscription failed to stop';
+        res.json(e);
+      }
+    })
+  );
+
   return router;
 }
 
@@ -48,6 +129,8 @@ function createQueryRoute({
   router: express.Router;
   fieldName: string;
 }): RouteInfo {
+  logger.debug(`[Router] Creating ${fieldName} query`);
+
   const queryType = sofa.schema.getQueryType()!;
   const operation = buildOperation({
     kind: 'query',
@@ -65,6 +148,8 @@ function createQueryRoute({
 
   router.get(path, useHandler({ info, fieldName, sofa, operation }));
 
+  logger.debug(`[Router] ${fieldName} query available at ${path}`);
+
   return {
     document: operation,
     path,
@@ -81,6 +166,8 @@ function createMutationRoute({
   router: express.Router;
   fieldName: string;
 }): RouteInfo {
+  logger.debug(`[Router] Creating ${fieldName} mutation`);
+
   const operation = buildOperation({
     kind: 'mutation',
     schema: sofa.schema,
@@ -92,6 +179,8 @@ function createMutationRoute({
   const path = getPath(fieldName);
 
   router.post(path, useHandler({ info, fieldName, sofa, operation }));
+
+  logger.debug(`[Router] ${fieldName} mutation available at ${path}`);
 
   return {
     document: operation,
@@ -145,10 +234,6 @@ function useHandler(config: {
 
     res.json(result.data && result.data[fieldName]);
   });
-}
-
-function isContextFn(context: any): context is ContextFn {
-  return typeof context === 'function';
 }
 
 function getPath(fieldName: string, hasId = false) {

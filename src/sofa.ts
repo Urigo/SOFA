@@ -10,8 +10,9 @@ import {
   GraphQLOutputType,
 } from 'graphql';
 
-import { Ignore, Context, ExecuteFn, OnRoute } from './types';
+import { Ignore, Context, ContextFn, ExecuteFn, OnRoute } from './types';
 import { convertName } from './common';
+import { logger } from './logger';
 
 // user passes:
 // - schema
@@ -37,13 +38,21 @@ export interface Sofa {
 }
 
 export function createSofa(config: SofaConfig): Sofa {
+  logger.debug('[Sofa] Created');
+
+  const models = extractsModels(config.schema);
+  const ignore = config.ignore || [];
+
+  logger.debug(`[Sofa] models: ${models.join(', ')}`);
+  logger.debug(`[Sofa] ignore: ${ignore.join(', ')}`);
+
   return {
     context({ req }) {
       return { req };
     },
     execute: graphql,
-    models: extractsModels(config.schema),
-    ignore: config.ignore || [],
+    models,
+    ignore,
     ...config,
   };
 }
@@ -143,4 +152,8 @@ function hasID(type: GraphQLNamedType): type is GraphQLObjectType {
 
 function isNameEqual(a: string, b: string): boolean {
   return convertName(a) === convertName(b);
+}
+
+export function isContextFn(context: any): context is ContextFn {
+  return typeof context === 'function';
 }

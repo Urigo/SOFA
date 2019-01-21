@@ -46,8 +46,13 @@ export const typeDefs = gql`
     addBook(title: String!): Book
   }
 
+  type Subscription {
+    onBook: Book
+  }
+
   schema {
     query: Query
     mutation: Mutation
+    subscription: Subscription
   }
 `;
