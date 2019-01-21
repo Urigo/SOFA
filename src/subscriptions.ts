@@ -8,7 +8,7 @@ import * as uuid from 'uuid/v4';
 import * as request from 'request-promise-native';
 import { forAwaitEach, isAsyncIterable } from 'iterall';
 import { buildOperation } from './operation';
-import { Sofa } from './sofa';
+import { Sofa, isContextFn } from './sofa';
 import { getOperationInfo } from './ast';
 import { parseVariable } from './parse';
 import { logger } from './logger';
@@ -67,7 +67,14 @@ export class SubscriptionManager {
     this.buildOperations();
   }
 
-  public async start(event: StartSubscriptionEvent) {
+  public async start(
+    event: StartSubscriptionEvent,
+    {
+      req,
+    }: {
+      req: any;
+    }
+  ) {
     const id = uuid();
     const name = event.subscription;
 
@@ -86,6 +93,7 @@ export class SubscriptionManager {
       document,
       operationName,
       variables,
+      req,
     });
 
     if (typeof result !== 'undefined') {
@@ -113,7 +121,14 @@ export class SubscriptionManager {
     return { id };
   }
 
-  public async update(event: UpdateSubscriptionEvent) {
+  public async update(
+    event: UpdateSubscriptionEvent,
+    {
+      req,
+    }: {
+      req: any;
+    }
+  ) {
     const { variables, id } = event;
 
     logger.info(`[Subscription] Update ${id}`, event);
@@ -126,11 +141,16 @@ export class SubscriptionManager {
 
     this.stop(id);
 
-    return this.start({
-      url,
-      subscription,
-      variables,
-    });
+    return this.start(
+      {
+        url,
+        subscription,
+        variables,
+      },
+      {
+        req,
+      }
+    );
   }
 
   private async execute({
@@ -140,6 +160,7 @@ export class SubscriptionManager {
     url,
     operationName,
     variables,
+    req,
   }: {
     id: ID;
     name: SubscriptionFieldName;
@@ -147,6 +168,7 @@ export class SubscriptionManager {
     document: DocumentNode;
     operationName: string;
     variables: Record<string, any>;
+    req: any;
   }) {
     const variableNodes = this.operations.get(name)!.variables;
     const variableValues = variableNodes.reduce((values, variable) => {
@@ -171,6 +193,9 @@ export class SubscriptionManager {
       document,
       operationName,
       variableValues,
+      contextValue: isContextFn(this.sofa.context)
+        ? this.sofa.context({ req })
+        : this.sofa.context,
     });
 
     if (isAsyncIterable(execution)) {

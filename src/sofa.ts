@@ -10,7 +10,7 @@ import {
   GraphQLOutputType,
 } from 'graphql';
 
-import { Ignore, Context, ExecuteFn, OnRoute } from './types';
+import { Ignore, Context, ContextFn, ExecuteFn, OnRoute } from './types';
 import { convertName } from './common';
 import { logger } from './logger';
 
@@ -152,4 +152,8 @@ function hasID(type: GraphQLNamedType): type is GraphQLObjectType {
 
 function isNameEqual(a: string, b: string): boolean {
   return convertName(a) === convertName(b);
+}
+
+export function isContextFn(context: any): context is ContextFn {
+  return typeof context === 'function';
 }

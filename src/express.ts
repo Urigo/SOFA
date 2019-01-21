@@ -3,8 +3,8 @@ import { DocumentNode, print, isObjectType, isNonNullType } from 'graphql';
 
 import { buildOperation } from './operation';
 import { getOperationInfo, OperationInfo } from './ast';
-import { Sofa } from './sofa';
-import { ContextFn, RouteInfo } from './types';
+import { Sofa, isContextFn } from './sofa';
+import { RouteInfo } from './types';
 import { convertName } from './common';
 import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
@@ -47,11 +47,14 @@ export function createRouter(sofa: Sofa): express.Router {
       const { subscription, variables, url }: StartSubscriptionEvent = req.body;
 
       try {
-        const result = await subscriptionManager.start({
-          subscription,
-          variables,
-          url,
-        });
+        const result = await subscriptionManager.start(
+          {
+            subscription,
+            variables,
+            url,
+          },
+          { req }
+        );
 
         res.statusCode = 200;
         res.statusMessage = 'OK';
@@ -72,10 +75,15 @@ export function createRouter(sofa: Sofa): express.Router {
       const variables: any = req.body.variables;
 
       try {
-        const result = await subscriptionManager.update({
-          id,
-          variables,
-        });
+        const result = await subscriptionManager.update(
+          {
+            id,
+            variables,
+          },
+          {
+            req,
+          }
+        );
 
         res.statusCode = 200;
         res.statusMessage = 'OK';
@@ -226,10 +234,6 @@ function useHandler(config: {
 
     res.json(result.data && result.data[fieldName]);
   });
-}
-
-function isContextFn(context: any): context is ContextFn {
-  return typeof context === 'function';
 }
 
 function getPath(fieldName: string, hasId = false) {
