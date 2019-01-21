@@ -78,12 +78,14 @@ function extractsModels(schema: GraphQLSchema): string[] {
       if (isArrayOf(field.type, namedType)) {
         // check if type is a list
         // check if name of a field matches a name of a named type (in plural)
-        // check if has no arguments
+        // check if has no non-optional arguments
         // add to registry with `list: true`
         const sameName = isNameEqual(field.name, namedType.name + 's');
-        const noArguments = field.args.length === 0;
+        const allOptionalArguments = !field.args.some(arg =>
+          isNonNullType(arg.type)
+        );
 
-        modelMap[namedType.name].list = sameName && noArguments;
+        modelMap[namedType.name].list = sameName && allOptionalArguments;
       } else if (
         isObjectType(field.type) ||
         (isNonNullType(field.type) && isObjectType(field.type.ofType))
