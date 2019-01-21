@@ -140,11 +140,13 @@ function createQueryRoute({
     ignore: sofa.ignore,
   });
   const info = getOperationInfo(operation)!;
-  const fieldType = queryType.getFields()[fieldName].type;
+  const field = queryType.getFields()[fieldName];
+  const fieldType = field.type;
   const isSingle =
     isObjectType(fieldType) ||
     (isNonNullType(fieldType) && isObjectType(fieldType.ofType));
-  const path = getPath(fieldName, isSingle);
+  const hasIdArgument = field.args.some(arg => arg.name === 'id');
+  const path = getPath(fieldName, isSingle && hasIdArgument);
 
   router.get(path, useHandler({ info, fieldName, sofa, operation }));
 
