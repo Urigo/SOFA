@@ -5,7 +5,7 @@
     "version": "3.0.0"
   },
   "paths": {
-    "/api/me/:id": {
+    "/api/me/{id}": {
       "get": {
         "operationId": "meQuery",
         "parameters": [],
@@ -22,7 +22,7 @@
         }
       }
     },
-    "/api/user/:id": {
+    "/api/user/{id}": {
       "get": {
         "operationId": "userQuery",
         "parameters": [
@@ -127,7 +127,7 @@
         }
       }
     },
-    "/api/book/:id": {
+    "/api/book/{id}": {
       "get": {
         "operationId": "bookQuery",
         "parameters": [

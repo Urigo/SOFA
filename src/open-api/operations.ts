@@ -1,24 +1,21 @@
 import {
   DocumentNode,
   GraphQLSchema,
-  // visit,
-  // visitWithTypeInfo,
-  // TypeInfo,
   VariableDefinitionNode,
   TypeNode,
   OperationDefinitionNode,
-  StringValueNode,
 } from 'graphql';
 
 import { getOperationInfo } from '../ast';
-// import { resolveFieldType } from './types';
 import { mapToPrimitive, mapToRef } from './utils';
 import { resolveFieldType } from './types';
 
 export function buildPathFromOperation({
+  url,
   schema,
   operation,
 }: {
+  url: string;
   schema: GraphQLSchema;
   operation: DocumentNode;
 }) {
@@ -28,7 +25,7 @@ export function buildPathFromOperation({
   return {
     operationId: info.name,
     parameters: isQuery
-      ? resolveParameters(info.operation.variableDefinitions)
+      ? resolveParameters(url, info.operation.variableDefinitions)
       : [],
     requestBody: !isQuery
       ? {
@@ -55,6 +52,7 @@ export function buildPathFromOperation({
 }
 
 function resolveParameters(
+  url: string,
   variables: ReadonlyArray<VariableDefinitionNode> | undefined
 ) {
   if (!variables) {
@@ -62,16 +60,8 @@ function resolveParameters(
   }
 
   return variables.map((variable: any) => {
-    console.log('variable.type: ', variable.type);
-    console.log('variable.variable: ', variable.variable);
-    console.log('----------------------');
-
     return {
-      in:
-        variable.variable.name.value === 'id' &&
-        variable.type.type.name.value === 'ID'
-          ? 'path'
-          : 'query',
+      in: isInPath(url, variable.variable.name.value) ? 'path' : 'query',
       name: variable.variable.name.value,
       required: variable.type.kind === 'NonNullType',
       schema: resolveParamSchema(variable.type),
@@ -141,15 +131,6 @@ function resolveResponse({
   const rootField = operation.selectionSet.selections[0];
 
   if (rootField.kind === 'Field') {
-    if (rootField.name.value === '_getRESTModelById') {
-      const typenameArg = rootField.arguments!.find(
-        arg => arg.name.value === 'typename'
-      )!;
-      const typename = (typenameArg.value as StringValueNode).value;
-
-      return resolveFieldType(schema.getType(typename)!);
-    }
-
     if (operationType === 'query') {
       const queryType = schema.getQueryType()!;
       const field = queryType.getFields()[rootField.name.value];
@@ -164,29 +145,8 @@ function resolveResponse({
       return resolveFieldType(field.type);
     }
   }
+}
 
-  // const typeInfo = new TypeInfo(schema);
-  // const response = {
-  //   type: 'object',
-
-  // };
-
-  // visit(
-  //   operation,
-  //   visitWithTypeInfo(typeInfo, {
-  //     Field(node, _key, _parent, _path, ancestors) {
-  //       // we can skip the first field since it's a query / mutation or _getModelByID
-  //       // it's something specific only to this library
-  //       if (ancestors.length === 2) {
-  //         return;
-  //       }
-
-  //       const fieldDef = typeInfo.getFieldDef();
-
-  //       console.log(ancestors);
-
-  //       console.log('field', node.name.value, resolveFieldType(fieldDef.type));
-  //     },
-  //   })
-  // );
+function isInPath(url: string, param: string): boolean {
+  return url.indexOf(`{${param}}`) !== -1;
 }
