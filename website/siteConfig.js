@@ -33,7 +33,7 @@ const siteConfig = {
   favicon: 'img/favicon/favicon.png',
 
   colors: {
-    primaryColor: '#E56457',
+    primaryColor: '#e535ab',
     secondaryColor: '#B23D32',
   },
 

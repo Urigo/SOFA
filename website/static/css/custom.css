@@ -91,6 +91,10 @@ body {
   background-size: 1300px;
 }
 
+body.separateOnPageNav {
+  background: #fff;
+}
+
 /*
   Header
 */
@@ -110,9 +114,18 @@ body {
 }
 
 /* Makes header transparent */
-.fixedHeaderContainer {
+body:not(.separateOnPageNav) .fixedHeaderContainer {
   background-color: transparent;
   position: relative;
+}
+
+/* But not on docs */
+body.separateOnPageNav .fixedHeaderContainer {
+  background-color: #e535ab;
+}
+
+body.separateOnPageNav .fixedHeaderContainer header {
+  padding-bottom: 10px;
 }
 
 /* align logo to center */
@@ -130,8 +143,12 @@ body {
 }
 
 /* add some space on top */
-.navPusher {
+body:not(.separateOnPageNav) .navPusher {
   padding-top: 0;
+}
+
+body.separateOnPageNav .navPusher {
+  padding-top: 70px;
 }
 
 /* push button more to bottom, add some space */
