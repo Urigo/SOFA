@@ -1,0 +1,24 @@
+---
+title: Queries
+---
+
+Queries are transformed into GET requests.
+
+Given the following example:
+
+```graphql
+type Comment {
+  id: ID
+  text: String
+}
+
+type Mutation {
+  comments: [Comment]
+}
+```
+
+Sofa will create a `GET /comments` route.
+
+```bash
+curl http://localhost:3000/api/comments
+```

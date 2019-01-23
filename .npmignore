@@ -3,6 +3,8 @@
 src/
 tests/
 example/
+website/
+docs/
 .prettierignore
 .prettierrc.yml
 jest.config.js

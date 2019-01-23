@@ -1,0 +1,185 @@
+/* your custom css */
+
+/*
+  Colors:
+  pinky-purple: #e535ab;
+  dark-sky-blue: #37a9e2;
+*/
+
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {}
+
+@media only screen and (min-width: 1024px) {}
+
+@media only screen and (max-width: 1023px) {}
+
+@media only screen and (min-width: 1400px) {}
+
+@media only screen and (min-width: 1500px) {}
+
+body {
+  background: #e535ab url(../img/ui/graphql-bg.svg) no-repeat top center;
+  background-size: 1300px;
+}
+
+/*
+  Header
+*/
+
+/* Hides that text next to logo */
+.headerTitleWithLogo {
+  display: none;
+  visibility: hidden;
+  width: 0px;
+  height: 0px;
+}
+
+/* Hides links */
+.navigationWrapper {
+  display: none;
+  visibility: hidden;
+}
+
+/* Makes header transparent */
+.fixedHeaderContainer {
+  background-color: transparent;
+  position: relative;
+}
+
+/* align logo to center */
+.fixedHeaderContainer header {
+  padding-top: 10px;
+  justify-content: center;
+}
+
+/* make it big, white and wrap */
+.projectTitle {
+  margin: 0 auto;
+  max-width: 390px;
+  color: #fff;
+  font-size: 45px;
+  line-height: normal;
+}
+
+/* add some space on top */
+.navPusher {
+  padding-top: 0;
+}
+
+/* push button more to bottom, add some space */
+.promoSection .promoRow {
+  padding: 40px 0;
+}
+
+/* style button */
+.buttonWrapper .button {
+  border: 1px solid #ffffff;
+  border-radius: 30px;
+  padding: 15px 20px;
+  text-transform: initial;
+  color: #fff;
+  background-color: transparent;
+  font-weight: 500;
+}
+
+.buttonWrapper .button:hover {
+  background-color: #37a9e2;
+}
+
+.homeContainer {
+  height: 700px;
+}
+
+/*
+  Main
+*/
+.mainContainer {
+  background-color: #fff;
+  padding-top: 150px;
+  padding-bottom: 180px;
+}
+
+.contentWrapper {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/*
+  Index
+*/
+
+.contentWrapper>.title {
+  padding-top: 10px;
+  padding-bottom: 30px;
+  margin-top: 0;
+  font-size: 45px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #000;
+}
+
+.highlights {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.highlights>.feature {
+  flex: 1;
+  padding-right: 90px;
+}
+
+.feature>.title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+}
+
+.feature>.text {
+  font-size: 14px;
+  font-weight: normal;
+  color: #4a4a4a;
+}
+
+/*
+  Footer
+*/
+
+#footer {
+  border-top: 1px solid #f4f4f4;
+  background-color: #fff;
+  color: #9b9b9b;
+  font-size: 12px;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+}
+
+.footer-container {
+  margin: 0px auto;
+  max-width: 960px;
+  height: 70px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-logo {
+  display: block;
+}
+
+#footer a {
+  color: #9b9b9b;
+  font-size: 12px;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+}
+
+.footer-link-separator {
+  display: inline-block;
+  padding: 0 15px;
+}
