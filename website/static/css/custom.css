@@ -8,7 +8,77 @@
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {}
 
-@media only screen and (min-width: 1024px) {}
+@media only screen and (max-width: 1024px) {
+  .contentWrapper {
+    max-width: 80%;
+  }
+
+  .projectTitle {
+    font-size: 35px;
+  }
+
+  .highlights {
+    flex-direction: column;
+  }
+
+  .highlights>.feature {
+    padding-bottom: 50px;
+  }
+
+  .footer-container {
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
+  #footer {
+    padding: 15px 0;
+  }
+
+  #footer .footer-logo {
+    padding: 25px 0;
+    order: 2;
+  }
+
+  #footer .links {
+    order: 1;
+  }
+
+  #footer .copyrights {
+    order: 3;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .contentWrapper {
+    max-width: 960px;
+  }
+
+  .projectTitle {
+    font-size: 45px;
+  }
+
+  .highlights {
+    flex-direction: row;
+  }
+
+  .footer-container {
+    height: 70px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  #footer .footer-logo {
+    order: 1;
+  }
+
+  #footer .links {
+    order: 2;
+  }
+
+  #footer .copyrights {
+    order: 3;
+  }
+}
 
 @media only screen and (max-width: 1023px) {}
 
@@ -56,7 +126,6 @@ body {
   margin: 0 auto;
   max-width: 390px;
   color: #fff;
-  font-size: 45px;
   line-height: normal;
 }
 
@@ -99,7 +168,6 @@ body {
 }
 
 .contentWrapper {
-  max-width: 960px;
   margin: 0 auto;
 }
 
@@ -122,25 +190,45 @@ body {
 
 .highlights {
   display: flex;
-  flex-direction: row;
   justify-content: space-evenly;
 }
 
 .highlights>.feature {
   flex: 1;
   padding-right: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .feature>.title {
+  flex: 0;
   font-size: 18px;
   font-weight: bold;
   color: #000;
 }
 
 .feature>.text {
+  flex: 1;
   font-size: 14px;
   font-weight: normal;
   color: #4a4a4a;
+  padding: 10px 0;
+}
+
+.feature>.links {
+  flex: 0;
+}
+
+.feature .link {
+  font-size: 16px;
+  color: #37a9e2;
+  text-decoration: underline;
+  margin-right: 15px;
+}
+
+.feature .link:hover {
+  color: #e535ab;
 }
 
 /*
@@ -160,14 +248,11 @@ body {
 .footer-container {
   margin: 0px auto;
   max-width: 960px;
-  height: 70px;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   align-items: center;
 }
 
-.footer-logo {
+.footer-logo>a {
   display: block;
 }
 

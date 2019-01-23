@@ -25,8 +25,8 @@ class Footer extends React.Component {
     return (
       <footer id="footer">
         <div className="footer-container">
-          <div>
-            <a href={this.props.config.baseUrl} className="footer-logo">
+          <div className="footer-logo">
+            <a href={this.props.config.baseUrl}>
               {this.props.config.footerIcon && (
                 <img
                   src={this.props.config.baseUrl + this.props.config.footerIcon}
@@ -35,7 +35,7 @@ class Footer extends React.Component {
               )}
             </a>
           </div>
-          <div>
+          <div className="links">
             <a
               href="https://twitter.com/UriGoldshtein"
               target="_blank"
@@ -48,7 +48,7 @@ class Footer extends React.Component {
             <span className="footer-link-separator">&middot;</span>
             <a href="https://github.com/Urigo/sofa">Github</a>
           </div>
-          <div>{this.props.config.copyright}</div>
+          <div className="copyrights">{this.props.config.copyright}</div>
         </div>
       </footer>
     );
