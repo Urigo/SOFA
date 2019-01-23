@@ -173,6 +173,7 @@ body.separateOnPageNav .navPusher {
 
 .homeContainer {
   height: 700px;
+  flex-shrink: 0;
 }
 
 /*
@@ -246,6 +247,11 @@ body.separateOnPageNav .navPusher {
 
 .feature .link:hover {
   color: #e535ab;
+}
+
+.code-snippet {
+  border-radius: 8px;
+  box-shadow: 0 12px 14px 0 rgba(0, 0, 0, 0.05);
 }
 
 /*
