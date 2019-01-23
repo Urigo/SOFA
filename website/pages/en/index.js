@@ -30,7 +30,7 @@ const PromoSection = props => (
 const Button = props => (
   <div className="pluginWrapper buttonWrapper">
     <a className="button" href={props.href} target={props.target}>
-      Switch to REST API
+      Documentation
     </a>
   </div>
 );
