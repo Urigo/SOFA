@@ -86,10 +86,10 @@
 
 @media only screen and (min-width: 1500px) {}
 
-body {
+/* body {
   background: #e535ab url(../img/ui/graphql-bg.svg) no-repeat top center;
   background-size: 1300px;
-}
+} */
 
 body.separateOnPageNav {
   background: #fff;
