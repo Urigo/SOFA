@@ -19,6 +19,9 @@ class App extends Component {
       loop: false,
       autoplay: false,
       animationData,
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid meet',
+      },
     });
 
     this.setState({
@@ -60,10 +63,6 @@ class App extends Component {
     return (
       <div
         id="animation"
-        style={{
-          width: 1300,
-          height: 730,
-        }}
         onMouseEnter={() => {
           this.playToClick();
         }}

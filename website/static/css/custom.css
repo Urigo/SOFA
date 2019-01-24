@@ -117,6 +117,8 @@ body.separateOnPageNav {
 body:not(.separateOnPageNav) .fixedHeaderContainer {
   background-color: transparent;
   position: relative;
+  display: none;
+  visibility: hidden;
 }
 
 /* But not on docs */

@@ -8,16 +8,27 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.root {
-  height: 730px;
-}
-
 #root>div {
-  margin-left: -650px !important;
-  left: 50%;
   position: relative;
 }
 
 #root .animation {
   overflow: hidden;
+}
+
+@media only screen and (min-width: 1024px) {
+  #animation {
+    min-width: 1300px;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  #animation {
+    width: 1300px;
+  }
+
+  #root>div {
+    margin-left: -650px !important;
+    left: 50%;
+  }
 }

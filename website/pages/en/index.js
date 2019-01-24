@@ -112,7 +112,7 @@ const Animation = () => {
         src={'/animation/'}
         style={{
           width: '100vw',
-          height: '760px',
+          height: '100vh',
         }}
       />
     </div>
@@ -126,7 +126,7 @@ class Index extends React.Component {
     return (
       <React.Fragment>
         <Animation />
-        <HomeSplash siteConfig={siteConfig} language={language} />
+        {/* <HomeSplash siteConfig={siteConfig} language={language} /> */}
         <div className="mainContainer">
           <div className="contentWrapper">
             <h2 className="title">Get Started</h2>
