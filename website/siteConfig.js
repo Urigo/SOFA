@@ -53,11 +53,11 @@ const siteConfig = {
   cleanUrl: true,
 
   // Stats
-  gaTrackingId: 'UA-125180910-2',
+  // gaTrackingId: 'UA-125180910-2',
 
   // Open Graph and Twitter card images.
-  ogImage: 'img/og-image.png',
-  twitterImage: 'img/og-image.png',
+  ogImage: 'img/og-image.jpg',
+  twitterImage: 'img/og-image.jpg',
 
   // Show documentation's last contributor's name.
   enableUpdateBy: true,
