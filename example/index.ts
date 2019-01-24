@@ -32,13 +32,12 @@ const openApi = OpenAPI({
 });
 
 app.use(
-  '/api',
   sofa({
     schema,
     ignore: ['User.favoriteBook'],
     onRoute(info) {
       openApi.addRoute(info, {
-        basePath: '/api',
+        basePath: '',
       });
     },
   })
@@ -46,7 +45,7 @@ app.use(
 
 openApi.save(resolve(__dirname, './swagger.json'));
 
-app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/webhook', (req, res) => {
   logger.info('Received a webhook', req.body);
@@ -77,14 +76,14 @@ app.listen(port, () => {
     ${chalk.bold('GraphQL:')}        ${printUrl('/graphql')}
 
     ${chalk.bold('Queries:')}
-      me:           ${printUrl('/api/me')}
-      users:        ${printUrl('/api/users')}
-      user:         ${printUrl('/api/user/1')}
-      books:        ${printUrl('/api/books')}
-      book:         ${printUrl('/api/book/1')}
+      me:           ${printUrl('/me')}
+      users:        ${printUrl('/users')}
+      user:         ${printUrl('/user/1')}
+      books:        ${printUrl('/books')}
+      book:         ${printUrl('/book/1')}
 
     ${chalk.bold('Mutations:')}
-      addBook:      ${printUrl('/api/add-book')} ${chalk.italic.gray(
+      addBook:      ${printUrl('/add-book')} ${chalk.italic.gray(
     'POST: {title}'
   )}
   `);

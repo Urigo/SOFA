@@ -5,7 +5,7 @@
     "version": "3.0.0"
   },
   "paths": {
-    "/api/me": {
+    "/me": {
       "get": {
         "operationId": "meQuery",
         "parameters": [],
@@ -22,7 +22,7 @@
         }
       }
     },
-    "/api/user/{id}": {
+    "/user/{id}": {
       "get": {
         "operationId": "userQuery",
         "parameters": [
@@ -48,7 +48,7 @@
         }
       }
     },
-    "/api/users": {
+    "/users": {
       "get": {
         "operationId": "usersQuery",
         "parameters": [],
@@ -68,7 +68,7 @@
         }
       }
     },
-    "/api/users-limit": {
+    "/users-limit": {
       "get": {
         "operationId": "usersLimitQuery",
         "parameters": [
@@ -98,7 +98,7 @@
         }
       }
     },
-    "/api/users-sort": {
+    "/users-sort": {
       "get": {
         "operationId": "usersSortQuery",
         "parameters": [
@@ -127,7 +127,7 @@
         }
       }
     },
-    "/api/book/{id}": {
+    "/book/{id}": {
       "get": {
         "operationId": "bookQuery",
         "parameters": [
@@ -153,7 +153,7 @@
         }
       }
     },
-    "/api/books": {
+    "/books": {
       "get": {
         "operationId": "booksQuery",
         "parameters": [],
@@ -173,7 +173,7 @@
         }
       }
     },
-    "/api/never": {
+    "/never": {
       "get": {
         "operationId": "neverQuery",
         "parameters": [],
@@ -190,7 +190,7 @@
         }
       }
     },
-    "/api/feed": {
+    "/feed": {
       "get": {
         "operationId": "feedQuery",
         "parameters": [
@@ -219,7 +219,7 @@
         }
       }
     },
-    "/api/add-book": {
+    "/add-book": {
       "post": {
         "operationId": "addBookMutation",
         "parameters": [],

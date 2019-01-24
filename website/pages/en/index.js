@@ -64,7 +64,8 @@ const Import = props => {
       <span className="gray">import</span>{' '}
       <span className="blue">{props.name}</span>{' '}
       <span className="gray">from</span>{' '}
-      <span className="pink">{props.source}</span>
+      <span className="pink">'{props.source}'</span>
+      <span className="gray">;</span>
     </div>
   );
 };
