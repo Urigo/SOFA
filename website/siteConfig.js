@@ -9,7 +9,7 @@
 // site configuration options.
 
 const siteConfig = {
-  title: 'sofa ;)',
+  title: 'sofa',
   tagline:
     'Create a fully RESTful and configurable API gateway from a GraphQL API',
   url: 'https://sofa-api.com',
