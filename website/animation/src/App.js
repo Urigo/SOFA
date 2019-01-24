@@ -60,20 +60,36 @@ class App extends Component {
   }
 
   render() {
+    const btnClassName = this.state.clicked
+      ? 'animation-button graphql'
+      : 'animation-button';
+
     return (
-      <div
-        id="animation"
-        onMouseEnter={() => {
-          this.playToClick();
-        }}
-        onMouseLeave={() => {
-          this.playToStart();
-        }}
-        onClick={e => {
-          e.preventDefault();
-          this.playFromClick();
-        }}
-      />
+      <React.Fragment>
+        <div id="animation">
+          <div className="animation-button-container">
+            <a
+              href="/docs"
+              id="button"
+              className={btnClassName}
+              onMouseEnter={() => {
+                this.playToClick();
+              }}
+              onMouseLeave={() => {
+                this.playToStart();
+              }}
+              onClick={e => {
+                if (!this.state.clicked) {
+                  e.preventDefault();
+                  this.playFromClick();
+                }
+              }}
+            >
+              {this.state.clicked ? 'See how it works!' : 'Switch to REST'}
+            </a>
+          </div>
+        </div>
+      </React.Fragment>
     );
   }
 }

@@ -16,9 +16,45 @@ body {
   overflow: hidden;
 }
 
+#animation .animation-button-container {
+  position: absolute;
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+#animation .animation-button {
+  display: block;
+  padding: 15px 20px;
+  border: 1px solid #fff;
+  border-radius: 25px;
+  background-color: transparent;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  z-index: 999;
+  cursor: pointer;
+  outline: none;
+  text-decoration: none;
+}
+
+#animation .animation-button:hover {
+  background-color: #37a9e2;
+}
+
+#animation .animation-button.graphql {
+  background-color: #e535ab;
+}
+
 @media only screen and (min-width: 1024px) {
   #animation {
     min-width: 1300px;
+  }
+
+  #animation .animation-button-container {
+    height: 40%;
   }
 }
 
@@ -30,5 +66,9 @@ body {
   #root>div {
     margin-left: -650px !important;
     left: 50%;
+  }
+
+  #animation .animation-button-container {
+    height: 296px;
   }
 }
