@@ -14,6 +14,9 @@
       "api/ignore": {
         "title": "Using objects instead of IDs"
       },
+      "api/models": {
+        "title": "Nested data and Models"
+      },
       "essentials/mutations": {
         "title": "Mutations"
       },

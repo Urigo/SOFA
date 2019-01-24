@@ -274,6 +274,26 @@ body.separateOnPageNav .navPusher {
 .code-snippet {
   border-radius: 8px;
   box-shadow: 0 12px 14px 0 rgba(0, 0, 0, 0.05);
+  max-width: 300px;
+  margin: 0px auto;
+  margin-top: 150px;
+  padding: 25px;
+}
+
+.code-snippet .blue {
+  color: #37a9e2;
+}
+
+.code-snippet .pink {
+  color: #e535ab;
+}
+
+.code-snippet .gray {
+  color: #4a4a4a;
+}
+
+.code-snippet .faded {
+  color: #c9c9c9;
 }
 
 /*

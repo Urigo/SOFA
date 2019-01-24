@@ -7,85 +7,30 @@
 
 const React = require('react');
 
-const SplashContainer = props => (
-  <div className="homeContainer">
-    <div className="homeSplashFade">
-      <div className="wrapper homeWrapper">{props.children}</div>
-    </div>
-  </div>
-);
-
-const ProjectTitle = () => (
-  <h2 className="projectTitle">Now you can REST with Sofa ;)</h2>
-);
-
-const PromoSection = props => (
-  <div className="section promoSection">
-    <div className="promoRow">
-      <div className="pluginRowBlock">{props.children}</div>
-    </div>
-  </div>
-);
-
-const Button = props => (
-  <div className="pluginWrapper buttonWrapper">
-    <a className="button" href={props.href} target={props.target}>
-      Documentation
-    </a>
-  </div>
-);
-
-class HomeSplash extends React.Component {
-  render() {
-    const { siteConfig, language = '' } = this.props;
-    const { baseUrl, docsUrl } = siteConfig;
-    const docsPart = `${docsUrl ? `${docsUrl}/` : ''}`;
-    const langPart = `${language ? `${language}/` : ''}`;
-    const docUrl = doc => `${baseUrl}${docsPart}${langPart}${doc}`;
-
-    return (
-      <SplashContainer>
-        <div className="inner">
-          <ProjectTitle siteConfig={siteConfig} />
-          <PromoSection>
-            <Button href={docUrl('')}>Get started</Button>
-          </PromoSection>
-        </div>
-      </SplashContainer>
-    );
-  }
-}
-
-const Highlights = () => {
+const Highlights = props => {
   return (
     <div className="highlights">
       <div className="feature">
-        <div className="title">Just copy this code</div>
-        <div className="text">
-          The best way to create REST APIs (is GraphQL) The most basic integrate
-          in one step only.
-        </div>
-        <div className="links">
-          <a href="" className="link">
-            Getting started
-          </a>
-          <a href="" className="link">
-            Copy
-          </a>
-        </div>
-      </div>
-      <div className="feature">
-        <div className="title">Integrate Sofa</div>
+        <div className="title">Fully RESTful API</div>
         <div className="text">
           Sofa takes your GraphQL Schema, looks for available queries, mutations
           and subscriptions and turns all of that into REST API.
         </div>
         <div className="links">
-          <a href="" className="link">
-            Installation
+          <a href="/docs" className="link">
+            Getting started
           </a>
-          <a href="" className="link">
-            How it works?
+        </div>
+      </div>
+      <div className="feature">
+        <div className="title">Easy to use</div>
+        <div className="text">
+          Setup Sofa within a single line of code and start using REST API right
+          away.
+        </div>
+        <div className="links">
+          <a href="/docs/#installation" className="link">
+            Installation
           </a>
         </div>
       </div>
@@ -96,7 +41,7 @@ const Highlights = () => {
           be collaborators.
         </div>
         <div className="links">
-          <a href="" className="link">
+          <a href={props.siteConfig.repoUrl} className="link">
             Github
           </a>
         </div>
@@ -113,18 +58,85 @@ const Animation = () => {
   );
 };
 
+const Import = props => {
+  return (
+    <div>
+      <span className="gray">import</span>{' '}
+      <span className="blue">{props.name}</span>{' '}
+      <span className="gray">from</span>{' '}
+      <span className="pink">{props.source}</span>
+    </div>
+  );
+};
+
+const Comment = props => {
+  return <div className="faded">// {props.value}</div>;
+};
+
+const UseExpress = () => {
+  return (
+    <div>
+      <span className="gray">const</span> <span className="blue">app</span>{' '}
+      <span className="gray">=</span> <span className="pink">express</span>
+      <span className="gray">();</span>
+    </div>
+  );
+};
+
+const UseSofa = () => {
+  return (
+    <div>
+      <span className="blue">app</span>
+      <span className="gray">.</span>
+      <span className="pink">use</span>
+      <span className="gray">(</span>
+      <span className="pink">sofa</span>
+      <span className="gray">{'({ '}</span>
+      <span className="gray">schema</span>
+      <span className="gray">{' }));'}</span>
+    </div>
+  );
+};
+
+const Line = () => {
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: 18,
+      }}
+    />
+  );
+};
+
+const Code = () => {
+  return (
+    <div className="code-snippet">
+      <Import name="sofa" source="sofa-api" />
+      <Import name="express" source="express" />
+      <Line />
+      <UseExpress />
+      <Line />
+      <UseSofa />
+      <Line />
+      <Comment value="GET /users" />
+      <Comment value="GET /messages" />
+    </div>
+  );
+};
+
 class Index extends React.Component {
   render() {
-    const { config: siteConfig, language = '' } = this.props;
+    const { config: siteConfig } = this.props;
 
     return (
       <React.Fragment>
         <Animation />
-        {/* <HomeSplash siteConfig={siteConfig} language={language} /> */}
         <div className="mainContainer">
           <div className="contentWrapper">
             <h2 className="title">Get Started</h2>
-            <Highlights />
+            <Highlights siteConfig={siteConfig} />
+            <Code />
           </div>
         </div>
       </React.Fragment>

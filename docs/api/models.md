@@ -1,0 +1,24 @@
+---
+title: Nested data and Models
+---
+
+Sofa treats some types differently than others, those are called Models.
+
+The idea behind Models is to not expose full objects in every response, especially if it's a nested, not first-level data.
+
+For example, when fetching a list of chats you don't want to include all messages in the response, you want them to be just IDs (or links). Those messages would have to have their own endpoint. We call this type of data, a Model. In REST you probably call them Resources.
+
+In order to treat particular types as Models you need to provide two queries, one that exposes a list (with no non-optional arguments) and the other to fetch a single entity (id field as an argument). The model itself has to have an id field. Those are the only requirements.
+
+```graphql
+# Message is treated as a Model
+type Query {
+  messages: [Message]
+  message(id: ID): Message
+}
+
+type Message {
+  id: ID
+  # other fields ...
+}
+```
