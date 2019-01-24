@@ -1,0 +1,12 @@
+{
+  "docs": {
+    "Introduction": ["index"],
+    "Essentials": [
+      "essentials/queries",
+      "essentials/mutations",
+      "essentials/subscriptions"
+    ],
+    "Recipies": ["recipies/open-api"],
+    "API": ["api/context", "api/ignore", "api/execute"]
+  }
+}
