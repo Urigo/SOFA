@@ -71,6 +71,7 @@ class App extends Component {
             <a
               href="/docs"
               id="button"
+              target="_parent"
               className={btnClassName}
               onMouseEnter={() => {
                 this.playToClick();
