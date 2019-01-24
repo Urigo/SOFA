@@ -46,7 +46,7 @@ body {
 }
 
 #animation .animation-button.graphql {
-  background-color: #e535ab;
+  /* background-color: #e535ab; */
 }
 
 @media only screen and (min-width: 1024px) {
