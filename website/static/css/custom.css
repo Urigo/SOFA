@@ -17,6 +17,11 @@
     font-size: 35px;
   }
 
+  .animation-container>iframe {
+    width: 100vw;
+    height: 760px;
+  }
+
   .highlights {
     flex-direction: column;
   }
@@ -49,8 +54,23 @@
 }
 
 @media only screen and (min-width: 1024px) {
+  body:not(.separateOnPageNav) .navPusher> :first-child {
+    flex-grow: 0;
+  }
+
   .contentWrapper {
     max-width: 960px;
+  }
+
+  .animation-container {
+    height: calc(((731/1300) * 100vw));
+    min-height: 730px;
+  }
+
+  .animation-container>iframe {
+    width: 100vw;
+    height: calc(((731/1300) * 100vw));
+    min-height: 730px;
   }
 
   .projectTitle {

@@ -108,13 +108,7 @@ const Highlights = () => {
 const Animation = () => {
   return (
     <div className="animation-container">
-      <iframe
-        src={'/animation/'}
-        style={{
-          width: '100vw',
-          height: '100vh',
-        }}
-      />
+      <iframe src={'/animation/'} />
     </div>
   );
 };
