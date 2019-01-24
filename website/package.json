@@ -1,9 +1,12 @@
 {
   "scripts": {
     "start": "docusaurus-start",
-    "build": "docusaurus-build",
+    "prestart": "npm run animation:dev",
+    "build": "docusaurus-build && npm run animation:prod",
     "version": "docusaurus-version",
-    "rename-version": "docusaurus-rename-version"
+    "rename-version": "docusaurus-rename-version",
+    "animation:dev": "rm -rf static/animation && cd animation && npm run build && cp -r ./build ../static/animation",
+    "animation:prod": "rm -rf build/sofa/animation && cd animation && npm run build && cp -r ./build ../build/sofa/animation"
   },
   "devDependencies": {
     "docusaurus": "1.6.2"
