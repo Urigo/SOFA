@@ -12,7 +12,7 @@ type Comment {
   text: String
 }
 
-type Mutation {
+type Query {
   comments: [Comment]
 }
 ```
