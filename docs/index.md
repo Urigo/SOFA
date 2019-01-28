@@ -23,7 +23,7 @@ yarn add sofa-api
 Or [`npm`](https://www.npmjs.com/):
 
 ```bash
-npm install yarn add sofa-api
+npm install sofa-api
 ```
 
 ### Usage
