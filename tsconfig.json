@@ -6,6 +6,7 @@
     "lib": ["es6", "esnext", "es2015"],
     "moduleResolution": "node",
     "sourceMap": true,
+    "inlineSources": true,
     "declaration": true,
     "outDir": "dist",
     "strict": true,
