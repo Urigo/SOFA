@@ -71,8 +71,10 @@ export class SubscriptionManager {
     event: StartSubscriptionEvent,
     {
       req,
+      res,
     }: {
       req: any;
+      res: any;
     }
   ) {
     const id = uuid();
@@ -94,6 +96,7 @@ export class SubscriptionManager {
       operationName,
       variables,
       req,
+      res,
     });
 
     if (typeof result !== 'undefined') {
@@ -125,8 +128,10 @@ export class SubscriptionManager {
     event: UpdateSubscriptionEvent,
     {
       req,
+      res,
     }: {
       req: any;
+      res: any;
     }
   ) {
     const { variables, id } = event;
@@ -149,6 +154,7 @@ export class SubscriptionManager {
       },
       {
         req,
+        res,
       }
     );
   }
@@ -161,6 +167,7 @@ export class SubscriptionManager {
     operationName,
     variables,
     req,
+    res,
   }: {
     id: ID;
     name: SubscriptionFieldName;
@@ -169,6 +176,7 @@ export class SubscriptionManager {
     operationName: string;
     variables: Record<string, any>;
     req: any;
+    res: any;
   }) {
     const variableNodes = this.operations.get(name)!.variables;
     const variableValues = variableNodes.reduce((values, variable) => {
@@ -188,14 +196,15 @@ export class SubscriptionManager {
       };
     }, {});
 
+    const C = isContextFn(this.sofa.context)
+      ? await this.sofa.context({ req, res })
+      : this.sofa.context;
     const execution = await subscribe({
       schema: this.sofa.schema,
       document,
       operationName,
       variableValues,
-      contextValue: isContextFn(this.sofa.context)
-        ? this.sofa.context({ req })
-        : this.sofa.context,
+      contextValue: C,
     });
 
     if (isAsyncIterable(execution)) {
