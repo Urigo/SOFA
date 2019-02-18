@@ -53,7 +53,7 @@ export function createRouter(sofa: Sofa): express.Router {
             variables,
             url,
           },
-          { req }
+          { req, res }
         );
 
         res.statusCode = 200;
@@ -82,6 +82,7 @@ export function createRouter(sofa: Sofa): express.Router {
           },
           {
             req,
+            res,
           }
         );
 
@@ -219,12 +220,14 @@ function useHandler(config: {
       };
     }, {});
 
+    const C = isContextFn(sofa.context)
+      ? await sofa.context({ req, res })
+      : sofa.context;
+
     const result = await sofa.execute({
       schema: sofa.schema,
       source: print(operation),
-      contextValue: isContextFn(sofa.context)
-        ? sofa.context({ req })
-        : sofa.context,
+      contextValue: C,
       variableValues,
       operationName: info.operation.name && info.operation.name.value,
     });
