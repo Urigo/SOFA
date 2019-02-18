@@ -1,4 +1,4 @@
-import { print, parse, DocumentNode } from 'graphql';
+import { print, parse, DocumentNode, buildSchema } from 'graphql';
 import gql from 'graphql-tag';
 
 import { schema, models } from './schema';
@@ -267,6 +267,47 @@ test('should work with Subscription', async () => {
           }
           ... on Salad {
             ingredients
+          }
+        }
+      }
+    `)
+  );
+});
+
+test('should work with circular ref', async () => {
+  const document = buildOperation({
+    schema: buildSchema(`
+      type A {
+        b: B
+      }
+      
+      type B {
+        c: C
+      }
+
+      type C {
+        end: String
+        a: A
+      }
+
+      type Query {
+        a: A
+      }
+    `),
+    kind: 'query',
+    field: 'a',
+    models,
+    ignore: [],
+  })!;
+
+  expect(clean(document)).toEqual(
+    clean(`
+      query aQuery {
+        a {
+          b {
+            c {
+              end
+            }
           }
         }
       }
