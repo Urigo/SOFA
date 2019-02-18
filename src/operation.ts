@@ -127,6 +127,7 @@ function buildDocumentNode({
           models,
           firstCall: true,
           path: [],
+          ancestors: [],
           ignore,
         }),
       ],
@@ -146,12 +147,14 @@ function resolveSelectionSet({
   models,
   firstCall,
   path,
+  ancestors,
   ignore,
 }: {
   parent: GraphQLNamedType;
   type: GraphQLNamedType;
   models: string[];
   path: string[];
+  ancestors: GraphQLNamedType[];
   firstCall?: boolean;
   ignore: Ignore;
 }): SelectionSetNode | undefined {
@@ -160,32 +163,35 @@ function resolveSelectionSet({
 
     return {
       kind: 'SelectionSet',
-      selections: types.map<InlineFragmentNode>(t => {
-        const fields = t.getFields();
+      selections: types
+        .filter(t => !hasCircularRef([...ancestors, t]))
+        .map<InlineFragmentNode>(t => {
+          const fields = t.getFields();
 
-        return {
-          kind: 'InlineFragment',
-          typeCondition: {
-            kind: 'NamedType',
-            name: {
-              kind: 'Name',
-              value: t.name,
+          return {
+            kind: 'InlineFragment',
+            typeCondition: {
+              kind: 'NamedType',
+              name: {
+                kind: 'Name',
+                value: t.name,
+              },
             },
-          },
-          selectionSet: {
-            kind: 'SelectionSet',
-            selections: Object.keys(fields).map(fieldName => {
-              return resolveField({
-                type: t,
-                field: fields[fieldName],
-                models,
-                path: [...path, fieldName],
-                ignore,
-              });
-            }),
-          },
-        };
-      }),
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: Object.keys(fields).map(fieldName => {
+                return resolveField({
+                  type: t,
+                  field: fields[fieldName],
+                  models,
+                  path: [...path, fieldName],
+                  ancestors,
+                  ignore,
+                });
+              }),
+            },
+          };
+        }),
     };
   }
 
@@ -214,15 +220,24 @@ function resolveSelectionSet({
 
     return {
       kind: 'SelectionSet',
-      selections: Object.keys(fields).map(fieldName => {
-        return resolveField({
-          type: type,
-          field: fields[fieldName],
-          models,
-          path: [...path, fieldName],
-          ignore,
-        });
-      }),
+      selections: Object.keys(fields)
+        .filter(
+          fieldName =>
+            !hasCircularRef([
+              ...ancestors,
+              getNamedType(fields[fieldName].type),
+            ])
+        )
+        .map(fieldName => {
+          return resolveField({
+            type: type,
+            field: fields[fieldName],
+            models,
+            path: [...path, fieldName],
+            ancestors,
+            ignore,
+          });
+        }),
     };
   }
 }
@@ -281,12 +296,14 @@ function resolveField({
   models,
   firstCall,
   path,
+  ancestors,
   ignore,
 }: {
   type: GraphQLObjectType;
   field: GraphQLField<any, any>;
   models: string[];
   path: string[];
+  ancestors: GraphQLNamedType[];
   firstCall?: boolean;
   ignore: Ignore;
 }): SelectionNode {
@@ -331,6 +348,7 @@ function resolveField({
         models,
         firstCall,
         path: [...path, field.name],
+        ancestors: [...ancestors, type],
         ignore,
       }),
       arguments: args,
@@ -345,4 +363,8 @@ function resolveField({
     },
     arguments: args,
   };
+}
+
+function hasCircularRef(types: GraphQLNamedType[]): boolean {
+  return types.some((t, i) => types.indexOf(t) !== i);
 }
