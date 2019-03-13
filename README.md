@@ -144,7 +144,7 @@ Sofa enables you to run GraphQL Subscriptions through WebHooks. It has a special
 
 - `POST /webhook` - stars a subscription
 - `DELETE /webhook/:id` - stops it
-- `POST /webhook/:id`- updats it
+- `POST /webhook/:id`- updates it
 
 #### Starting a subscription
 
