@@ -2,7 +2,7 @@
 
 ### vNEXT
 
-- feat: custom `depthLimit` (circular references)
+- feat: custom `depthLimit` (circular references) [PR #29](https://github.com/Urigo/SOFA/pull/29)
 
 ### v0.2.3
 
