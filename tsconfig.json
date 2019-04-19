@@ -2,8 +2,9 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "module": "commonjs",
-    "target": "es5",
+    "target": "es2016",
     "lib": ["es6", "esnext", "es2015"],
+    "types": ["node"],
     "moduleResolution": "node",
     "sourceMap": true,
     "inlineSources": true,
