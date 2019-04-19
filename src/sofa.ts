@@ -26,6 +26,7 @@ export interface SofaConfig {
   execute?: ExecuteFn;
   ignore?: Ignore; // treat an Object with an ID as not a model - accepts ['User', 'Message.author']
   onRoute?: OnRoute;
+  depthLimit?: number;
 }
 
 export interface Sofa {

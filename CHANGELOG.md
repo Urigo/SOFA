@@ -2,6 +2,8 @@
 
 ### vNEXT
 
+- feat: custom `depthLimit` (circular references)
+
 ### v0.2.3
 
 - fix: prevent circular references [PR #23](https://github.com/Urigo/SOFA/pull/23)
