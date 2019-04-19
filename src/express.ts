@@ -220,14 +220,14 @@ function useHandler(config: {
       };
     }, {});
 
-    const C = isContextFn(sofa.context)
+    const contextValue = isContextFn(sofa.context)
       ? await sofa.context({ req, res })
       : sofa.context;
 
     const result = await sofa.execute({
       schema: sofa.schema,
       source: print(operation),
-      contextValue: C,
+      contextValue,
       variableValues,
       operationName: info.operation.name && info.operation.name.value,
     });
