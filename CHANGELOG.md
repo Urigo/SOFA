@@ -2,6 +2,8 @@
 
 ### vNEXT
 
+### v0.3.0
+
 - fix: parse InputTypeObject with JSON.parse [PR #30](https://github.com/Urigo/SOFA/pull/30)
 - feat: custom `depthLimit` (circular references) [PR #29](https://github.com/Urigo/SOFA/pull/29)
 
