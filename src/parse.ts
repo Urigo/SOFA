@@ -5,6 +5,7 @@ import {
   isScalarType,
   isEqualType,
   GraphQLBoolean,
+  isInputObjectType,
 } from 'graphql';
 
 export function parseVariable({
@@ -37,16 +38,20 @@ function resolveVariable({
   schema: GraphQLSchema;
 }): any | any[] {
   if (type.kind === 'NamedType') {
-    const scalar = schema.getType(type.name.value);
+    const namedType = schema.getType(type.name.value);
 
-    if (isScalarType(scalar)) {
+    if (isScalarType(namedType)) {
       // GraphQLBoolean.serialize expects a boolean or a number only
-      if (isEqualType(GraphQLBoolean, scalar)) {
+      if (isEqualType(GraphQLBoolean, namedType)) {
         // we don't support TRUE
         value = value === 'true';
       }
 
-      return scalar.serialize(value);
+      return namedType.serialize(value);
+    }
+
+    if (isInputObjectType(namedType)) {
+      return value && JSON.parse(value);
     }
 
     return value;

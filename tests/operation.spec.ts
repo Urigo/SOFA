@@ -258,7 +258,7 @@ test('should work with Subscription', async () => {
   })!;
 
   expect(clean(document)).toEqual(
-    clean(`
+    clean(/* GraphQL */ `
       subscription onFoodSubscription {
         onFood {
           ... on Pizza {
@@ -276,7 +276,7 @@ test('should work with Subscription', async () => {
 
 test('should work with circular ref (default depth limit === 1)', async () => {
   const document = buildOperation({
-    schema: buildSchema(`
+    schema: buildSchema(/* GraphQL */ `
       type A {
         b: B
       }
@@ -301,7 +301,7 @@ test('should work with circular ref (default depth limit === 1)', async () => {
   })!;
 
   expect(clean(document)).toEqual(
-    clean(`
+    clean(/* GraphQL */ `
       query aQuery {
         a {
           b {
@@ -317,7 +317,7 @@ test('should work with circular ref (default depth limit === 1)', async () => {
 
 test('should work with circular ref (custom depth limit)', async () => {
   const document = buildOperation({
-    schema: buildSchema(`
+    schema: buildSchema(/* GraphQL */ `
       type A {
         b: B
       }
@@ -343,7 +343,7 @@ test('should work with circular ref (custom depth limit)', async () => {
   })!;
 
   expect(clean(document)).toEqual(
-    clean(`
+    clean(/* GraphQL */ `
       query aQuery {
         a {
           b {
@@ -361,5 +361,40 @@ test('should work with circular ref (custom depth limit)', async () => {
         }
       }
     `)
+  );
+});
+
+test('arguments', async () => {
+  const document = buildOperation({
+    schema: buildSchema(/* GraphQL */ `
+    input PageInfoInput {
+      offset: Int!
+      limit: Int!
+    }
+
+    type User {
+      id: ID
+      name: String
+    }
+    
+    type Query {
+      users(pageInfo: PageInfoInput!): [User]
+    }
+    `),
+    kind: 'query',
+    field: 'users',
+    models,
+    ignore: [],
+  })!;
+
+  expect(clean(document)).toEqual(
+    clean(/* GraphQL */ `
+    query usersQuery($pageInfo: PageInfoInput!) {
+      users(pageInfo: $pageInfo) {
+        id
+        name
+      }
+    }
+  `)
   );
 });
