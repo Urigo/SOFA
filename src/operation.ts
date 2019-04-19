@@ -53,12 +53,14 @@ export function buildOperation({
   field,
   models,
   ignore,
+  depthLimit,
 }: {
   schema: GraphQLSchema;
   kind: OperationTypeNode;
   field: string;
   models: string[];
   ignore: Ignore;
+  depthLimit?: number;
 }) {
   resetOperationVariables();
 
@@ -70,6 +72,7 @@ export function buildOperation({
     kind,
     models,
     ignore,
+    depthLimit: depthLimit || 1,
   });
 
   // attach variables
@@ -88,12 +91,14 @@ function buildDocumentNode({
   kind,
   models,
   ignore,
+  depthLimit,
 }: {
   schema: GraphQLSchema;
   fieldName: string;
   kind: OperationTypeNode;
   models: string[];
   ignore: Ignore;
+  depthLimit: number;
 }) {
   const typeMap: Record<OperationTypeNode, GraphQLObjectType> = {
     query: schema.getQueryType()!,
@@ -129,6 +134,7 @@ function buildDocumentNode({
           path: [],
           ancestors: [],
           ignore,
+          depthLimit,
         }),
       ],
     },
@@ -149,6 +155,7 @@ function resolveSelectionSet({
   path,
   ancestors,
   ignore,
+  depthLimit,
 }: {
   parent: GraphQLNamedType;
   type: GraphQLNamedType;
@@ -157,6 +164,7 @@ function resolveSelectionSet({
   ancestors: GraphQLNamedType[];
   firstCall?: boolean;
   ignore: Ignore;
+  depthLimit: number;
 }): SelectionSetNode | undefined {
   if (isUnionType(type)) {
     const types = type.getTypes();
@@ -164,7 +172,12 @@ function resolveSelectionSet({
     return {
       kind: 'SelectionSet',
       selections: types
-        .filter(t => !hasCircularRef([...ancestors, t]))
+        .filter(
+          t =>
+            !hasCircularRef([...ancestors, t], {
+              depth: depthLimit,
+            })
+        )
         .map<InlineFragmentNode>(t => {
           const fields = t.getFields();
 
@@ -187,6 +200,7 @@ function resolveSelectionSet({
                   path: [...path, fieldName],
                   ancestors,
                   ignore,
+                  depthLimit,
                 });
               }),
             },
@@ -221,13 +235,14 @@ function resolveSelectionSet({
     return {
       kind: 'SelectionSet',
       selections: Object.keys(fields)
-        .filter(
-          fieldName =>
-            !hasCircularRef([
-              ...ancestors,
-              getNamedType(fields[fieldName].type),
-            ])
-        )
+        .filter(fieldName => {
+          return !hasCircularRef(
+            [...ancestors, getNamedType(fields[fieldName].type)],
+            {
+              depth: depthLimit,
+            }
+          );
+        })
         .map(fieldName => {
           return resolveField({
             type: type,
@@ -236,6 +251,7 @@ function resolveSelectionSet({
             path: [...path, fieldName],
             ancestors,
             ignore,
+            depthLimit,
           });
         }),
     };
@@ -298,6 +314,7 @@ function resolveField({
   path,
   ancestors,
   ignore,
+  depthLimit,
 }: {
   type: GraphQLObjectType;
   field: GraphQLField<any, any>;
@@ -306,6 +323,7 @@ function resolveField({
   ancestors: GraphQLNamedType[];
   firstCall?: boolean;
   ignore: Ignore;
+  depthLimit: number;
 }): SelectionNode {
   const namedType = getNamedType(field.type);
   let args: ArgumentNode[] = [];
@@ -350,6 +368,7 @@ function resolveField({
         path: [...path, field.name],
         ancestors: [...ancestors, type],
         ignore,
+        depthLimit,
       }),
       arguments: args,
     };
@@ -365,6 +384,20 @@ function resolveField({
   };
 }
 
-function hasCircularRef(types: GraphQLNamedType[]): boolean {
-  return types.some((t, i) => types.indexOf(t) !== i);
+function hasCircularRef(
+  types: GraphQLNamedType[],
+  config: {
+    depth: number;
+  } = {
+    depth: 1,
+  }
+): boolean {
+  const type = types[types.length - 1];
+
+  if (isScalarType(type)) {
+    return false;
+  }
+
+  const size = types.filter(t => t.name === type.name).length;
+  return size > config.depth;
 }

@@ -122,6 +122,20 @@ Whenever Sofa tries to resolve an author of a message, instead of exposing an ID
 
 > Pattern is easy: `Type:field` or `Type`
 
+### Custom depth limit
+
+Sofa prevents circular references by default, but only one level deep. In order to change it, set the `depthLimit` option to any number:
+
+```ts
+api.use(
+  '/api',
+  sofa({
+    schema,
+    depthLimit: 2,
+  })
+);
+```
+
 ### Custom execute phase
 
 By default, Sofa uses `graphql` function from `graphql-js` to turn an operation into data but it's very straightforward to pass your own logic. Thanks to that you can even use a remote GraphQL Server (with Fetch or through Apollo Links).

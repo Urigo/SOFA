@@ -274,7 +274,7 @@ test('should work with Subscription', async () => {
   );
 });
 
-test('should work with circular ref', async () => {
+test('should work with circular ref (default depth limit === 1)', async () => {
   const document = buildOperation({
     schema: buildSchema(`
       type A {
@@ -307,6 +307,55 @@ test('should work with circular ref', async () => {
           b {
             c {
               end
+            }
+          }
+        }
+      }
+    `)
+  );
+});
+
+test('should work with circular ref (custom depth limit)', async () => {
+  const document = buildOperation({
+    schema: buildSchema(`
+      type A {
+        b: B
+      }
+      
+      type B {
+        c: C
+      }
+
+      type C {
+        end: String
+        a: A
+      }
+
+      type Query {
+        a: A
+      }
+    `),
+    kind: 'query',
+    field: 'a',
+    models,
+    ignore: [],
+    depthLimit: 2,
+  })!;
+
+  expect(clean(document)).toEqual(
+    clean(`
+      query aQuery {
+        a {
+          b {
+            c {
+              end
+              a {
+                b {
+                  c {
+                    end
+                  }
+                }
+              }
             }
           }
         }
