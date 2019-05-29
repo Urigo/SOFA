@@ -1,6 +1,8 @@
 import {
   GraphQLObjectType,
+  GraphQLInputObjectType,
   GraphQLField,
+  GraphQLInputField,
   isNonNullType,
   GraphQLOutputType,
   isListType,
@@ -10,7 +12,9 @@ import {
 } from 'graphql';
 import { mapToPrimitive, mapToRef } from './utils';
 
-export function buildSchemaObjectFromType(type: GraphQLObjectType): any {
+export function buildSchemaObjectFromType(
+  type: GraphQLObjectType | GraphQLInputObjectType
+): any {
   const required: string[] = [];
   const properties: Record<string, any> = {};
 
@@ -33,7 +37,7 @@ export function buildSchemaObjectFromType(type: GraphQLObjectType): any {
   };
 }
 
-function resolveField(field: GraphQLField<any, any>) {
+function resolveField(field: GraphQLField<any, any> | GraphQLInputField) {
   return resolveFieldType(field.type);
 }
 
