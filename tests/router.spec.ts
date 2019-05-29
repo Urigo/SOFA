@@ -1,6 +1,7 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import * as supertest from 'supertest';
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
 import { schema, models } from './schema';
 import { createRouter } from '../src/express';
 import { createSofa } from '../src';
@@ -62,6 +63,7 @@ test('should parse InputTypeObject', done => {
       name: 'Foo',
     },
   ];
+  const spy = jest.fn(() => users);
   const sofa = createSofa({
     schema: makeExecutableSchema({
       typeDefs: /* GraphQL */ `
@@ -69,12 +71,12 @@ test('should parse InputTypeObject', done => {
           offset: Int
           limit: Int!
         }
-    
+
         type User {
           id: ID
           name: String
         }
-        
+
         type Query {
           usersInfo(pageInfo: PageInfoInput!): [User]
         }
@@ -90,15 +92,24 @@ test('should parse InputTypeObject', done => {
   const router = createRouter(sofa);
   const app = express();
 
+  app.use(bodyParser.json());
   app.use('/api', router);
 
+  const params = {
+    pageInfo: {
+      limit: 5,
+    },
+  };
+
   supertest(app)
-    .get('/api/users-info?pageInfo={"limit": 5}')
+    .post('/api/users')
+    .send(params)
     .expect(200, (err, res) => {
       if (err) {
         done.fail(err);
       } else {
         expect(res.body).toEqual(users);
+        expect(spy.mock.calls[0][1]).toEqual(params);
         done();
       }
     });

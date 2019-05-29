@@ -51,7 +51,7 @@ function resolveVariable({
     }
 
     if (isInputObjectType(namedType)) {
-      return value && JSON.parse(value);
+      return value && typeof value === 'object' ? value : JSON.parse(value);
     }
 
     return value;

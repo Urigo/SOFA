@@ -1,5 +1,12 @@
 import * as express from 'express';
-import { DocumentNode, print, isObjectType, isNonNullType } from 'graphql';
+import {
+  DocumentNode,
+  print,
+  isObjectType,
+  isNonNullType,
+  GraphQLInputObjectType,
+  GraphQLNonNull,
+} from 'graphql';
 
 import { buildOperation } from './operation';
 import { getOperationInfo, OperationInfo } from './ast';
@@ -149,14 +156,16 @@ function createQueryRoute({
   const hasIdArgument = field.args.some(arg => arg.name === 'id');
   const path = getPath(fieldName, isSingle && hasIdArgument);
 
-  router.get(path, useHandler({ info, fieldName, sofa, operation }));
+  const method = field.args.find(arg => isInputType(arg.type)) ? 'post' : 'get';
+
+  router[method](path, useHandler({ info, fieldName, sofa, operation }));
 
   logger.debug(`[Router] ${fieldName} query available at ${path}`);
 
   return {
     document: operation,
     path,
-    method: 'GET',
+    method: method.toUpperCase() as 'POST' | 'GET',
   };
 }
 
@@ -264,6 +273,15 @@ function pickParam(req: express.Request, name: string) {
   if (req.body && req.body[name]) {
     return req.body[name];
   }
+}
+
+// Graphql provided isInputType accepts GraphQLScalarType, GraphQLEnumType.
+function isInputType(type: any): boolean {
+  if (type instanceof GraphQLNonNull) {
+    return isInputType(type.ofType);
+  }
+
+  return type instanceof GraphQLInputObjectType;
 }
 
 function useAsync<T = any>(
