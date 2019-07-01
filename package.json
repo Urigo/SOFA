@@ -39,10 +39,11 @@
     "start": "ts-node example/index.ts",
     "prod": "webpack && node dist/bundle.js",
     "build": "tsc -p tsconfig.build.json",
-    "test": "jest",
+    "test": "jest && yarn bundlesize",
     "format": "prettier --write **/*.{ts,js,md,json}",
     "prebuild": "rm -rf dist/",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "bundlesize": "cd bundle-test/ && yarn && yarn test"
   },
   "devDependencies": {
     "@types/body-parser": "1.17.0",
