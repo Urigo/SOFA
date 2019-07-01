@@ -43,7 +43,7 @@
     "format": "prettier --write **/*.{ts,js,md,json}",
     "prebuild": "rm -rf dist/",
     "prepublishOnly": "yarn build",
-    "bundlesize": "cd bundle-test/ && yarn && yarn test"
+    "bundlesize": "yarn build && cd bundle-test/ && yarn && yarn test"
   },
   "devDependencies": {
     "@types/body-parser": "1.17.0",
