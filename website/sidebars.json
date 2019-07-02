@@ -6,7 +6,7 @@
       "essentials/mutations",
       "essentials/subscriptions"
     ],
-    "Recipies": ["recipies/open-api"],
+    "Recipes": ["recipes/open-api"],
     "API": ["api/models", "api/context", "api/ignore", "api/execute"]
   }
 }

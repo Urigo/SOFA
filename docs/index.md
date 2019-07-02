@@ -8,7 +8,7 @@ An open source library you install on your GraphQL server to create a fully REST
 - Get most of the **benefits of GraphQL** on the backend and frontend, while using and **exposing REST**
 - **Support all your existing clients** with REST while improving your backend stack with GraphQL
 - Create custom, perfectly client-aligned REST endpoints for your frontend simply by naming a route and attaching a query
-- In the other way around (REST to GraphQL) you won’t get the best of both world but less powerful, harder to maintain server implementation with a some of the benefits of GraphQL. It can be a good and fast start for a migration though..
+- In the other way around (REST to GraphQL) you won’t get the best of both worlds. Instead just less powerful, harder-to-maintain server implementations with a some of the benefits of GraphQL. It can be a good and fast start for a migration though.
 - Fully **generated documentation** that is always up-to-date
 - **GraphQL Subscriptions as Webhooks**
 
