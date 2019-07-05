@@ -76,12 +76,12 @@ test('should parse InputTypeObject', done => {
         }
         
         type Query {
-          users(pageInfo: PageInfoInput!): [User]
+          usersInfo(pageInfo: PageInfoInput!): [User]
         }
       `,
       resolvers: {
         Query: {
-          users: () => users,
+          usersInfo: () => users,
         },
       },
     }),
@@ -93,7 +93,7 @@ test('should parse InputTypeObject', done => {
   app.use('/api', router);
 
   supertest(app)
-    .get('/api/users?pageInfo={"limit": 5}')
+    .get('/api/users-info?pageInfo={"limit": 5}')
     .expect(200, (err, res) => {
       if (err) {
         done.fail(err);

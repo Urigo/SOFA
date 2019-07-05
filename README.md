@@ -49,6 +49,7 @@ type Query {
   chat(id: ID): Chat
   chats: [Chat]
   me: Chat
+  recentChats: [Chat]
 }
 ```
 
@@ -58,6 +59,7 @@ Routes that are being generated:
 GET /chat/:id
 GET /chats
 GET /me
+GET /recent-chats
 ```
 
 ### Nested data and idea behind Models
