@@ -49,7 +49,7 @@ type Query {
   chat(id: ID): Chat
   chats: [Chat]
   me: Chat
-  recentChats: Chat
+  recentChats: [Chat]
 }
 ```
 
