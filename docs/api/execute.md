@@ -7,7 +7,7 @@ By default, Sofa uses `graphql` function from `graphql-js` package to resolve an
 ```typescript
 api.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
     async execute(args) {
       return yourOwnLogicHere(args);

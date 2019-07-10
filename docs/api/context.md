@@ -11,7 +11,7 @@ Sofa allows to build a context object through a factory function. You get an acc
 ```typescript
 api.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
     async context({ req }) {
       return {
@@ -30,7 +30,7 @@ You can also pass any data, directly, without using a function.
 ```typescript
 api.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
     context: yourContext,
   })

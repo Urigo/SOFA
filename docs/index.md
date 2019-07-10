@@ -29,12 +29,12 @@ npm install sofa-api
 ### Usage
 
 ```typescript
-import sofa from 'sofa-api';
+import { useSofa } from 'sofa-api';
 import express from 'express';
 
 const app = express();
 
-app.use('/api', sofa({ schema }));
+app.use('/api', useSofa({ schema }));
 
 // GET  /api/messages
 // POST /api/add-message
