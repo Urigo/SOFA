@@ -5,7 +5,7 @@ title: OpenAPI (Swagger)
 Thanks to GraphQL's Type System Sofa is able to generate OpenAPI (Swagger) definitions out of it. Possibilities are endless here. You get all the information you need in order to write your own definitions or create a plugin that follows any specification.
 
 ```ts
-import sofa, { OpenAPI } from 'sofa-api';
+import { OpenAPI, useSofa } from 'sofa-api';
 
 const openApi = OpenAPI({
   schema,
@@ -17,7 +17,7 @@ const openApi = OpenAPI({
 
 app.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
     onRoute(info) {
       openApi.addRoute(info, {

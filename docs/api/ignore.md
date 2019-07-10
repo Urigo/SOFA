@@ -7,7 +7,7 @@ There are some cases where sending a full object makes more sense than passing o
 ```typescript
 api.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
     ignore: ['Message.author'],
   })

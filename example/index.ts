@@ -11,7 +11,7 @@ import * as swaggerDocument from './swagger.json';
 
 // Sofa
 
-import sofa, { OpenAPI } from '../src';
+import { useSofa, OpenAPI } from '../src';
 import { logger } from '../src/logger';
 
 const app = express();
@@ -32,7 +32,7 @@ const openApi = OpenAPI({
 });
 
 app.use(
-  sofa({
+  useSofa({
     schema,
     ignore: ['User.favoriteBook'],
     onRoute(info) {

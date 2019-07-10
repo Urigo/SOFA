@@ -17,14 +17,14 @@ The best way to create REST APIs (is GraphQL).
 The most basic example possible:
 
 ```ts
-import sofa from 'sofa-api';
+import { useSofa } from 'sofa-api';
 import express from 'express';
 
 const app = express();
 
 app.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
   })
 );
@@ -92,7 +92,7 @@ In order for Sofa to resolve operations based on a Context, you need te be able 
 ```ts
 api.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
     async context({ req }) {
       return {
@@ -113,7 +113,7 @@ There are some cases where sending a full object makes more sense than passing o
 ```ts
 api.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
     ignore: ['Message.author'],
   })
@@ -131,7 +131,7 @@ Sofa prevents circular references by default, but only one level deep. In order 
 ```ts
 api.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
     depthLimit: 2,
   })
@@ -145,7 +145,7 @@ By default, Sofa uses `graphql` function from `graphql-js` to turn an operation 
 ```ts
 api.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
     async execute(args) {
       return yourOwnLogicHere(args);
@@ -225,7 +225,7 @@ In return we get an `id` that we later on use to stop or update subscription:
 Thanks to GraphQL's Type System Sofa is able to generate OpenAPI (Swagger) definitions out of it. Possibilities are endless here. You get all the information you need in order to write your own definitions or create a plugin that follows any specification.
 
 ```ts
-import sofa, { OpenAPI } from 'sofa-api';
+import { useSofa, OpenAPI } from 'sofa-api';
 
 const openApi = OpenAPI({
   schema,
@@ -237,7 +237,7 @@ const openApi = OpenAPI({
 
 app.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
     onRoute(info) {
       openApi.addRoute(info, {
