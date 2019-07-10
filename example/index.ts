@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 
 const schema = makeExecutableSchema({
   typeDefs,
-  resolvers: resolvers as any,
+  resolvers,
 });
 
 const openApi = OpenAPI({
