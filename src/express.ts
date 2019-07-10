@@ -234,7 +234,14 @@ function useHandler(config: {
 
     // TODO: add error handling for result.errors
     if (result.errors) {
-      throw new Error(result.errors.toString());
+      const defaultErrorHandler: ErrorHandler = (res, error) => {
+        res.status(500);
+        res.json(error);
+      };
+      const errorHandler: ErrorHandler =
+        sofa.errorHandler || defaultErrorHandler;
+      errorHandler(res, result.errors[0]);
+      return;
     }
 
     res.json(result.data && result.data[fieldName]);

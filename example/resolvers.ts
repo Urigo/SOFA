@@ -37,6 +37,9 @@ export const resolvers: any = {
     feed() {
       return PostsCollection.all();
     },
+    never() {
+      throw new Error('Some Message');
+    },
   },
   Mutation: {
     addBook(_: any, { title }: any) {

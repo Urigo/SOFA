@@ -7,6 +7,12 @@
       "essentials/subscriptions"
     ],
     "Recipes": ["recipes/open-api"],
-    "API": ["api/models", "api/context", "api/ignore", "api/execute"]
+    "API": [
+      "api/models",
+      "api/context",
+      "api/ignore",
+      "api/execute",
+      "api/error-handler"
+    ]
   }
 }

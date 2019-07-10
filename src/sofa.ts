@@ -13,6 +13,7 @@ import {
 import { Ignore, Context, ContextFn, ExecuteFn, OnRoute } from './types';
 import { convertName } from './common';
 import { logger } from './logger';
+import { ErrorHandler } from './express';
 
 // user passes:
 // - schema
@@ -27,6 +28,7 @@ export interface SofaConfig {
   ignore?: Ignore; // treat an Object with an ID as not a model - accepts ['User', 'Message.author']
   onRoute?: OnRoute;
   depthLimit?: number;
+  errorHandler?: ErrorHandler;
 }
 
 export interface Sofa {
@@ -36,6 +38,7 @@ export interface Sofa {
   ignore: Ignore;
   execute: ExecuteFn;
   onRoute?: OnRoute;
+  errorHandler?: ErrorHandler;
 }
 
 export function createSofa(config: SofaConfig): Sofa {
