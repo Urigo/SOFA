@@ -1,0 +1,19 @@
+---
+title: Error Handling
+---
+
+By default, Sofa returns a response that includes JSON representation of thrown error object from GraphQL with HTTP status code 500. But, you can enhance error handler by adding your `errorHandler` function.
+
+```typescript
+api.use(
+  '/api',
+  sofa({
+    schema,
+    errorHandler(res, error) {
+      logError(error);
+      res.code(500);
+      res.json(formatError(error));
+    },
+  })
+);
+```
