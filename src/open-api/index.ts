@@ -1,4 +1,9 @@
-import { GraphQLSchema, isObjectType, isIntrospectionType } from 'graphql';
+import {
+  GraphQLSchema,
+  isObjectType,
+  isInputObjectType,
+  isIntrospectionType,
+} from 'graphql';
 import * as YAML from 'yamljs';
 import { writeFileSync } from 'fs';
 
@@ -27,7 +32,10 @@ export function OpenAPI({
   for (const typeName in types) {
     const type = types[typeName];
 
-    if (isObjectType(type) && !isIntrospectionType(type)) {
+    if (
+      (isObjectType(type) || isInputObjectType(type)) &&
+      !isIntrospectionType(type)
+    ) {
       swagger.components!.schemas![typeName] = buildSchemaObjectFromType(type);
     }
   }
