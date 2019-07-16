@@ -10,7 +10,10 @@ import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
 import { logger } from './logger';
 
-export type ErrorHandler = (res: express.Response, error: any) => void;
+export type ErrorHandler = (
+  res: express.Response,
+  error: Readonly<Error[]>
+) => void;
 
 export function createRouter(sofa: Sofa): express.Router {
   logger.debug('[Sofa] Creating router');
@@ -232,15 +235,14 @@ function useHandler(config: {
       operationName: info.operation.name && info.operation.name.value,
     });
 
-    // TODO: add error handling for result.errors
     if (result.errors) {
-      const defaultErrorHandler: ErrorHandler = (res, error) => {
+      const defaultErrorHandler: ErrorHandler = (res, errors) => {
         res.status(500);
-        res.json(error);
+        res.json(errors[0]);
       };
       const errorHandler: ErrorHandler =
         sofa.errorHandler || defaultErrorHandler;
-      errorHandler(res, result.errors[0]);
+      errorHandler(res, result.errors);
       return;
     }
 
