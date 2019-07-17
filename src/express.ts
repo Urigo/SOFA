@@ -12,7 +12,7 @@ import { logger } from './logger';
 
 export type ErrorHandler = (
   res: express.Response,
-  error: Readonly<Error[]>
+  error: ReadonlyArray<Error>
 ) => void;
 
 export function createRouter(sofa: Sofa): express.Router {
