@@ -56,7 +56,7 @@ test('should work with Mutation', async () => {
   expect(route.methods.post).toEqual(true);
 });
 
-test('should parse InputTypeObject', done => {
+test('should overwrite a default http method on demand', done => {
   const users = [
     {
       id: 'user:foo',
@@ -64,6 +64,7 @@ test('should parse InputTypeObject', done => {
     },
   ];
   const spy = jest.fn(() => users);
+  const spyMutation = jest.fn(() => users[0]);
   const sofa = createSofa({
     schema: makeExecutableSchema({
       typeDefs: /* GraphQL */ `
@@ -80,13 +81,24 @@ test('should parse InputTypeObject', done => {
         type Query {
           usersInfo(pageInfo: PageInfoInput!): [User]
         }
+
+        type Mutation {
+          addRandomUser: User
+        }
       `,
       resolvers: {
         Query: {
           usersInfo: () => users,
         },
+        Mutation: {
+          addRandomUser: spyMutation,
+        },
       },
     }),
+    methodMap: {
+      'Query.users': 'POST',
+      'Mutation.addRandomUser': 'GET',
+    },
   });
 
   const router = createRouter(sofa);
@@ -110,7 +122,18 @@ test('should parse InputTypeObject', done => {
       } else {
         expect(res.body).toEqual(users);
         expect(spy.mock.calls[0][1]).toEqual(params);
-        done();
+
+        supertest(app)
+          .get('/api/add-random-user')
+          .send()
+          .expect(200, (err, res) => {
+            if (err) {
+              done.fail(err);
+            } else {
+              expect(res.body).toEqual(users[0]);
+              done();
+            }
+          });
       }
     });
 });

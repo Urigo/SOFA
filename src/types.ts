@@ -8,9 +8,13 @@ export type Ignore = string[];
 
 export type ExecuteFn = (args: GraphQLArgs) => Promise<ExecutionResult<any>>;
 
+export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+
 export interface RouteInfo {
   document: DocumentNode;
   path: string;
-  method: 'GET' | 'POST';
+  method: Method;
 }
 export type OnRoute = (info: RouteInfo) => void;
+
+export type MethodMap = Record<string, Method>;
