@@ -44,7 +44,7 @@ export interface SofaConfig {
    * Overwrites the default HTTP method.
    * @example {"Query.field": "GET", "Mutation.field": "POST"}
    */
-  methodMap?: MethodMap;
+  method?: MethodMap;
 }
 
 export interface Sofa {
@@ -52,7 +52,7 @@ export interface Sofa {
   context: Context;
   models: string[];
   ignore: Ignore;
-  methodMap?: MethodMap;
+  method?: MethodMap;
   execute: ExecuteFn;
   onRoute?: OnRoute;
   errorHandler?: ErrorHandler;

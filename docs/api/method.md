@@ -9,7 +9,7 @@ api.use(
   '/api',
   sofa({
     schema,
-    methodMap: {
+    method: {
       'Query.feed': 'POST',
     },
   })

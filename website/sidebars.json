@@ -12,7 +12,8 @@
       "api/context",
       "api/ignore",
       "api/execute",
-      "api/error-handler"
+      "api/error-handler",
+      "api/method"
     ]
   }
 }

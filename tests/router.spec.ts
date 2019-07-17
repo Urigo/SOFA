@@ -97,7 +97,7 @@ test('should overwrite a default http method on demand', done => {
         },
       },
     }),
-    methodMap: {
+    method: {
       'Query.users': 'POST',
       'Mutation.addRandomUser': 'GET',
     },

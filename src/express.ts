@@ -153,7 +153,7 @@ function createQueryRoute({
   const method = produceMethod({
     typeName: queryType.name,
     fieldName,
-    methodMap: sofa.methodMap,
+    methodMap: sofa.method,
     defaultValue: 'GET',
   });
 
@@ -196,7 +196,7 @@ function createMutationRoute({
   const method = produceMethod({
     typeName: mutationType.name,
     fieldName,
-    methodMap: sofa.methodMap,
+    methodMap: sofa.method,
     defaultValue: 'POST',
   });
 
