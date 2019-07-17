@@ -63,8 +63,10 @@ test('should overwrite a default http method on demand', done => {
       name: 'Foo',
     },
   ];
+
   const spy = jest.fn(() => users);
   const spyMutation = jest.fn(() => users[0]);
+
   const sofa = createSofa({
     schema: makeExecutableSchema({
       typeDefs: /* GraphQL */ `
@@ -79,7 +81,7 @@ test('should overwrite a default http method on demand', done => {
         }
 
         type Query {
-          usersInfo(pageInfo: PageInfoInput!): [User]
+          users(pageInfo: PageInfoInput!): [User]
         }
 
         type Mutation {
@@ -88,7 +90,7 @@ test('should overwrite a default http method on demand', done => {
       `,
       resolvers: {
         Query: {
-          usersInfo: () => users,
+          users: spy,
         },
         Mutation: {
           addRandomUser: spyMutation,
