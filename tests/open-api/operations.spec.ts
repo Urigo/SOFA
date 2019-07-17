@@ -37,6 +37,7 @@ test('handle query', async () => {
     url: '/api/feed',
     operation,
     schema,
+    useRequestBody: false,
   });
 
   expect(result.operationId).toEqual('feedQuery');
@@ -70,6 +71,7 @@ test('handle mutation', async () => {
     url: '/api/add-post',
     operation,
     schema,
+    useRequestBody: true,
   });
 
   // id

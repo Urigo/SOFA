@@ -4,13 +4,14 @@ import { DocumentNode, print, isObjectType, isNonNullType } from 'graphql';
 import { buildOperation } from './operation';
 import { getOperationInfo, OperationInfo } from './ast';
 import { Sofa, isContextFn } from './sofa';
-import { RouteInfo } from './types';
+import { RouteInfo, Method, MethodMap } from './types';
 import { convertName } from './common';
 import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
 import { logger } from './logger';
 
 export type ErrorHandler = (res: express.Response, error: any) => void;
+export type ExpressMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
 export function createRouter(sofa: Sofa): express.Router {
   logger.debug('[Sofa] Creating router');
@@ -149,14 +150,24 @@ function createQueryRoute({
   const hasIdArgument = field.args.some(arg => arg.name === 'id');
   const path = getPath(fieldName, isSingle && hasIdArgument);
 
-  router.get(path, useHandler({ info, fieldName, sofa, operation }));
+  const method = produceMethod({
+    typeName: queryType.name,
+    fieldName,
+    methodMap: sofa.method,
+    defaultValue: 'GET',
+  });
 
-  logger.debug(`[Router] ${fieldName} query available at ${path}`);
+  router[method.toLocaleLowerCase() as ExpressMethod](
+    path,
+    useHandler({ info, fieldName, sofa, operation })
+  );
+
+  logger.debug(`[Router] ${fieldName} query available at ${method} ${path}`);
 
   return {
     document: operation,
     path,
-    method: 'GET',
+    method: method.toUpperCase() as Method,
   };
 }
 
@@ -171,6 +182,7 @@ function createMutationRoute({
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} mutation`);
 
+  const mutationType = sofa.schema.getMutationType()!;
   const operation = buildOperation({
     kind: 'mutation',
     schema: sofa.schema,
@@ -181,14 +193,24 @@ function createMutationRoute({
   const info = getOperationInfo(operation)!;
   const path = getPath(fieldName);
 
-  router.post(path, useHandler({ info, fieldName, sofa, operation }));
+  const method = produceMethod({
+    typeName: mutationType.name,
+    fieldName,
+    methodMap: sofa.method,
+    defaultValue: 'POST',
+  });
 
-  logger.debug(`[Router] ${fieldName} mutation available at ${path}`);
+  router[method.toLowerCase() as ExpressMethod](
+    path,
+    useHandler({ info, fieldName, sofa, operation })
+  );
+
+  logger.debug(`[Router] ${fieldName} mutation available at ${method} ${path}`);
 
   return {
     document: operation,
     path,
-    method: 'POST',
+    method: method.toUpperCase() as Method,
   };
 }
 
@@ -283,4 +305,24 @@ function useAsync<T = any>(
       next(e);
     });
   };
+}
+
+function produceMethod({
+  typeName,
+  fieldName,
+  methodMap,
+  defaultValue,
+}: {
+  typeName: string;
+  fieldName: string;
+  methodMap?: MethodMap;
+  defaultValue: Method;
+}): Method {
+  const path = `${typeName}.${fieldName}`;
+
+  if (methodMap && methodMap[path]) {
+    return methodMap[path];
+  }
+
+  return defaultValue;
 }
