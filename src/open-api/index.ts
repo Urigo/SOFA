@@ -63,6 +63,7 @@ export function OpenAPI({
         url: path,
         operation: info.document,
         schema,
+        useRequestBody: ['POST', 'PUT', 'PATCH'].includes(info.method),
       });
     },
     get() {

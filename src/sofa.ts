@@ -10,7 +10,14 @@ import {
   GraphQLOutputType,
 } from 'graphql';
 
-import { Ignore, Context, ContextFn, ExecuteFn, OnRoute } from './types';
+import {
+  Ignore,
+  Context,
+  ContextFn,
+  ExecuteFn,
+  OnRoute,
+  MethodMap,
+} from './types';
 import { convertName } from './common';
 import { logger } from './logger';
 import { ErrorHandler } from './express';
@@ -25,10 +32,19 @@ export interface SofaConfig {
   schema: GraphQLSchema;
   context?: Context;
   execute?: ExecuteFn;
-  ignore?: Ignore; // treat an Object with an ID as not a model - accepts ['User', 'Message.author']
+  /**
+   * Treats an Object with an ID as not a model.
+   * @example ["User", "Message.author"]
+   */
+  ignore?: Ignore;
   onRoute?: OnRoute;
   depthLimit?: number;
   errorHandler?: ErrorHandler;
+  /**
+   * Overwrites the default HTTP method.
+   * @example {"Query.field": "GET", "Mutation.field": "POST"}
+   */
+  method?: MethodMap;
 }
 
 export interface Sofa {
@@ -36,6 +52,7 @@ export interface Sofa {
   context: Context;
   models: string[];
   ignore: Ignore;
+  method?: MethodMap;
   execute: ExecuteFn;
   onRoute?: OnRoute;
   errorHandler?: ErrorHandler;

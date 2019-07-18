@@ -14,20 +14,21 @@ export function buildPathFromOperation({
   url,
   schema,
   operation,
+  useRequestBody,
 }: {
   url: string;
   schema: GraphQLSchema;
   operation: DocumentNode;
+  useRequestBody: boolean;
 }) {
   const info = getOperationInfo(operation)!;
-  const isQuery = info.operation.operation === 'query';
 
   return {
     operationId: info.name,
-    parameters: isQuery
+    parameters: !useRequestBody
       ? resolveParameters(url, info.operation.variableDefinitions)
       : [],
-    requestBody: !isQuery
+    requestBody: useRequestBody
       ? {
           content: {
             'application/json': {
