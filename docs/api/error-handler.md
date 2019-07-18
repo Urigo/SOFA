@@ -9,10 +9,10 @@ api.use(
   '/api',
   sofa({
     schema,
-    errorHandler(res, error) {
-      logError(error);
+    errorHandler(res, errors) {
+      logErrors(errors);
       res.code(500);
-      res.json(formatError(error));
+      res.json(formatError(errors[0]));
     },
   })
 );
