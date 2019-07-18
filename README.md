@@ -122,7 +122,7 @@ api.use(
 
 Whenever Sofa tries to resolve an author of a message, instead of exposing an ID it will pass whole data.
 
-> Pattern is easy: `Type:field` or `Type`
+> Pattern is easy: `Type.field` or `Type`
 
 ### Customize endpoint's HTTP Method
 
