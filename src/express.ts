@@ -12,7 +12,7 @@ import { logger } from './logger';
 
 export type ErrorHandler = (
   res: express.Response,
-  error: ReadonlyArray<Error>
+  errors: ReadonlyArray<any>
 ) => void;
 
 export type ExpressMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
