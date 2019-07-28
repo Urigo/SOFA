@@ -40,7 +40,7 @@ Sofa takes your GraphQL Schema, looks for available queries, mutations and subsc
 Given the following schema:
 
 ```graphql
-type User {
+type Chat {
   id: ID
   name: String
 }
