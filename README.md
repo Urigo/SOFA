@@ -42,7 +42,7 @@ Given the following schema:
 ```graphql
 type Chat {
   id: ID
-  name: String
+  text: String
 }
 
 type Query {
