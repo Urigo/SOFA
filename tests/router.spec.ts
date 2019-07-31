@@ -4,7 +4,7 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import { schema, models } from './schema';
 import { createRouter } from '../src/express';
-import { createSofa } from '../src';
+import useSofa, { createSofa } from '../src';
 
 test('should work with Query and variables', async () => {
   const sofa = createSofa({
@@ -136,6 +136,43 @@ test('should overwrite a default http method on demand', done => {
               done();
             }
           });
+      }
+    });
+});
+
+test('should work with scalars', done => {
+  const app = express();
+
+  app.use(bodyParser.json());
+  app.use(
+    '/api',
+    useSofa({
+      schema: makeExecutableSchema({
+        typeDefs: /* GraphQL */ `
+        type Query {
+          foo: String
+        }
+      `,
+        resolvers: {
+          Query: {
+            foo() {
+              return 'bar';
+            },
+          },
+        },
+      }),
+    })
+  );
+
+  supertest(app)
+    .get('/api/foo')
+    .send()
+    .expect(200, (err, res) => {
+      if (err) {
+        done.fail(err);
+      } else {
+        expect(res.body).toEqual('bar');
+        done();
       }
     });
 });
