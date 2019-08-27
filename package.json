@@ -52,7 +52,7 @@
     "@types/graphql": "14.2.2",
     "@types/jest": "23.3.10",
     "@types/request-promise-native": "1.0.15",
-    "@types/supertest": "2.0.7",
+    "@types/supertest": "2.0.8",
     "@types/swagger-ui-express": "3.0.0",
     "@types/uuid": "3.4.4",
     "@types/webpack": "4.4.20",
