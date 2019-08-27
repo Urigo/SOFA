@@ -55,7 +55,7 @@
     "@types/supertest": "2.0.8",
     "@types/swagger-ui-express": "3.0.1",
     "@types/uuid": "3.4.5",
-    "@types/webpack": "4.4.20",
+    "@types/webpack": "4.39.1",
     "@types/yamljs": "0.2.30",
     "body-parser": "1.19.0",
     "chalk": "2.4.2",
@@ -74,7 +74,7 @@
     "ts-loader": "5.4.5",
     "ts-node": "8.3.0",
     "typescript": "3.5.3",
-    "webpack": "4.27.1",
+    "webpack": "4.39.2",
     "webpack-cli": "3.3.7"
   },
   "husky": {
