@@ -26,7 +26,7 @@
     "graphql": "^0.13.2 || ^14.0.0"
   },
   "dependencies": {
-    "change-case": "3.0.2",
+    "change-case": "3.1.0",
     "graphql-subscriptions": "1.1.0",
     "iterall": "1.2.2",
     "request": "2.88.0",
