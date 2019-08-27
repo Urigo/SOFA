@@ -53,7 +53,7 @@
     "@types/jest": "23.3.10",
     "@types/request-promise-native": "1.0.15",
     "@types/supertest": "2.0.8",
-    "@types/swagger-ui-express": "3.0.0",
+    "@types/swagger-ui-express": "3.0.1",
     "@types/uuid": "3.4.4",
     "@types/webpack": "4.4.20",
     "@types/yamljs": "0.2.30",
