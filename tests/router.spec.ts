@@ -123,7 +123,7 @@ test('should overwrite a default http method on demand', done => {
         done.fail(err);
       } else {
         expect(res.body).toEqual(users);
-        expect(spy.mock.calls[0][1]).toEqual(params);
+        expect((spy.mock.calls[0] as any[])[1]).toEqual(params);
 
         supertest(app)
           .get('/api/add-random-user')
@@ -149,10 +149,10 @@ test('should work with scalars', done => {
     useSofa({
       schema: makeExecutableSchema({
         typeDefs: /* GraphQL */ `
-        type Query {
-          foo: String
-        }
-      `,
+          type Query {
+            foo: String
+          }
+        `,
         resolvers: {
           Query: {
             foo() {
