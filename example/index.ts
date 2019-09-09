@@ -44,6 +44,7 @@ app.use(
 );
 
 openApi.save(resolve(__dirname, './swagger.json'));
+openApi.save(resolve(__dirname, './swagger.yml'));
 
 app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

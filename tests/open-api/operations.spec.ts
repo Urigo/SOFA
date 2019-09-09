@@ -78,7 +78,7 @@ test('handle mutation', async () => {
   expect(result.operationId).toEqual('addPostMutation');
 
   // params
-  expect(result.parameters).toEqual([]);
+  expect(result.parameters).not.toBeDefined();
 
   // request body
   const def = result.requestBody!.content['application/json'].schema;

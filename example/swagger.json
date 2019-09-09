@@ -11,6 +11,7 @@
         "parameters": [],
         "responses": {
           "200": {
+            "description": "Resolves current user",
             "content": {
               "application/json": {
                 "schema": {
@@ -37,6 +38,7 @@
         ],
         "responses": {
           "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -54,6 +56,7 @@
         "parameters": [],
         "responses": {
           "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -84,6 +87,7 @@
         ],
         "responses": {
           "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -113,6 +117,7 @@
         ],
         "responses": {
           "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -142,6 +147,7 @@
         ],
         "responses": {
           "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -159,6 +165,7 @@
         "parameters": [],
         "responses": {
           "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -179,6 +186,7 @@
         "parameters": [],
         "responses": {
           "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -205,6 +213,7 @@
         ],
         "responses": {
           "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -222,24 +231,24 @@
     "/add-book": {
       "post": {
         "operationId": "addBookMutation",
-        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["title"],
                 "properties": {
                   "title": {
                     "type": "string"
                   }
-                }
+                },
+                "required": ["title"]
               }
             }
           }
         },
         "responses": {
           "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -256,7 +265,6 @@
     "schemas": {
       "Query": {
         "type": "object",
-        "required": [],
         "properties": {
           "me": {
             "$ref": "#/components/schemas/User"
@@ -377,7 +385,6 @@
       },
       "Post": {
         "type": "object",
-        "required": [],
         "properties": {
           "comments": {
             "type": "array",
@@ -389,7 +396,6 @@
       },
       "Mutation": {
         "type": "object",
-        "required": [],
         "properties": {
           "addBook": {
             "$ref": "#/components/schemas/Book"
@@ -398,12 +404,14 @@
       },
       "Subscription": {
         "type": "object",
-        "required": [],
         "properties": {
           "onBook": {
             "$ref": "#/components/schemas/Book"
           }
         }
+      },
+      "ID": {
+        "type": "string"
       }
     }
   }

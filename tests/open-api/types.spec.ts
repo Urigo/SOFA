@@ -77,7 +77,6 @@ test('handle ObjectType', async () => {
 
   expect(address).toEqual({
     type: 'object',
-    required: [],
     properties: {
       street: {
         type: 'string',

@@ -4,11 +4,14 @@ import {
   VariableDefinitionNode,
   TypeNode,
   OperationDefinitionNode,
+  ObjectTypeDefinitionNode,
+  FieldNode,
 } from 'graphql';
 
 import { getOperationInfo } from '../ast';
 import { mapToPrimitive, mapToRef } from './utils';
 import { resolveFieldType } from './types';
+import titleCase = require('title-case');
 
 export function buildPathFromOperation({
   url,
@@ -20,25 +23,32 @@ export function buildPathFromOperation({
   schema: GraphQLSchema;
   operation: DocumentNode;
   useRequestBody: boolean;
-}) {
+}): any {
   const info = getOperationInfo(operation)!;
+
+  const description = resolveDescription(schema, info.operation);
 
   return {
     operationId: info.name,
-    parameters: !useRequestBody
-      ? resolveParameters(url, info.operation.variableDefinitions)
-      : [],
-    requestBody: useRequestBody
+    ...(useRequestBody
       ? {
-          content: {
-            'application/json': {
-              schema: resolveRequestBody(info.operation.variableDefinitions),
+          requestBody: {
+            content: {
+              'application/json': {
+                schema: resolveRequestBody(info.operation.variableDefinitions),
+              },
             },
           },
         }
-      : undefined,
+      : {
+          parameters: resolveParameters(
+            url,
+            info.operation.variableDefinitions
+          ),
+        }),
     responses: {
       200: {
+        description,
         content: {
           'application/json': {
             schema: resolveResponse({
@@ -92,8 +102,8 @@ function resolveRequestBody(
 
   return {
     type: 'object',
-    required,
     properties,
+    ...(required.length ? { required } : {}),
   };
 }
 
@@ -150,4 +160,21 @@ function resolveResponse({
 
 function isInPath(url: string, param: string): boolean {
   return url.indexOf(`{${param}}`) !== -1;
+}
+
+function resolveDescription(
+  schema: GraphQLSchema,
+  operation: OperationDefinitionNode
+) {
+  const selection = operation.selectionSet.selections[0] as FieldNode;
+  const fieldName = selection.name.value;
+  const typeDefinition = schema.getType(titleCase(operation.operation));
+  const definitionNode = typeDefinition!.astNode as ObjectTypeDefinitionNode;
+  const fieldNode = definitionNode.fields!.find(
+    field => field.name.value === fieldName
+  );
+  const descriptionDefinition = fieldNode!.description;
+  return descriptionDefinition && descriptionDefinition.value
+    ? descriptionDefinition.value
+    : '';
 }
