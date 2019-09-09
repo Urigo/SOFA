@@ -31,6 +31,9 @@ export const typeDefs = gql`
   }
 
   type Query {
+    """
+    Resolves current user
+    """
     me: User
     user(id: ID!): User
     users: [User!]

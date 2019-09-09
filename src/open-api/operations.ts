@@ -4,11 +4,14 @@ import {
   VariableDefinitionNode,
   TypeNode,
   OperationDefinitionNode,
+  ObjectTypeDefinitionNode,
+  FieldNode,
 } from 'graphql';
 
 import { getOperationInfo } from '../ast';
 import { mapToPrimitive, mapToRef } from './utils';
 import { resolveFieldType } from './types';
+import titleCase = require('title-case');
 
 export function buildPathFromOperation({
   url,
@@ -22,6 +25,8 @@ export function buildPathFromOperation({
   useRequestBody: boolean;
 }): any {
   const info = getOperationInfo(operation)!;
+
+  const description = resolveDescription(schema, info.operation);
 
   return {
     operationId: info.name,
@@ -43,7 +48,7 @@ export function buildPathFromOperation({
         }),
     responses: {
       200: {
-        description: '',
+        description,
         content: {
           'application/json': {
             schema: resolveResponse({
@@ -155,4 +160,21 @@ function resolveResponse({
 
 function isInPath(url: string, param: string): boolean {
   return url.indexOf(`{${param}}`) !== -1;
+}
+
+function resolveDescription(
+  schema: GraphQLSchema,
+  operation: OperationDefinitionNode
+) {
+  const selection = operation.selectionSet.selections[0] as FieldNode;
+  const fieldName = selection.name.value;
+  const typeDefinition = schema.getType(titleCase(operation.operation));
+  const definitionNode = typeDefinition!.astNode as ObjectTypeDefinitionNode;
+  const fieldNode = definitionNode.fields!.find(
+    field => field.name.value === fieldName
+  );
+  const descriptionDefinition = fieldNode!.description;
+  return descriptionDefinition && descriptionDefinition.value
+    ? descriptionDefinition.value
+    : '';
 }

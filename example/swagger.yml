@@ -9,7 +9,7 @@ paths:
             parameters: []
             responses:
                 '200':
-                    description: ""
+                    description: 'Resolves current user'
                     content:
                         application/json:
                             schema:
