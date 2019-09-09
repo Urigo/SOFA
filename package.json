@@ -39,7 +39,7 @@
     "start": "ts-node example/index.ts",
     "prod": "webpack && node dist/bundle.js",
     "build": "tsc -p tsconfig.build.json",
-    "test": "jest && yarn bundlesize",
+    "test": "jest --forceExit && yarn bundlesize",
     "format": "prettier --write **/*.{ts,js,md,json}",
     "prebuild": "rm -rf dist/",
     "prepublishOnly": "yarn build",

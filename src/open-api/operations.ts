@@ -20,25 +20,30 @@ export function buildPathFromOperation({
   schema: GraphQLSchema;
   operation: DocumentNode;
   useRequestBody: boolean;
-}) {
+}): any {
   const info = getOperationInfo(operation)!;
 
   return {
     operationId: info.name,
-    parameters: !useRequestBody
-      ? resolveParameters(url, info.operation.variableDefinitions)
-      : [],
-    requestBody: useRequestBody
+    ...(useRequestBody
       ? {
-          content: {
-            'application/json': {
-              schema: resolveRequestBody(info.operation.variableDefinitions),
+          requestBody: {
+            content: {
+              'application/json': {
+                schema: resolveRequestBody(info.operation.variableDefinitions),
+              },
             },
           },
         }
-      : undefined,
+      : {
+          parameters: resolveParameters(
+            url,
+            info.operation.variableDefinitions
+          ),
+        }),
     responses: {
       200: {
+        description: '',
         content: {
           'application/json': {
             schema: resolveResponse({
@@ -92,8 +97,8 @@ function resolveRequestBody(
 
   return {
     type: 'object',
-    required,
     properties,
+    ...(required.length ? { required } : {}),
   };
 }
 

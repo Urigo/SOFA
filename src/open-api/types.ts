@@ -32,7 +32,7 @@ export function buildSchemaObjectFromType(
 
   return {
     type: 'object',
-    required,
+    ...(required.length ? { required } : {}),
     properties,
   };
 }

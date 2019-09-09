@@ -65,6 +65,10 @@ export function OpenAPI({
         schema,
         useRequestBody: ['POST', 'PUT', 'PATCH'].includes(info.method),
       });
+
+      swagger.components.schemas.ID = {
+        type: 'string',
+      };
     },
     get() {
       return swagger;
@@ -76,7 +80,7 @@ export function OpenAPI({
       if (isJSON.test(filepath)) {
         writeOutput(filepath, JSON.stringify(swagger, null, 2));
       } else if (isYAML.test(filepath)) {
-        writeOutput(filepath, YAML.stringify(swagger));
+        writeOutput(filepath, YAML.stringify(swagger, Infinity));
       } else {
         throw new Error('We only support JSON and YAML files');
       }
