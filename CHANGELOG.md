@@ -2,6 +2,14 @@
 
 ### vNEXT
 
+### v0.5.0
+
+- feat(swagger): add description [PR #107](https://github.com/Urigo/SOFA/pull/107)
+- feat(swagger): add `ID` scalar definition [PR #107](https://github.com/Urigo/SOFA/pull/107)
+- fix(swagger): use `requestBody` or `parameters` not both [PR #107](https://github.com/Urigo/SOFA/pull/107)
+- fix(swagger): generate valid YAML structure for nested objects [PR #107](https://github.com/Urigo/SOFA/pull/107)
+- fix(swagger): avoid empty `required` array [PR #107](https://github.com/Urigo/SOFA/pull/107)
+
 ### v0.4.0
 
 - feat: add error handler [PR #44](https://github.com/Urigo/SOFA/pull/44) [PR #45](https://github.com/Urigo/SOFA/pull/45)
