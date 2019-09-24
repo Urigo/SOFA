@@ -1,7 +1,5 @@
 name: CI
-
 on: [push]
-
 jobs:
   test:
     name: Test on node ${{ matrix.node_version }}
@@ -9,21 +7,16 @@ jobs:
     strategy:
       matrix:
         node_version: [8, 10, 12]
-
     steps:
     - uses: actions/checkout@master
-
     - name: Use Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@master
       with:
         version: ${{ matrix.node_version }}
-    
     - name: Install
       run: yarn
-
     - name: Test
       run: yarn test
-    
     - name: Build
       run: yarn build
     
