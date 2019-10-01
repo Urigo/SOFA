@@ -1,4 +1,5 @@
 .git/
+.github/
 .circleci/
 .vscode/
 src/
@@ -8,6 +9,8 @@ website/
 docs/
 .prettierignore
 .prettierrc.yml
+CHANGELOG.md
+README.md
 jest.config.js
 netlify.toml
 tsconfig.json

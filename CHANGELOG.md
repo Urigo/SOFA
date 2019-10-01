@@ -2,6 +2,10 @@
 
 ### vNEXT
 
+### v0.5.1
+
+- fix: do not skip falsy values (only null and undefined) [PR #134](https://github.com/Urigo/SOFA/pull/134)
+
 ### v0.5.0
 
 - feat(swagger): add description [PR #107](https://github.com/Urigo/SOFA/pull/107)
