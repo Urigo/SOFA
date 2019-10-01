@@ -278,15 +278,13 @@ function getPath(fieldName: string, hasId = false) {
 }
 
 function pickParam(req: express.Request, name: string) {
-  if (req.params && req.params[name]) {
+  if (req.params && req.params.hasOwnProperty(name)) {
     return req.params[name];
   }
-
-  if (req.query && req.query[name]) {
+  if (req.query && req.query.hasOwnProperty(name)) {
     return req.query[name];
   }
-
-  if (req.body && req.body[name]) {
+  if (req.body && req.body.hasOwnProperty(name)) {
     return req.body[name];
   }
 }
