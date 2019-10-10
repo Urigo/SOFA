@@ -173,7 +173,7 @@ function resolveDescription(
   const fieldNode = definitionNode.fields!.find(
     field => field.name.value === fieldName
   );
-  const descriptionDefinition = fieldNode!.description;
+  const descriptionDefinition = fieldNode && fieldNode.description;
   return descriptionDefinition && descriptionDefinition.value
     ? descriptionDefinition.value
     : '';
