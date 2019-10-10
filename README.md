@@ -1,6 +1,7 @@
 [![sofa](https://user-images.githubusercontent.com/25294569/63839869-bfac8300-c988-11e9-978e-6b6c16c350de.gif)](https://sofa-api.com)
 
 [![npm version](https://badge.fury.io/js/sofa-api.svg)](https://npmjs.com/package/sofa-api)
+[![Discord Chat](https://img.shields.io/discord/625400653321076807)](https://discord.gg/xud7bH9)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![renovate-app badge](https://img.shields.io/badge/renovate-app-blue.svg)](https://renovateapp.com/)
 
