@@ -5,8 +5,8 @@
   "homepage": "/animation/",
   "dependencies": {
     "lottie-web": "5.5.9",
-    "react": "16.10.2",
-    "react-dom": "16.10.2",
+    "react": "16.11.0",
+    "react-dom": "16.11.0",
     "react-scripts": "3.2.0"
   },
   "scripts": {
