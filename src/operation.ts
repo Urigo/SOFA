@@ -24,6 +24,7 @@ import {
   GraphQLNonNull,
   NonNullTypeNode,
   OperationTypeNode,
+  isInterfaceType,
 } from 'graphql';
 import * as changeCase from 'change-case';
 
@@ -135,6 +136,7 @@ function buildDocumentNode({
           ancestors: [],
           ignore,
           depthLimit,
+          schema,
         }),
       ],
     },
@@ -156,6 +158,7 @@ function resolveSelectionSet({
   ancestors,
   ignore,
   depthLimit,
+  schema,
 }: {
   parent: GraphQLNamedType;
   type: GraphQLNamedType;
@@ -165,6 +168,7 @@ function resolveSelectionSet({
   firstCall?: boolean;
   ignore: Ignore;
   depthLimit: number;
+  schema: GraphQLSchema;
 }): SelectionSetNode | undefined {
   if (isUnionType(type)) {
     const types = type.getTypes();
@@ -179,8 +183,6 @@ function resolveSelectionSet({
             })
         )
         .map<InlineFragmentNode>(t => {
-          const fields = t.getFields();
-
           return {
             kind: 'InlineFragment',
             typeCondition: {
@@ -190,20 +192,55 @@ function resolveSelectionSet({
                 value: t.name,
               },
             },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: Object.keys(fields).map(fieldName => {
-                return resolveField({
-                  type: t,
-                  field: fields[fieldName],
-                  models,
-                  path: [...path, fieldName],
-                  ancestors,
-                  ignore,
-                  depthLimit,
-                });
-              }),
+            selectionSet: resolveSelectionSet({
+              parent: type,
+              type: t,
+              models,
+              path,
+              ancestors,
+              ignore,
+              depthLimit,
+              schema,
+            }) as SelectionSetNode,
+          };
+        }),
+    };
+  }
+
+  if (isInterfaceType(type)) {
+    const types = Object.values(schema.getTypeMap()).filter(
+      t => isObjectType(t) && t.getInterfaces().includes(type)
+    ) as GraphQLObjectType[];
+
+    return {
+      kind: 'SelectionSet',
+      selections: types
+        .filter(
+          t =>
+            !hasCircularRef([...ancestors, t], {
+              depth: depthLimit,
+            })
+        )
+        .map<InlineFragmentNode>(t => {
+          return {
+            kind: 'InlineFragment',
+            typeCondition: {
+              kind: 'NamedType',
+              name: {
+                kind: 'Name',
+                value: t.name,
+              },
             },
+            selectionSet: resolveSelectionSet({
+              parent: type,
+              type: t,
+              models,
+              path,
+              ancestors,
+              ignore,
+              depthLimit,
+              schema,
+            }) as SelectionSetNode,
           };
         }),
     };
@@ -252,6 +289,7 @@ function resolveSelectionSet({
             ancestors,
             ignore,
             depthLimit,
+            schema,
           });
         }),
     };
@@ -315,6 +353,7 @@ function resolveField({
   ancestors,
   ignore,
   depthLimit,
+  schema,
 }: {
   type: GraphQLObjectType;
   field: GraphQLField<any, any>;
@@ -324,6 +363,7 @@ function resolveField({
   firstCall?: boolean;
   ignore: Ignore;
   depthLimit: number;
+  schema: GraphQLSchema;
 }): SelectionNode {
   const namedType = getNamedType(field.type);
   let args: ArgumentNode[] = [];
@@ -369,6 +409,7 @@ function resolveField({
         ancestors: [...ancestors, type],
         ignore,
         depthLimit,
+        schema,
       }),
       arguments: args,
     };

@@ -21,8 +21,18 @@ export const schema = buildASTSchema(gql`
     shelf: [Book!]!
   }
 
-  type Salad {
+  interface Salad {
     ingredients: [String!]!
+  }
+
+  type CeaserSalad implements Salad {
+    ingredients: [String!]!
+    additionalParmesan: Boolean!
+  }
+
+  type Coleslaw implements Salad {
+    ingredients: [String!]!
+    asian: Boolean!
   }
 
   union Food = Pizza | Salad
