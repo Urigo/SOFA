@@ -16,6 +16,9 @@ const schema = buildASTSchema(gql`
   }
 
   type Query {
+    """
+    Feed of posts
+    """
     feed: [Post]
   }
 
@@ -50,6 +53,8 @@ test('handle query', async () => {
       type: 'string',
     },
   });
+
+  expect(result.responses[200].description).toMatch('Feed of posts');
 
   const response = result.responses[200].content['application/json'].schema;
   expect(response).toEqual({
