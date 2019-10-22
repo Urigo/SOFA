@@ -9,7 +9,13 @@ import { buildSchemaObjectFromType } from '../../src/open-api/types';
 
 test('handle ObjectType', async () => {
   const schema = buildASTSchema(gql`
+    """
+    Address Object
+    """
     type Address {
+      """
+      Street Name
+      """
       street: String
       city: String
     }
@@ -80,11 +86,13 @@ test('handle ObjectType', async () => {
     properties: {
       street: {
         type: 'string',
+        description: 'Street Name',
       },
       city: {
         type: 'string',
       },
     },
+    description: 'Address Object',
   });
 
   expect(userInput).toEqual({
