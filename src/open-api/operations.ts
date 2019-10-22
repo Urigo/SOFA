@@ -6,6 +6,8 @@ import {
   OperationDefinitionNode,
   ObjectTypeDefinitionNode,
   FieldNode,
+  parse,
+  printType,
 } from 'graphql';
 
 import { getOperationInfo } from '../ast';
@@ -169,7 +171,18 @@ function resolveDescription(
   const selection = operation.selectionSet.selections[0] as FieldNode;
   const fieldName = selection.name.value;
   const typeDefinition = schema.getType(titleCase(operation.operation));
-  const definitionNode = typeDefinition!.astNode as ObjectTypeDefinitionNode;
+
+  if (!typeDefinition) {
+    return '';
+  }
+
+  const definitionNode =
+    typeDefinition.astNode || parse(printType(typeDefinition)).definitions[0];
+
+  if (!isObjectTypeDefinitionNode(definitionNode)) {
+    return '';
+  }
+
   const fieldNode = definitionNode.fields!.find(
     field => field.name.value === fieldName
   );
@@ -177,4 +190,10 @@ function resolveDescription(
   return descriptionDefinition && descriptionDefinition.value
     ? descriptionDefinition.value
     : '';
+}
+
+function isObjectTypeDefinitionNode(
+  node: any
+): node is ObjectTypeDefinitionNode {
+  return node.kind === 'ObjectTypeDefinition';
 }
