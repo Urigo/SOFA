@@ -28,12 +28,16 @@ export function buildSchemaObjectFromType(
     }
 
     properties[fieldName] = resolveField(field);
+    if (field.description) {
+      properties[fieldName].description = field.description;
+    }
   }
 
   return {
     type: 'object',
     ...(required.length ? { required } : {}),
     properties,
+    ...(type.description ? { description: type.description } : {}),
   };
 }
 
