@@ -36,7 +36,14 @@ test('should work with Query', async () => {
               toppings
             }
             ... on Salad {
-              ingredients
+              ... on CeaserSalad {
+                ingredients
+                additionalParmesan
+              }
+              ... on Coleslaw {
+                ingredients
+                asian
+              }
             }
           }
           shelf {
@@ -76,7 +83,14 @@ test('should work with Query and variables', async () => {
               toppings
             }
             ... on Salad {
-              ingredients
+              ... on CeaserSalad {
+                ingredients
+                additionalParmesan
+              }
+              ... on Coleslaw {
+                ingredients
+                asian
+              }
             }
           }
           shelf {
@@ -106,7 +120,14 @@ test('should work with Query and complicated variable', async () => {
             toppings
           }
           ... on Salad {
-            ingredients
+            ... on CeaserSalad {
+              ingredients
+              additionalParmesan
+            }
+            ... on Coleslaw {
+              ingredients
+              asian
+            }
           }
         }
       }
@@ -132,7 +153,14 @@ test('should work with Union', async () => {
             toppings
           }
           ... on Salad {
-            ingredients
+            ... on CeaserSalad {
+              ingredients
+              additionalParmesan
+            }
+            ... on Coleslaw {
+              ingredients
+              asian
+            }
           }
         }
       }
@@ -153,7 +181,14 @@ test('should work with mutation', async () => {
     clean(gql`
       mutation addSaladMutation($ingredients: [String!]!) {
         addSalad(ingredients: $ingredients) {
-          ingredients
+          ... on CeaserSalad {
+            ingredients
+            additionalParmesan
+          }
+          ... on Coleslaw {
+            ingredients
+            asian
+          }
         }
       }
     `)
@@ -178,7 +213,14 @@ test('should work with mutation and unions', async () => {
             toppings
           }
           ... on Salad {
-            ingredients
+            ... on CeaserSalad {
+              ingredients
+              additionalParmesan
+            }
+            ... on Coleslaw {
+              ingredients
+              asian
+            }
           }
         }
       }
@@ -235,7 +277,14 @@ test('should be able to ignore using models when requested', async () => {
               toppings
             }
             ... on Salad {
-              ingredients
+              ... on CeaserSalad {
+                ingredients
+                additionalParmesan
+              }
+              ... on Coleslaw {
+                ingredients
+                asian
+              }
             }
           }
           shelf {
@@ -266,7 +315,14 @@ test('should work with Subscription', async () => {
             toppings
           }
           ... on Salad {
-            ingredients
+            ... on CeaserSalad {
+              ingredients
+              additionalParmesan
+            }
+            ... on Coleslaw {
+              ingredients
+              asian
+            }
           }
         }
       }
@@ -280,7 +336,7 @@ test('should work with circular ref (default depth limit === 1)', async () => {
       type A {
         b: B
       }
-      
+
       type B {
         c: C
       }
@@ -321,7 +377,7 @@ test('should work with circular ref (custom depth limit)', async () => {
       type A {
         b: B
       }
-      
+
       type B {
         c: C
       }
@@ -367,19 +423,19 @@ test('should work with circular ref (custom depth limit)', async () => {
 test('arguments', async () => {
   const document = buildOperation({
     schema: buildSchema(/* GraphQL */ `
-    input PageInfoInput {
-      offset: Int!
-      limit: Int!
-    }
+      input PageInfoInput {
+        offset: Int!
+        limit: Int!
+      }
 
-    type User {
-      id: ID
-      name: String
-    }
-    
-    type Query {
-      users(pageInfo: PageInfoInput!): [User]
-    }
+      type User {
+        id: ID
+        name: String
+      }
+
+      type Query {
+        users(pageInfo: PageInfoInput!): [User]
+      }
     `),
     kind: 'query',
     field: 'users',
@@ -389,12 +445,12 @@ test('arguments', async () => {
 
   expect(clean(document)).toEqual(
     clean(/* GraphQL */ `
-    query usersQuery($pageInfo: PageInfoInput!) {
-      users(pageInfo: $pageInfo) {
-        id
-        name
+      query usersQuery($pageInfo: PageInfoInput!) {
+        users(pageInfo: $pageInfo) {
+          id
+          name
+        }
       }
-    }
-  `)
+    `)
   );
 });
