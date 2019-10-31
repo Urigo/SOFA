@@ -2,6 +2,11 @@
 
 ### vNEXT
 
+### v0.6.0
+
+- fix(swagger): fix descriptions [PR #178](https://github.com/Urigo/SOFA/pull/178)
+- feat: support GraphQL Interfaces [PR #167](https://github.com/Urigo/SOFA/pull/167)
+
 ### v0.5.1
 
 - fix: do not skip falsy values (only null and undefined) [PR #134](https://github.com/Urigo/SOFA/pull/134)
