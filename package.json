@@ -54,7 +54,7 @@
     "@types/request-promise-native": "1.0.17",
     "@types/supertest": "2.0.8",
     "@types/swagger-ui-express": "3.0.1",
-    "@types/uuid": "3.4.5",
+    "@types/uuid": "3.4.6",
     "@types/webpack": "4.39.5",
     "@types/yamljs": "0.2.30",
     "body-parser": "1.19.0",
