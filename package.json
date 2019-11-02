@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@types/body-parser": "1.17.1",
-    "@types/express": "4.17.1",
+    "@types/express": "4.17.2",
     "@types/express-graphql": "0.8.2",
     "@types/graphql": "14.2.3",
     "@types/jest": "24.0.21",
