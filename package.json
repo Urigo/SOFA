@@ -30,7 +30,7 @@
     "graphql-subscriptions": "1.1.0",
     "iterall": "1.2.2",
     "request": "2.88.0",
-    "request-promise-native": "1.0.7",
+    "request-promise-native": "1.0.8",
     "uuid": "3.3.3",
     "winston": "3.2.1",
     "yamljs": "0.3.0"
