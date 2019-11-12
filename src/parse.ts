@@ -7,6 +7,7 @@ import {
   GraphQLBoolean,
   isInputObjectType,
 } from 'graphql';
+import { isNil } from './common';
 
 export function parseVariable({
   value,
@@ -17,14 +18,15 @@ export function parseVariable({
   variable: VariableDefinitionNode;
   schema: GraphQLSchema;
 }) {
-  if (value !== undefined || value !== null) {
-    return resolveVariable({
-        value,
-        type: variable.type,
-        schema,
-    });
+  if (isNil(value)) {
+    return;
   }
-  return;
+
+  return resolveVariable({
+    value,
+    type: variable.type,
+    schema,
+  });
 }
 
 function resolveVariable({
