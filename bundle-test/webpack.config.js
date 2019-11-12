@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   target: 'node',
   output: {
-    filename: 'index.js',
+    filename: 'bundle.js',
   },
   resolve: {
     alias: {

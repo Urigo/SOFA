@@ -19,4 +19,8 @@ jobs:
       run: yarn test
     - name: Build
       run: yarn build
+    - name: Bundle Size
+      run: |
+        cd bundle-test && yarn
+        yarn test
     

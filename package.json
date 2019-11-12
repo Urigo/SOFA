@@ -37,13 +37,11 @@
   },
   "scripts": {
     "start": "ts-node example/index.ts",
-    "prod": "webpack && node dist/bundle.js",
     "build": "tsc -p tsconfig.build.json",
-    "test": "jest --forceExit && yarn bundlesize",
+    "test": "jest --forceExit",
     "format": "prettier --write **/*.{ts,js,md,json}",
     "prebuild": "rm -rf dist/",
-    "prepublishOnly": "yarn build",
-    "bundlesize": "yarn build && cd bundle-test/ && yarn && yarn test"
+    "prepublishOnly": "yarn build"
   },
   "devDependencies": {
     "@types/body-parser": "1.17.1",
@@ -71,11 +69,8 @@
     "supertest": "4.0.2",
     "swagger-ui-express": "4.1.2",
     "ts-jest": "24.1.0",
-    "ts-loader": "6.2.1",
     "ts-node": "8.5.0",
-    "typescript": "3.7.2",
-    "webpack": "4.41.2",
-    "webpack-cli": "3.3.10"
+    "typescript": "3.7.2"
   },
   "husky": {
     "hooks": {
