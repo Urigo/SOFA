@@ -8,6 +8,7 @@ import {
   FieldNode,
   parse,
   printType,
+  Kind,
 } from 'graphql';
 
 import { getOperationInfo } from '../ast';
@@ -76,7 +77,7 @@ function resolveParameters(
     return {
       in: isInPath(url, variable.variable.name.value) ? 'path' : 'query',
       name: variable.variable.name.value,
-      required: variable.type.kind === 'NonNullType',
+      required: variable.type.kind === Kind.NON_NULL_TYPE,
       schema: resolveParamSchema(variable.type),
     };
   });
@@ -93,7 +94,7 @@ function resolveRequestBody(
   const required: string[] = [];
 
   variables.forEach(variable => {
-    if (variable.type.kind === 'NonNullType') {
+    if (variable.type.kind === Kind.NON_NULL_TYPE) {
       required.push(variable.variable.name.value);
     }
 
@@ -113,11 +114,11 @@ function resolveRequestBody(
 // type -> $ref
 // scalar -> swagger primitive
 function resolveParamSchema(type: TypeNode): any {
-  if (type.kind === 'NonNullType') {
+  if (type.kind === Kind.NON_NULL_TYPE) {
     return resolveParamSchema(type.type);
   }
 
-  if (type.kind === 'ListType') {
+  if (type.kind === Kind.LIST_TYPE) {
     return {
       type: 'array',
       items: resolveParamSchema(type.type),
@@ -143,7 +144,7 @@ function resolveResponse({
   const operationType = operation.operation;
   const rootField = operation.selectionSet.selections[0];
 
-  if (rootField.kind === 'Field') {
+  if (rootField.kind === Kind.FIELD) {
     if (operationType === 'query') {
       const queryType = schema.getQueryType()!;
       const field = queryType.getFields()[rootField.name.value];
@@ -195,5 +196,5 @@ function resolveDescription(
 function isObjectTypeDefinitionNode(
   node: any
 ): node is ObjectTypeDefinitionNode {
-  return node.kind === 'ObjectTypeDefinition';
+  return node.kind === Kind.OBJECT_TYPE_DEFINITION;
 }

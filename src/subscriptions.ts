@@ -5,7 +5,7 @@ import {
   ExecutionResult,
 } from 'graphql';
 import * as uuid from 'uuid/v4';
-import * as request from 'request-promise-native';
+import axios from 'axios';
 import { forAwaitEach, isAsyncIterable } from 'iterall';
 import { buildOperation } from './operation';
 import { Sofa, isContextFn } from './sofa';
@@ -248,9 +248,7 @@ export class SubscriptionManager {
 
     logger.info(`[Subscription] Trigger ${id}`);
 
-    await request.post(url, {
-      json: result,
-    });
+    await axios.post(url, result);
   }
 
   private buildOperations() {
