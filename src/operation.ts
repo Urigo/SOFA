@@ -25,6 +25,7 @@ import {
   NonNullTypeNode,
   OperationTypeNode,
   isInterfaceType,
+  Kind,
 } from 'graphql';
 import * as changeCase from 'change-case';
 
@@ -117,7 +118,7 @@ function buildDocumentNode({
   }
 
   const operationNode: OperationDefinitionNode = {
-    kind: 'OperationDefinition',
+    kind: Kind.OPERATION_DEFINITION,
     operation: kind,
     name: {
       kind: 'Name',
@@ -125,7 +126,7 @@ function buildDocumentNode({
     },
     variableDefinitions: [],
     selectionSet: {
-      kind: 'SelectionSet',
+      kind: Kind.SELECTION_SET,
       selections: [
         resolveField({
           type,
@@ -142,7 +143,7 @@ function buildDocumentNode({
     },
   };
   const document: DocumentNode = {
-    kind: 'Document',
+    kind: Kind.DOCUMENT,
     definitions: [operationNode],
   };
 
@@ -174,7 +175,7 @@ function resolveSelectionSet({
     const types = type.getTypes();
 
     return {
-      kind: 'SelectionSet',
+      kind: Kind.SELECTION_SET,
       selections: types
         .filter(
           t =>
@@ -184,11 +185,11 @@ function resolveSelectionSet({
         )
         .map<InlineFragmentNode>(t => {
           return {
-            kind: 'InlineFragment',
+            kind: Kind.INLINE_FRAGMENT,
             typeCondition: {
-              kind: 'NamedType',
+              kind: Kind.NAMED_TYPE,
               name: {
-                kind: 'Name',
+                kind: Kind.NAME,
                 value: t.name,
               },
             },
@@ -213,7 +214,7 @@ function resolveSelectionSet({
     ) as GraphQLObjectType[];
 
     return {
-      kind: 'SelectionSet',
+      kind: Kind.SELECTION_SET,
       selections: types
         .filter(
           t =>
@@ -223,11 +224,11 @@ function resolveSelectionSet({
         )
         .map<InlineFragmentNode>(t => {
           return {
-            kind: 'InlineFragment',
+            kind: Kind.INLINE_FRAGMENT,
             typeCondition: {
-              kind: 'NamedType',
+              kind: Kind.NAMED_TYPE,
               name: {
-                kind: 'Name',
+                kind: Kind.NAME,
                 value: t.name,
               },
             },
@@ -254,12 +255,12 @@ function resolveSelectionSet({
 
     if (!firstCall && isModel && !isIgnored) {
       return {
-        kind: 'SelectionSet',
+        kind: Kind.SELECTION_SET,
         selections: [
           {
-            kind: 'Field',
+            kind: Kind.FIELD,
             name: {
-              kind: 'Name',
+              kind: Kind.NAME,
               value: 'id',
             },
           },
@@ -270,7 +271,7 @@ function resolveSelectionSet({
     const fields = type.getFields();
 
     return {
-      kind: 'SelectionSet',
+      kind: Kind.SELECTION_SET,
       selections: Object.keys(fields)
         .filter(fieldName => {
           return !hasCircularRef(
@@ -306,33 +307,33 @@ function resolveVariable(
   function resolveVariableType(type: GraphQLInputType): TypeNode {
     if (isListType(type)) {
       return {
-        kind: 'ListType',
+        kind: Kind.LIST_TYPE,
         type: resolveVariableType(type.ofType),
       };
     }
 
     if (isNonNullType(type)) {
       return {
-        kind: 'NonNullType',
+        kind: Kind.NON_NULL_TYPE,
         type: resolveVariableType(type.ofType),
       };
     }
 
     return {
-      kind: 'NamedType',
+      kind: Kind.NAMED_TYPE,
       name: {
-        kind: 'Name',
+        kind: Kind.NAME,
         value: type.name,
       },
     };
   }
 
   return {
-    kind: 'VariableDefinition',
+    kind: Kind.VARIABLE_DEFINITION,
     variable: {
-      kind: 'Variable',
+      kind: Kind.VARIABLE,
       name: {
-        kind: 'Name',
+        kind: Kind.NAME,
         value: name || arg.name,
       },
     },
@@ -377,15 +378,15 @@ function resolveField({
       }
 
       return {
-        kind: 'Argument',
+        kind: Kind.ARGUMENT,
         name: {
-          kind: 'Name',
+          kind: Kind.NAME,
           value: arg.name,
         },
         value: {
-          kind: 'Variable',
+          kind: Kind.VARIABLE,
           name: {
-            kind: 'Name',
+            kind: Kind.NAME,
             value: getArgumentName(arg.name, path),
           },
         },
@@ -395,9 +396,9 @@ function resolveField({
 
   if (!isScalarType(namedType)) {
     return {
-      kind: 'Field',
+      kind: Kind.FIELD,
       name: {
-        kind: 'Name',
+        kind: Kind.NAME,
         value: field.name,
       },
       selectionSet: resolveSelectionSet({
@@ -416,9 +417,9 @@ function resolveField({
   }
 
   return {
-    kind: 'Field',
+    kind: Kind.FIELD,
     name: {
-      kind: 'Name',
+      kind: Kind.NAME,
       value: field.name,
     },
     arguments: args,

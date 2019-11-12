@@ -6,6 +6,7 @@ import {
   isEqualType,
   GraphQLBoolean,
   isInputObjectType,
+  Kind,
 } from 'graphql';
 
 export function parseVariable({
@@ -19,9 +20,9 @@ export function parseVariable({
 }) {
   if (value !== undefined || value !== null) {
     return resolveVariable({
-        value,
-        type: variable.type,
-        schema,
+      value,
+      type: variable.type,
+      schema,
     });
   }
   return;
@@ -36,7 +37,7 @@ function resolveVariable({
   type: TypeNode;
   schema: GraphQLSchema;
 }): any | any[] {
-  if (type.kind === 'NamedType') {
+  if (type.kind === Kind.NAMED_TYPE) {
     const namedType = schema.getType(type.name.value);
 
     if (isScalarType(namedType)) {
@@ -56,7 +57,7 @@ function resolveVariable({
     return value;
   }
 
-  if (type.kind === 'ListType') {
+  if (type.kind === Kind.LIST_TYPE) {
     return (value as any[]).map(val =>
       resolveVariable({
         value: val,
@@ -66,7 +67,7 @@ function resolveVariable({
     );
   }
 
-  if (type.kind === 'NonNullType') {
+  if (type.kind === Kind.NON_NULL_TYPE) {
     return resolveVariable({
       value: value,
       type: type.type,
