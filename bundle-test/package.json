@@ -1,17 +1,16 @@
 {
   "name": "bundle-test",
-  "version": "1.0.0",
-  "main": "dist/index.js",
+  "private": true,
+  "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "pretest": "webpack",
-    "test": "bundlesize"
+    "test": "webpack && bundlesize"
   },
   "bundlesize": [
     {
-      "path": "./dist/index.js",
-      "maxSize": "2MB",
-      "compression": "none"
+      "path": "./dist/bundle.js",
+      "maxSize": "360KB",
+      "compression": "gzip"
     }
   ],
   "devDependencies": {

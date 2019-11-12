@@ -3,7 +3,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 import * as bodyParser from 'body-parser';
 import * as useGraphQL from 'express-graphql';
 import * as swaggerUi from 'swagger-ui-express';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import { resolve } from 'path';
 import { typeDefs } from './types';
 import { resolvers } from './resolvers';
@@ -12,7 +12,6 @@ import * as swaggerDocument from './swagger.json';
 // Sofa
 
 import { useSofa, OpenAPI } from '../src';
-import { logger } from '../src/logger';
 
 const app = express();
 
@@ -46,14 +45,12 @@ app.use(
 openApi.save(resolve(__dirname, './swagger.json'));
 openApi.save(resolve(__dirname, './swagger.yml'));
 
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-app.use('/webhook', (req, res) => {
-  logger.info('Received a webhook', req.body);
+app.post('/collect-book', (req, res) => {
+  console.log('Received a webhook', req.body);
 
   res.statusCode = 200;
   res.statusMessage = 'OK';
-  res.send();
+  res.end();
 });
 
 app.use(
@@ -89,3 +86,5 @@ app.listen(port, () => {
   )}
   `);
 });
+
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

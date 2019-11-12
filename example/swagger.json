@@ -267,7 +267,8 @@
         "type": "object",
         "properties": {
           "me": {
-            "$ref": "#/components/schemas/User"
+            "$ref": "#/components/schemas/User",
+            "description": "Resolves current user"
           },
           "user": {
             "$ref": "#/components/schemas/User"
