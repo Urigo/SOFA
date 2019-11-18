@@ -179,7 +179,7 @@ api.use(
 
 Sofa enables you to run GraphQL Subscriptions through WebHooks. It has a special API to start, update and stop a subscription.
 
-- `POST /webhook` - stars a subscription
+- `POST /webhook` - starts a subscription
 - `DELETE /webhook/:id` - stops it
 - `POST /webhook/:id`- updates it
 
