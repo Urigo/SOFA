@@ -9,6 +9,6 @@
     "animation:prod": "rm -rf build/sofa/animation && cd animation && npm run build && cp -r ./build ../build/sofa/animation"
   },
   "devDependencies": {
-    "docusaurus": "1.14.0"
+    "docusaurus": "1.14.3"
   }
 }
