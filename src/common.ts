@@ -1,7 +1,7 @@
-import * as changeCase from 'change-case';
+import { paramCase } from 'change-case';
 
 export function convertName(name: string) {
-  return changeCase.param(name);
+  return paramCase(name);
 }
 
 export function isNil<T>(val: T) {

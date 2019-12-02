@@ -27,7 +27,7 @@ import {
   isInterfaceType,
   Kind,
 } from 'graphql';
-import * as changeCase from 'change-case';
+import { camelCase } from 'change-case';
 
 import { Ignore } from './types';
 import { logger } from './logger';
@@ -43,7 +43,7 @@ function resetOperationVariables() {
 }
 
 function buildOperationName(name: string) {
-  return changeCase.camel(name);
+  return camelCase(name);
 }
 
 export type Skip = string[];
@@ -342,7 +342,7 @@ function resolveVariable(
 }
 
 function getArgumentName(name: string, path: string[]): string {
-  return changeCase.camel([...path, name].join('_'));
+  return camelCase([...path, name].join('_'));
 }
 
 function resolveField({
