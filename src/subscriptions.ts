@@ -4,7 +4,7 @@ import {
   VariableDefinitionNode,
   ExecutionResult,
 } from 'graphql';
-import * as uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import { forAwaitEach, isAsyncIterable } from 'iterall';
 import { buildOperation } from './operation';
@@ -230,7 +230,7 @@ export class SubscriptionManager {
         },
         e => {
           logger.info(`Subscription #${id} closed`);
-          console.log(e);
+          logger.error(e);
           this.stop(id);
         }
       );

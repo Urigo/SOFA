@@ -1,11 +1,11 @@
-import * as express from 'express';
+import { Router } from 'express';
 
 import { createRouter } from './express';
 import { SofaConfig, createSofa } from './sofa';
 
 export { OpenAPI } from './open-api';
 
-function useSofa(config: SofaConfig): express.Router {
+function useSofa(config: SofaConfig): Router {
   return createRouter(createSofa(config));
 }
 

@@ -1,4 +1,4 @@
-import * as express from 'express';
+import { Router, Response, Request, NextFunction } from 'express';
 import { DocumentNode, print, isObjectType, isNonNullType } from 'graphql';
 
 import { buildOperation } from './operation';
@@ -10,17 +10,14 @@ import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
 import { logger } from './logger';
 
-export type ErrorHandler = (
-  res: express.Response,
-  errors: ReadonlyArray<any>
-) => void;
+export type ErrorHandler = (res: Response, errors: ReadonlyArray<any>) => void;
 
 export type ExpressMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
-export function createRouter(sofa: Sofa): express.Router {
+export function createRouter(sofa: Sofa): Router {
   logger.debug('[Sofa] Creating router');
 
-  const router = express.Router();
+  const router = Router();
 
   const queryType = sofa.schema.getQueryType();
   const mutationType = sofa.schema.getMutationType();
@@ -65,7 +62,6 @@ export function createRouter(sofa: Sofa): express.Router {
         res.statusMessage = 'OK';
         res.json(result);
       } catch (e) {
-        console.log(e);
         res.statusCode = 500;
         res.statusMessage = 'Subscription failed';
         res.json(e);
@@ -95,7 +91,6 @@ export function createRouter(sofa: Sofa): express.Router {
         res.statusMessage = 'OK';
         res.json(result);
       } catch (e) {
-        console.log(e);
         res.statusCode = 500;
         res.statusMessage = 'Subscription failed to update';
         res.json(e);
@@ -115,7 +110,6 @@ export function createRouter(sofa: Sofa): express.Router {
         res.statusMessage = 'OK';
         res.json(result);
       } catch (e) {
-        console.log(e);
         res.statusCode = 500;
         res.statusMessage = 'Subscription failed to stop';
         res.json(e);
@@ -132,7 +126,7 @@ function createQueryRoute({
   fieldName,
 }: {
   sofa: Sofa;
-  router: express.Router;
+  router: Router;
   fieldName: string;
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} query`);
@@ -181,7 +175,7 @@ function createMutationRoute({
   fieldName,
 }: {
   sofa: Sofa;
-  router: express.Router;
+  router: Router;
   fieldName: string;
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} mutation`);
@@ -227,7 +221,7 @@ function useHandler(config: {
   const { sofa, operation, fieldName } = config;
   const info = config.info!;
 
-  return useAsync(async (req: express.Request, res: express.Response) => {
+  return useAsync(async (req: Request, res: Response) => {
     const variableValues = info.variables.reduce((variables, variable) => {
       const name = variable.variable.name.value;
       const value = parseVariable({
@@ -260,7 +254,7 @@ function useHandler(config: {
 
     if (result.errors) {
       const defaultErrorHandler: ErrorHandler = (res, errors) => {
-        res.status(500);
+        res.statusCode = 500;
         res.json(errors[0]);
       };
       const errorHandler: ErrorHandler =
@@ -277,7 +271,7 @@ function getPath(fieldName: string, hasId = false) {
   return `/${convertName(fieldName)}${hasId ? '/:id' : ''}`;
 }
 
-function pickParam(req: express.Request, name: string) {
+function pickParam(req: Request, name: string) {
   if (req.params && req.params.hasOwnProperty(name)) {
     return req.params[name];
   }
@@ -290,21 +284,10 @@ function pickParam(req: express.Request, name: string) {
 }
 
 function useAsync<T = any>(
-  handler: (
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) => Promise<T>
+  handler: (req: Request, res: Response, next: NextFunction) => Promise<T>
 ) {
-  return (
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) => {
-    Promise.resolve(handler(req, res, next)).catch(e => {
-      console.log(e);
-      next(e);
-    });
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(handler(req, res, next)).catch(e => next(e));
   };
 }
 

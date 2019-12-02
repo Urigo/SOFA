@@ -14,7 +14,7 @@ import {
 import { getOperationInfo } from '../ast';
 import { mapToPrimitive, mapToRef } from './utils';
 import { resolveFieldType } from './types';
-import titleCase = require('title-case');
+import { titleCase } from 'title-case';
 
 export function buildPathFromOperation({
   url,
