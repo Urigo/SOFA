@@ -37,7 +37,7 @@
     "change-case": "4.1.0",
     "graphql-subscriptions": "1.1.0",
     "iterall": "1.2.2",
-    "title-case": "3.0.1",
+    "title-case": "3.0.2",
     "tslib": "1.10.0",
     "uuid": "3.3.3",
     "winston": "3.2.1",
