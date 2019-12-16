@@ -54,7 +54,7 @@
     "ci:release:canary": "node bump.js && bob-update-version && npm publish dist --tag alpha --access public"
   },
   "devDependencies": {
-    "@ardatan/bob": "0.1.7",
+    "@ardatan/bob": "0.1.8",
     "@types/body-parser": "1.17.1",
     "@types/express": "4.17.1",
     "@types/jest": "24.0.23",
