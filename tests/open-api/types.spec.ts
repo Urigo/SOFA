@@ -1,14 +1,13 @@
 import {
-  buildASTSchema,
+  buildSchema,
   GraphQLObjectType,
   GraphQLInputObjectType,
 } from 'graphql';
-import gql from 'graphql-tag';
 
 import { buildSchemaObjectFromType } from '../../src/open-api/types';
 
 test('handle ObjectType', async () => {
-  const schema = buildASTSchema(gql`
+  const schema = buildSchema(/* GraphQL */ `
     """
     Address Object
     """

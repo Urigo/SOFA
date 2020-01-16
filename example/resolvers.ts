@@ -10,7 +10,7 @@ import {
 
 const BOOK_ADDED = 'BOOK_ADDED';
 
-export const resolvers: any = {
+export const resolvers = {
   Query: {
     me() {
       return UsersCollection.get(1);

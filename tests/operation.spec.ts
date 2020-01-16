@@ -1,5 +1,4 @@
 import { print, parse, DocumentNode, buildSchema } from 'graphql';
-import gql from 'graphql-tag';
 
 import { schema, models } from './schema';
 import { buildOperation } from '../src/operation';
@@ -18,7 +17,7 @@ test('should work with Query', async () => {
   })!;
 
   expect(clean(document)).toEqual(
-    clean(gql`
+    clean(/* GraphQL */ `
       query meQuery {
         me {
           id
@@ -65,7 +64,7 @@ test('should work with Query and variables', async () => {
   })!;
 
   expect(clean(document)).toEqual(
-    clean(gql`
+    clean(/* GraphQL */ `
       query userQuery($id: ID!) {
         user(id: $id) {
           id
@@ -112,7 +111,7 @@ test('should work with Query and complicated variable', async () => {
   })!;
 
   expect(clean(document)).toEqual(
-    clean(gql`
+    clean(/* GraphQL */ `
       query menuByIngredientsQuery($ingredients: [String!]!) {
         menuByIngredients(ingredients: $ingredients) {
           ... on Pizza {
@@ -145,7 +144,7 @@ test('should work with Union', async () => {
   })!;
 
   expect(clean(document)).toEqual(
-    clean(gql`
+    clean(/* GraphQL */ `
       query menuQuery {
         menu {
           ... on Pizza {
@@ -178,7 +177,7 @@ test('should work with mutation', async () => {
   })!;
 
   expect(clean(document)).toEqual(
-    clean(gql`
+    clean(/* GraphQL */ `
       mutation addSaladMutation($ingredients: [String!]!) {
         addSalad(ingredients: $ingredients) {
           ... on CeaserSalad {
@@ -205,7 +204,7 @@ test('should work with mutation and unions', async () => {
   })!;
 
   expect(clean(document)).toEqual(
-    clean(gql`
+    clean(/* GraphQL */ `
       mutation addRandomFoodMutation {
         addRandomFood {
           ... on Pizza {
@@ -238,7 +237,7 @@ test('should work with Query and nested variables', async () => {
   })!;
 
   expect(clean(document)).toEqual(
-    clean(gql`
+    clean(/* GraphQL */ `
       query feedQuery($feedCommentsFilter: String!) {
         feed {
           comments(filter: $feedCommentsFilter)
@@ -258,7 +257,7 @@ test('should be able to ignore using models when requested', async () => {
   })!;
 
   expect(clean(document)).toEqual(
-    clean(gql`
+    clean(/* GraphQL */ `
       query userQuery($id: ID!) {
         user(id: $id) {
           id

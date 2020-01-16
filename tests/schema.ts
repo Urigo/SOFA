@@ -1,7 +1,6 @@
-import { buildASTSchema } from 'graphql';
-import gql from 'graphql-tag';
+import { buildSchema } from 'graphql';
 
-export const schema = buildASTSchema(gql`
+export const schema = buildSchema(/* GraphQL */ `
   type Pizza {
     dough: String!
     toppings: [String!]

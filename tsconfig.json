@@ -3,17 +3,16 @@
     "experimentalDecorators": true,
     "module": "esnext",
     "target": "es2016",
-    "lib": ["es6", "esnext", "es2015"],
+    "lib": ["esnext"],
     "moduleResolution": "node",
     "sourceMap": true,
     "inlineSources": true,
     "declaration": true,
-    "outDir": "dist",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "resolveJsonModule": true
   },
-  "files": ["src/index.ts"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,6 +1,4 @@
-import gql from 'graphql-tag';
-
-export const typeDefs = gql`
+export const typeDefs = /* GraphQL */ `
   type Pizza {
     dough: String!
     toppings: [String!]

@@ -1,10 +1,9 @@
-import { buildASTSchema } from 'graphql';
-import gql from 'graphql-tag';
+import { buildSchema } from 'graphql';
 
 import { buildPathFromOperation } from '../../src/open-api/operations';
 import { buildOperation } from '../../src/operation';
 
-const schema = buildASTSchema(gql`
+const schema = buildSchema(/* GraphQL */ `
   type Post {
     comments(filter: String!): [String!]!
     author: Author
