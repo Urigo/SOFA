@@ -47,7 +47,7 @@ export function OpenAPI({
         basePath?: string;
       }
     ) {
-      const basePath = (config && config.basePath) || '';
+      const basePath = config?.basePath || '';
       const path =
         basePath +
         info.path.replace(
