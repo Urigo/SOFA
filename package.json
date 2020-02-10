@@ -44,7 +44,7 @@
     "yamljs": "0.3.0"
   },
   "scripts": {
-    "start": "ts-node example/index.ts",
+    "start": "ts-node -O \"{\\\"module\\\": \\\"commonjs\\\"}\" example/index.ts",
     "clean": "rm -rf dist",
     "prebuild": "yarn clean",
     "build": "bob",

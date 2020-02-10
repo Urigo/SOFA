@@ -65,10 +65,6 @@ export function OpenAPI({
         schema,
         useRequestBody: ['POST', 'PUT', 'PATCH'].includes(info.method),
       });
-
-      swagger.components.schemas.ID = {
-        type: 'string',
-      };
     },
     get() {
       return swagger;

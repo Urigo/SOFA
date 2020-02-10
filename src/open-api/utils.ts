@@ -14,6 +14,9 @@ export function mapToPrimitive(type: string) {
     Boolean: {
       type: 'boolean',
     },
+    ID: {
+      type: 'string',
+    },
   };
 
   if (formatMap[type]) {
