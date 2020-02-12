@@ -44,7 +44,7 @@
     "yamljs": "0.3.0"
   },
   "scripts": {
-    "start": "ts-node -O \"{\\\"module\\\": \\\"commonjs\\\"}\" example/index.ts",
+    "start": "ts-node --project tsconfig.example.json example/index.ts",
     "clean": "rm -rf dist",
     "prebuild": "yarn clean",
     "build": "bob",
@@ -88,8 +88,7 @@
   },
   "lint-staged": {
     "*.{ts,js,md,json}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   },
   "bundlesize": [
