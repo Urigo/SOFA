@@ -32,7 +32,7 @@
             "name": "id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/ID"
+              "type": "string"
             }
           }
         ],
@@ -141,7 +141,7 @@
             "name": "id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/ID"
+              "type": "string"
             }
           }
         ],
@@ -323,7 +323,7 @@
         ],
         "properties": {
           "id": {
-            "type": "object"
+            "type": "string"
           },
           "name": {
             "type": "string"
@@ -365,7 +365,7 @@
         "required": ["id", "title"],
         "properties": {
           "id": {
-            "type": "object"
+            "type": "string"
           },
           "title": {
             "type": "string"
@@ -410,9 +410,6 @@
             "$ref": "#/components/schemas/Book"
           }
         }
-      },
-      "ID": {
-        "type": "string"
       }
     }
   }

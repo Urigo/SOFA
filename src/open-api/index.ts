@@ -47,7 +47,7 @@ export function OpenAPI({
         basePath?: string;
       }
     ) {
-      const basePath = (config && config.basePath) || '';
+      const basePath = config?.basePath || '';
       const path =
         basePath +
         info.path.replace(
@@ -65,10 +65,6 @@ export function OpenAPI({
         schema,
         useRequestBody: ['POST', 'PUT', 'PATCH'].includes(info.method),
       });
-
-      swagger.components.schemas.ID = {
-        type: 'string',
-      };
     },
     get() {
       return swagger;

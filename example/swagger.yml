@@ -23,7 +23,7 @@ paths:
                     name: id
                     required: true
                     schema:
-                        $ref: '#/components/schemas/ID'
+                        type: string
             responses:
                 '200':
                     description: ""
@@ -92,7 +92,7 @@ paths:
                     name: id
                     required: true
                     schema:
-                        $ref: '#/components/schemas/ID'
+                        type: string
             responses:
                 '200':
                     description: ""
@@ -208,7 +208,7 @@ components:
                 - shelf
             properties:
                 id:
-                    type: object
+                    type: string
                 name:
                     type: string
                 favoritePizza:
@@ -239,7 +239,7 @@ components:
                 - title
             properties:
                 id:
-                    type: object
+                    type: string
                 title:
                     type: string
         Salad:
@@ -268,5 +268,3 @@ components:
             properties:
                 onBook:
                     $ref: '#/components/schemas/Book'
-        ID:
-            type: string
