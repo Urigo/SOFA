@@ -2,6 +2,13 @@
 
 ### vNEXT
 
+### v0.6.1
+
+- fix(swagger): broken type of ID scalar in generated swagger document [PR #280](https://github.com/Urigo/SOFA/pull/280)
+- fix: do not resolve nil variables [PR #193](https://github.com/Urigo/SOFA/pull/193)
+- fix: use Kind from graphql instead of strings [PR #192](https://github.com/Urigo/SOFA/pull/192)
+- fix: replace request package with Axios [PR #194](https://github.com/Urigo/SOFA/pull/194)
+
 ### v0.6.0
 
 - fix(swagger): fix descriptions [PR #178](https://github.com/Urigo/SOFA/pull/178)
