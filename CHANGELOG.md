@@ -2,6 +2,10 @@
 
 ### vNEXT
 
+### v0.7.0
+
+- feat(swagger): custom components and security for OpenAPI [PR #296](https://github.com/Urigo/SOFA/pull/296)
+
 ### v0.6.1
 
 - fix(swagger): broken type of ID scalar in generated swagger document [PR #280](https://github.com/Urigo/SOFA/pull/280)
