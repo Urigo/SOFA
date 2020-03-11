@@ -272,6 +272,49 @@ app.use(
 openApi.save('./swagger.yml');
 ```
 
+OpenAPI (Swagger) with Bearer Authentication
+
+```ts
+import { useSofa, OpenAPI } from 'sofa-api';
+
+const openApi = OpenAPI({
+  schema,
+  info: {
+    title: 'Example API',
+    version: '3.0.0',
+  },
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+    },
+  },
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
+});
+
+app.use(
+  '/api',
+  useSofa({
+    schema,
+    onRoute(info) {
+      openApi.addRoute(info, {
+        basePath: '/api',
+      });
+    },
+  })
+);
+
+// writes every recorder route
+openApi.save('./swagger.yml');
+```
+
 ## License
 
 [MIT](https://github.com/Urigo/sofa/blob/master/LICENSE) © Uri Goldshtein

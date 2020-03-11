@@ -15,9 +15,13 @@ import { OpenAPI } from './interfaces';
 export function OpenAPI({
   schema,
   info,
+  components,
+  security,
 }: {
   schema: GraphQLSchema;
   info: Record<string, any>;
+  components?: Record<string, any>;
+  security?: Record<string, any>[];
 }) {
   const types = schema.getTypeMap();
   const swagger: any = {
@@ -38,6 +42,14 @@ export function OpenAPI({
     ) {
       swagger.components!.schemas![typeName] = buildSchemaObjectFromType(type);
     }
+  }
+
+  if (components) {
+    swagger.components = { ...components, ...swagger.components };
+  }
+
+  if (security) {
+    swagger.security = security;
   }
 
   return {
