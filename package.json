@@ -58,7 +58,7 @@
     "@types/body-parser": "1.19.0",
     "@types/express": "4.17.3",
     "@types/jest": "25.1.4",
-    "@types/node": "12.12.29",
+    "@types/node": "12.12.30",
     "@types/request-promise-native": "1.0.17",
     "@types/supertest": "2.0.8",
     "@types/swagger-ui-express": "4.1.1",
