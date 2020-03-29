@@ -1,4 +1,4 @@
-import { paramCase } from 'change-case';
+import { paramCase } from 'param-case';
 
 export function convertName(name: string) {
   return paramCase(name);

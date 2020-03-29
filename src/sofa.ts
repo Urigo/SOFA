@@ -52,6 +52,7 @@ export interface Sofa {
   context: Context;
   models: string[];
   ignore: Ignore;
+  depthLimit: number;
   method?: MethodMap;
   execute: ExecuteFn;
   onRoute?: OnRoute;
@@ -63,6 +64,7 @@ export function createSofa(config: SofaConfig): Sofa {
 
   const models = extractsModels(config.schema);
   const ignore = config.ignore || [];
+  const depthLimit = config.depthLimit || 1;
 
   logger.debug(`[Sofa] models: ${models.join(', ')}`);
   logger.debug(`[Sofa] ignore: ${ignore.join(', ')}`);
@@ -74,6 +76,7 @@ export function createSofa(config: SofaConfig): Sofa {
     execute: graphql,
     models,
     ignore,
+    depthLimit,
     ...config,
   };
 }
@@ -111,7 +114,7 @@ function extractsModels(schema: GraphQLSchema): string[] {
         // check if has no non-optional arguments
         // add to registry with `list: true`
         const sameName = isNameEqual(field.name, namedType.name + 's');
-        const allOptionalArguments = !field.args.some(arg =>
+        const allOptionalArguments = !field.args.some((arg) =>
           isNonNullType(arg.type)
         );
 
@@ -134,7 +137,7 @@ function extractsModels(schema: GraphQLSchema): string[] {
   }
 
   return Object.keys(modelMap).filter(
-    name => modelMap[name].list && modelMap[name].single
+    (name) => modelMap[name].list && modelMap[name].single
   );
 }
 

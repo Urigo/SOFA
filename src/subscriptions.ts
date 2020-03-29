@@ -3,11 +3,12 @@ import {
   DocumentNode,
   VariableDefinitionNode,
   ExecutionResult,
+  Kind,
 } from 'graphql';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import { forAwaitEach, isAsyncIterable } from 'iterall';
-import { buildOperation } from './operation';
+import { buildOperationNodeForField } from '@graphql-toolkit/common';
 import { Sofa, isContextFn } from './sofa';
 import { getOperationInfo } from './ast';
 import { parseVariable } from './parse';
@@ -218,7 +219,7 @@ export class SubscriptionManager {
       });
 
       // success
-      forAwaitEach(execution, async result => {
+      forAwaitEach(execution, async (result) => {
         await this.sendData({
           id,
           result,
@@ -228,7 +229,7 @@ export class SubscriptionManager {
           // completes
           this.stop(id);
         },
-        e => {
+        (e) => {
           logger.info(`Subscription #${id} closed`);
           logger.error(e);
           this.stop(id);
@@ -261,13 +262,18 @@ export class SubscriptionManager {
     const fieldMap = subscription.getFields();
 
     for (const field in fieldMap) {
-      const document = buildOperation({
+      const operationNode = buildOperationNodeForField({
         kind: 'subscription',
         field,
         schema: this.sofa.schema,
         models: this.sofa.models,
         ignore: this.sofa.ignore,
+        circularReferenceDepth: this.sofa.depthLimit,
       });
+      const document: DocumentNode = {
+        kind: Kind.DOCUMENT,
+        definitions: [operationNode],
+      };
 
       const { variables, name: operationName } = getOperationInfo(document)!;
 

@@ -1,7 +1,7 @@
-import { buildSchema } from 'graphql';
+import { buildSchema, Kind } from 'graphql';
 
 import { buildPathFromOperation } from '../../src/open-api/operations';
-import { buildOperation } from '../../src/operation';
+import { buildOperationNodeForField } from '@graphql-toolkit/common';
 
 const schema = buildSchema(/* GraphQL */ `
   type Post {
@@ -27,7 +27,7 @@ const schema = buildSchema(/* GraphQL */ `
 `);
 
 test('handle query', async () => {
-  const operation = buildOperation({
+  const operation = buildOperationNodeForField({
     schema,
     kind: 'query',
     field: 'feed',
@@ -37,7 +37,10 @@ test('handle query', async () => {
 
   const result = buildPathFromOperation({
     url: '/api/feed',
-    operation,
+    operation: {
+      kind: Kind.DOCUMENT,
+      definitions: [operation],
+    },
     schema,
     useRequestBody: false,
   });
@@ -63,7 +66,7 @@ test('handle query', async () => {
 });
 
 test('handle mutation', async () => {
-  const operation = buildOperation({
+  const operation = buildOperationNodeForField({
     schema,
     kind: 'mutation',
     field: 'addPost',
@@ -73,7 +76,10 @@ test('handle mutation', async () => {
 
   const result = buildPathFromOperation({
     url: '/api/add-post',
-    operation,
+    operation: {
+      kind: Kind.DOCUMENT,
+      definitions: [operation],
+    },
     schema,
     useRequestBody: true,
   });

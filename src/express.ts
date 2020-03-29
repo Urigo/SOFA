@@ -1,7 +1,13 @@
 import { Router, Response, Request, NextFunction } from 'express';
-import { DocumentNode, print, isObjectType, isNonNullType } from 'graphql';
+import {
+  DocumentNode,
+  print,
+  isObjectType,
+  isNonNullType,
+  Kind,
+} from 'graphql';
 
-import { buildOperation } from './operation';
+import { buildOperationNodeForField } from '@graphql-toolkit/common';
 import { getOperationInfo, OperationInfo } from './ast';
 import { Sofa, isContextFn } from './sofa';
 import { RouteInfo, Method, MethodMap } from './types';
@@ -24,7 +30,7 @@ export function createRouter(sofa: Sofa): Router {
   const subscriptionManager = new SubscriptionManager(sofa);
 
   if (queryType) {
-    Object.keys(queryType.getFields()).forEach(fieldName => {
+    Object.keys(queryType.getFields()).forEach((fieldName) => {
       const route = createQueryRoute({ sofa, router, fieldName });
 
       if (sofa.onRoute) {
@@ -34,7 +40,7 @@ export function createRouter(sofa: Sofa): Router {
   }
 
   if (mutationType) {
-    Object.keys(mutationType.getFields()).forEach(fieldName => {
+    Object.keys(mutationType.getFields()).forEach((fieldName) => {
       const route = createMutationRoute({ sofa, router, fieldName });
 
       if (sofa.onRoute) {
@@ -132,20 +138,25 @@ function createQueryRoute({
   logger.debug(`[Router] Creating ${fieldName} query`);
 
   const queryType = sofa.schema.getQueryType()!;
-  const operation = buildOperation({
+  const operationNode = buildOperationNodeForField({
     kind: 'query',
     schema: sofa.schema,
     field: fieldName,
     models: sofa.models,
     ignore: sofa.ignore,
+    circularReferenceDepth: sofa.depthLimit,
   });
+  const operation: DocumentNode = {
+    kind: Kind.DOCUMENT,
+    definitions: [operationNode],
+  };
   const info = getOperationInfo(operation)!;
   const field = queryType.getFields()[fieldName];
   const fieldType = field.type;
   const isSingle =
     isObjectType(fieldType) ||
     (isNonNullType(fieldType) && isObjectType(fieldType.ofType));
-  const hasIdArgument = field.args.some(arg => arg.name === 'id');
+  const hasIdArgument = field.args.some((arg) => arg.name === 'id');
   const path = getPath(fieldName, isSingle && hasIdArgument);
 
   const method = produceMethod({
@@ -181,13 +192,18 @@ function createMutationRoute({
   logger.debug(`[Router] Creating ${fieldName} mutation`);
 
   const mutationType = sofa.schema.getMutationType()!;
-  const operation = buildOperation({
+  const operationNode = buildOperationNodeForField({
     kind: 'mutation',
     schema: sofa.schema,
     field: fieldName,
     models: sofa.models,
     ignore: sofa.ignore,
+    circularReferenceDepth: sofa.depthLimit,
   });
+  const operation: DocumentNode = {
+    kind: Kind.DOCUMENT,
+    definitions: [operationNode],
+  };
   const info = getOperationInfo(operation)!;
   const path = getPath(fieldName);
 
@@ -287,7 +303,7 @@ function useAsync<T = any>(
   handler: (req: Request, res: Response, next: NextFunction) => Promise<T>
 ) {
   return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(handler(req, res, next)).catch(e => next(e));
+    Promise.resolve(handler(req, res, next)).catch((e) => next(e));
   };
 }
 
