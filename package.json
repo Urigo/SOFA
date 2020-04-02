@@ -30,7 +30,7 @@
   },
   "peerDependencies": {
     "express": "^4.0.0",
-    "graphql": "^0.13.2 || ^14.0.0"
+    "graphql": "^0.13.2 || ^14.0.0 || ^15.0.0"
   },
   "dependencies": {
     "@graphql-toolkit/common": "0.9.12",
