@@ -236,7 +236,7 @@ export class SubscriptionManager {
         }
       );
     } else {
-      return execution as ExecutionResult<any>;
+      return execution as ExecutionResult;
     }
   }
 
