@@ -70,7 +70,7 @@
     "express": "4.17.1",
     "express-graphql": "0.9.0",
     "graphql": "15.0.0",
-    "graphql-tools": "4.0.7",
+    "graphql-tools": "5.0.0",
     "graphql-subscriptions": "1.1.0",
     "husky": "4.2.5",
     "jest": "25.3.0",
