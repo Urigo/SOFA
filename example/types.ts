@@ -13,6 +13,12 @@ export const typeDefs = /* GraphQL */ `
   type Book {
     id: ID!
     title: String!
+    type: BookType!
+  }
+
+  enum BookType {
+    AUDIO
+    LEGACY
   }
 
   type User {

@@ -263,6 +263,94 @@
   },
   "components": {
     "schemas": {
+      "Pizza": {
+        "type": "object",
+        "required": ["dough"],
+        "properties": {
+          "dough": {
+            "type": "string"
+          },
+          "toppings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Salad": {
+        "type": "object",
+        "required": ["ingredients"],
+        "properties": {
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Book": {
+        "type": "object",
+        "required": ["id", "title", "type"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["AUDIO", "LEGACY"]
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "favoritePizza",
+          "favoriteBook",
+          "favoriteFood",
+          "shelf"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "favoritePizza": {
+            "$ref": "#/components/schemas/Pizza"
+          },
+          "favoriteBook": {
+            "$ref": "#/components/schemas/Book"
+          },
+          "favoriteFood": {
+            "type": "object"
+          },
+          "shelf": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Book"
+            }
+          }
+        }
+      },
+      "Post": {
+        "type": "object",
+        "properties": {
+          "comments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "Query": {
         "type": "object",
         "properties": {
@@ -307,90 +395,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Post"
-            }
-          }
-        }
-      },
-      "User": {
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "favoritePizza",
-          "favoriteBook",
-          "favoriteFood",
-          "shelf"
-        ],
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "favoritePizza": {
-            "$ref": "#/components/schemas/Pizza"
-          },
-          "favoriteBook": {
-            "$ref": "#/components/schemas/Book"
-          },
-          "favoriteFood": {
-            "type": "object"
-          },
-          "shelf": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Book"
-            }
-          }
-        }
-      },
-      "Pizza": {
-        "type": "object",
-        "required": ["dough"],
-        "properties": {
-          "dough": {
-            "type": "string"
-          },
-          "toppings": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "Book": {
-        "type": "object",
-        "required": ["id", "title"],
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          }
-        }
-      },
-      "Salad": {
-        "type": "object",
-        "required": ["ingredients"],
-        "properties": {
-          "ingredients": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "Post": {
-        "type": "object",
-        "properties": {
-          "comments": {
-            "type": "array",
-            "items": {
-              "type": "string"
             }
           }
         }
