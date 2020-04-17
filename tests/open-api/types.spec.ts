@@ -24,7 +24,13 @@ test('handle ObjectType', async () => {
       address: [Address]
     }
 
+    enum UserRole {
+      ADMIN
+      NORMAL
+    }
+
     type User {
+      role: UserRole!
       name: String!
       age: Int!
       profile: Profile
@@ -49,8 +55,12 @@ test('handle ObjectType', async () => {
 
   expect(user).toEqual({
     type: 'object',
-    required: ['name', 'age'],
+    required: ['role', 'name', 'age'],
     properties: {
+      role: {
+        enum: ['ADMIN', 'NORMAL'],
+        type: 'string',
+      },
       name: {
         type: 'string',
       },

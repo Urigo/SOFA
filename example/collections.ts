@@ -2,7 +2,10 @@ const pizzas = [
   { id: 1, dough: 'pan', toppings: ['cheese'] },
   { id: 2, dough: 'classic', toppings: ['ham'] },
 ];
-const books = [{ id: 1, title: 'Book A' }, { id: 2, title: 'Book B' }];
+const books = [
+  { id: 1, title: 'Book A', type: 'AUDIO' },
+  { id: 2, title: 'Book B', type: 'LEGACY' },
+];
 const users = [
   {
     id: 1,
@@ -40,7 +43,7 @@ export const UsersCollection = {
   get(id: string | number) {
     const uid = typeof id === 'string' ? parseInt(id, 10) : id;
 
-    return users.find(u => u.id === uid);
+    return users.find((u) => u.id === uid);
   },
   all() {
     return users;
@@ -51,20 +54,16 @@ export const BooksCollection = {
   get(id: string | number) {
     const bid = typeof id === 'string' ? parseInt(id, 10) : id;
 
-    return books.find(u => u.id === bid);
+    return books.find((u) => u.id === bid);
   },
   all() {
     return books;
   },
   add(title: string) {
     const book = {
-      id: parseInt(
-        Math.random()
-          .toString(10)
-          .substr(2),
-        10
-      ),
+      id: parseInt(Math.random().toString(10).substr(2), 10),
       title,
+      type: 'LEGACY',
     };
 
     books.push(book);

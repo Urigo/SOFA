@@ -9,6 +9,7 @@ import {
   isObjectType,
   isScalarType,
   GraphQLNamedType,
+  isEnumType,
 } from 'graphql';
 import { mapToPrimitive, mapToRef } from './utils';
 
@@ -74,6 +75,13 @@ export function resolveFieldType(
         type: 'object',
       }
     );
+  }
+
+  if (isEnumType(type)) {
+    return {
+      type: 'string',
+      enum: type.astNode?.values?.map((value) => value.name.value),
+    };
   }
 
   return {
