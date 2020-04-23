@@ -61,7 +61,7 @@
     "@types/request-promise-native": "1.0.17",
     "@types/supertest": "2.0.8",
     "@types/swagger-ui-express": "4.1.2",
-    "@types/uuid": "7.0.2",
+    "@types/uuid": "7.0.3",
     "@types/yamljs": "0.2.30",
     "bob-the-bundler": "0.3.4",
     "body-parser": "1.19.0",
