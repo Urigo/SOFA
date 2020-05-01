@@ -59,7 +59,7 @@
     "@types/jest": "25.2.1",
     "@types/node": "12.12.37",
     "@types/request-promise-native": "1.0.17",
-    "@types/supertest": "2.0.8",
+    "@types/supertest": "2.0.9",
     "@types/swagger-ui-express": "4.1.2",
     "@types/uuid": "7.0.3",
     "@types/yamljs": "0.2.30",
