@@ -1,7 +1,7 @@
 import { buildSchema, Kind } from 'graphql';
 
 import { buildPathFromOperation } from '../../src/open-api/operations';
-import { buildOperationNodeForField } from '@graphql-toolkit/common';
+import { buildOperationNodeForField } from '@graphql-tools/utils';
 
 const schema = buildSchema(/* GraphQL */ `
   type Post {

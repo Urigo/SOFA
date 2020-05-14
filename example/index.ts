@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { makeExecutableSchema } from 'graphql-tools';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import * as bodyParser from 'body-parser';
 import * as useGraphQL from 'express-graphql';
 import * as swaggerUi from 'swagger-ui-express';
