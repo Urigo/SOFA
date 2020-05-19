@@ -1,4 +1,4 @@
-import { makeExecutableSchema } from 'graphql-tools';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import * as supertest from 'supertest';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
@@ -14,7 +14,9 @@ test('should work with Query and variables', async () => {
   sofa.models = models;
 
   const router = createRouter(sofa);
-  const found = router.stack.find(r => r.route && r.route.path === '/user/:id');
+  const found = router.stack.find(
+    (r) => r.route && r.route.path === '/user/:id'
+  );
 
   expect(found).toBeDefined();
 
@@ -39,7 +41,7 @@ test('should work with Mutation', async () => {
 
   const router = createRouter(sofa);
   const found = router.stack.find(
-    r => r.route && r.route.path === '/add-random-food'
+    (r) => r.route && r.route.path === '/add-random-food'
   );
 
   expect(found).toBeDefined();
@@ -56,7 +58,7 @@ test('should work with Mutation', async () => {
   expect(route.methods.post).toEqual(true);
 });
 
-test('should overwrite a default http method on demand', done => {
+test('should overwrite a default http method on demand', (done) => {
   const users = [
     {
       id: 'user:foo',
@@ -140,7 +142,7 @@ test('should overwrite a default http method on demand', done => {
     });
 });
 
-test('should work with scalars', done => {
+test('should work with scalars', (done) => {
   const app = express();
 
   app.use(bodyParser.json());

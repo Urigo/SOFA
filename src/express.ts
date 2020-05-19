@@ -7,7 +7,7 @@ import {
   Kind,
 } from 'graphql';
 
-import { buildOperationNodeForField } from '@graphql-toolkit/common';
+import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast';
 import { Sofa, isContextFn } from './sofa';
 import { RouteInfo, Method, MethodMap } from './types';

@@ -8,7 +8,7 @@ import {
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import { forAwaitEach, isAsyncIterable } from 'iterall';
-import { buildOperationNodeForField } from '@graphql-toolkit/common';
+import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { Sofa, isContextFn } from './sofa';
 import { getOperationInfo } from './ast';
 import { parseVariable } from './parse';
