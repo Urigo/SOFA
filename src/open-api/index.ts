@@ -4,7 +4,7 @@ import {
   isInputObjectType,
   isIntrospectionType,
 } from 'graphql';
-import { stringify as YAMLstringify } from 'yamljs';
+import { safeDump as YAMLstringify } from 'js-yaml';
 import { writeFileSync } from 'fs';
 
 import { buildSchemaObjectFromType } from './types';
@@ -64,7 +64,7 @@ export function OpenAPI({
         basePath +
         info.path.replace(
           /\:[a-z0-9]+\w/i,
-          param => `{${param.replace(':', '')}}`
+          (param) => `{${param.replace(':', '')}}`
         );
 
       if (!swagger.paths[path]) {
@@ -88,7 +88,7 @@ export function OpenAPI({
       if (isJSON.test(filepath)) {
         writeOutput(filepath, JSON.stringify(swagger, null, 2));
       } else if (isYAML.test(filepath)) {
-        writeOutput(filepath, YAMLstringify(swagger, Infinity));
+        writeOutput(filepath, YAMLstringify(swagger));
       } else {
         throw new Error('We only support JSON and YAML files');
       }
