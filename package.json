@@ -68,7 +68,7 @@
     "bob-the-bundler": "0.3.4",
     "body-parser": "1.19.0",
     "bundlesize": "0.18.0",
-    "chalk": "4.0.0",
+    "chalk": "4.1.0",
     "express": "4.17.1",
     "express-graphql": "0.9.0",
     "graphql": "15.1.0",
