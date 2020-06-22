@@ -42,7 +42,7 @@
     "title-case": "3.0.2",
     "tslib": "2.0.0",
     "uuid": "8.1.0",
-    "winston": "3.3.1"
+    "winston": "3.3.2"
   },
   "scripts": {
     "start": "ts-node --project tsconfig.example.json example/index.ts",
