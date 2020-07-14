@@ -52,8 +52,7 @@
     "test": "jest --no-watchman",
     "prepare-release": "yarn build && yarn test",
     "release": "yarn prepare-release && bob prepack && npm publish dist",
-    "ci:release:canary": "node bump.js && bob prepack && npm publish dist --tag alpha --access public",
-    "bundlesize": "yarn build && cd bundle-test/ && yarn && yarn test"
+    "ci:release:canary": "node bump.js && bob prepack && npm publish dist --tag alpha --access public"
   },
   "devDependencies": {
     "@graphql-tools/schema": "6.0.13",
