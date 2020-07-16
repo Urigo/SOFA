@@ -81,7 +81,7 @@
     "swagger-ui-express": "4.1.4",
     "ts-jest": "26.1.2",
     "ts-node": "8.10.2",
-    "typescript": "3.9.6"
+    "typescript": "3.9.7"
   },
   "husky": {
     "hooks": {
