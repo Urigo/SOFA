@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "/animation/",
   "dependencies": {
-    "lottie-web": "5.7.0",
+    "lottie-web": "5.7.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-scripts": "3.4.1"
