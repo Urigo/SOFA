@@ -41,7 +41,7 @@
     "param-case": "3.0.3",
     "title-case": "3.0.2",
     "tslib": "2.0.0",
-    "uuid": "8.2.0",
+    "uuid": "8.3.0",
     "winston": "3.3.3"
   },
   "scripts": {
