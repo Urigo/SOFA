@@ -75,7 +75,7 @@
     "graphql-subscriptions": "1.1.0",
     "husky": "4.2.5",
     "jest": "26.4.2",
-    "lint-staged": "10.2.13",
+    "lint-staged": "10.3.0",
     "prettier": "2.1.1",
     "supertest": "4.0.2",
     "swagger-ui-express": "4.1.4",
