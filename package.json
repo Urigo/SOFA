@@ -42,7 +42,7 @@
     "param-case": "3.0.3",
     "title-case": "3.0.2",
     "tslib": "2.0.1",
-    "uuid": "8.3.0"
+    "uuid": "8.3.1"
   },
   "scripts": {
     "start": "ts-node --project tsconfig.example.json example/index.ts",
