@@ -74,7 +74,7 @@
     "graphql": "15.3.0",
     "graphql-subscriptions": "1.1.0",
     "husky": "4.3.0",
-    "jest": "26.5.0",
+    "jest": "26.5.2",
     "lint-staged": "10.4.0",
     "prettier": "2.1.2",
     "supertest": "5.0.0",
