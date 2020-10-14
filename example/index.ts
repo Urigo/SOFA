@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import * as bodyParser from 'body-parser';
-import * as useGraphQL from 'express-graphql';
+import { graphqlHTTP } from 'express-graphql';
 import * as swaggerUi from 'swagger-ui-express';
 import * as chalk from 'chalk';
 import { resolve } from 'path';
@@ -55,7 +55,7 @@ app.post('/collect-book', (req, res) => {
 
 app.use(
   '/graphql',
-  useGraphQL({
+  graphqlHTTP({
     schema,
     graphiql: true,
   })
