@@ -1,5 +1,5 @@
 import * as http from 'http';
-import { Router, Request, NextFunction } from 'express';
+import { Request, NextFunction } from 'express';
 import {
   DocumentNode,
   print,
@@ -11,7 +11,7 @@ import {
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast';
 import { Sofa, isContextFn } from './sofa';
-import { RouteInfo, Method, MethodMap } from './types';
+import { Route, RouteInfo, Method, MethodMap } from './types';
 import { convertName } from './common';
 import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
@@ -22,127 +22,154 @@ export type ErrorHandler = (
   errors: ReadonlyArray<any>
 ) => void;
 
-export type ExpressMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
-
-export function createRouter(sofa: Sofa): Router {
+export function createRouter(sofa: Sofa) {
   logger.debug('[Sofa] Creating router');
-
-  const router = Router();
 
   const queryType = sofa.schema.getQueryType();
   const mutationType = sofa.schema.getMutationType();
   const subscriptionManager = new SubscriptionManager(sofa);
 
+  const queryRoutes: Route[] = [];
   if (queryType) {
     Object.keys(queryType.getFields()).forEach((fieldName) => {
-      const route = createQueryRoute({ sofa, router, fieldName });
+      const routeInfo = createQueryRoute({ sofa, fieldName });
+      queryRoutes.push(routeInfo.route);
 
       if (sofa.onRoute) {
-        sofa.onRoute(route);
+        sofa.onRoute(routeInfo);
       }
     });
   }
 
+  const mutationRoutes: Route[] = [];
   if (mutationType) {
     Object.keys(mutationType.getFields()).forEach((fieldName) => {
-      const route = createMutationRoute({ sofa, router, fieldName });
+      const routeInfo = createMutationRoute({ sofa, fieldName });
+      mutationRoutes.push(routeInfo.route);
 
       if (sofa.onRoute) {
-        sofa.onRoute(route);
+        sofa.onRoute(routeInfo);
       }
     });
   }
 
-  router.post(
-    '/webhook',
-    useAsync(async (req, res) => {
-      const { subscription, variables, url }: StartSubscriptionEvent = req.body;
+  const startSubscriptionRoute: Route = async (routeUrl, req, res) => {
+    if (req.method !== 'post' || routeUrl !== '/webhook') {
+      return;
+    }
+    const { subscription, variables, url }: StartSubscriptionEvent = req.body;
 
-      try {
-        const result = await subscriptionManager.start(
-          {
-            subscription,
-            variables,
-            url,
-          },
-          { req, res }
-        );
+    try {
+      const result = await subscriptionManager.start(
+        {
+          subscription,
+          variables,
+          url,
+        },
+        { req, res }
+      );
 
-        res.writeHead(200, 'OK', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(result));
-      } catch (e) {
-        res.writeHead(500, 'Subscription failed', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(e));
+      res.writeHead(200, 'OK', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(result));
+    } catch (e) {
+      res.writeHead(500, 'Subscription failed', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(e));
+    }
+  };
+
+  const updateSubscriptionRoute: Route = async (routeUrl, req, res) => {
+    const match = routeUrl.match(/^\/webhook\/([^/]+)$/);
+    if (req.method !== 'post' || match == null) {
+      return;
+    }
+    const id: string = match[1];
+    const variables: any = req.body.variables;
+
+    try {
+      const result = await subscriptionManager.update(
+        {
+          id,
+          variables,
+        },
+        {
+          req,
+          res,
+        }
+      );
+
+      res.writeHead(200, 'OK', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(result));
+    } catch (e) {
+      res.writeHead(500, 'Subscription failed to update', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(e));
+    }
+  };
+
+  const deleteSubscriptionRoute: Route = async (routeUrl, req, res) => {
+    const match = routeUrl.match(/^\/webhook\/([^/]+)$/);
+    if (req.method !== 'delete' || match == null) {
+      return;
+    }
+    const id: string = match[1];
+
+    try {
+      const result = await subscriptionManager.stop(id);
+
+      res.writeHead(200, 'OK', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(result));
+    } catch (e) {
+      res.writeHead(500, 'Subscription failed to stop', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(e));
+    }
+  };
+
+  const router = async (
+    req: Request,
+    res: http.ServerResponse,
+    next: NextFunction
+  ) => {
+    const url = req.originalUrl || req.url;
+    const basePath = sofa.basePath;
+    const routeUrl = url.startsWith(basePath)
+      ? url.slice(basePath.length)
+      : url;
+    try {
+      await startSubscriptionRoute(routeUrl, req, res);
+      await updateSubscriptionRoute(routeUrl, req, res);
+      await deleteSubscriptionRoute(routeUrl, req, res);
+      await Promise.all(queryRoutes.map((route) => route(routeUrl, req, res)));
+      await Promise.all(
+        mutationRoutes.map((route) => route(routeUrl, req, res))
+      );
+      // continue middleware chain if routes didn't send response
+      if (res.writableEnded === false) {
+        next();
       }
-    })
-  );
-
-  router.post(
-    '/webhook/:id',
-    useAsync(async (req, res) => {
-      const id: string = req.params.id;
-      const variables: any = req.body.variables;
-
-      try {
-        const result = await subscriptionManager.update(
-          {
-            id,
-            variables,
-          },
-          {
-            req,
-            res,
-          }
-        );
-
-        res.writeHead(200, 'OK', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(result));
-      } catch (e) {
-        res.writeHead(500, 'Subscription failed to update', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(e));
-      }
-    })
-  );
-
-  router.delete(
-    '/webhook/:id',
-    useAsync(async (req, res) => {
-      const id: string = req.params.id;
-
-      try {
-        const result = await subscriptionManager.stop(id);
-
-        res.writeHead(200, 'OK', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(result));
-      } catch (e) {
-        res.writeHead(500, 'Subscription failed to stop', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(e));
-      }
-    })
-  );
+    } catch (error) {
+      next(error);
+    }
+  };
 
   return router;
 }
 
 function createQueryRoute({
   sofa,
-  router,
   fieldName,
 }: {
   sofa: Sofa;
-  router: Router;
   fieldName: string;
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} query`);
@@ -167,7 +194,11 @@ function createQueryRoute({
     isObjectType(fieldType) ||
     (isNonNullType(fieldType) && isObjectType(fieldType.ofType));
   const hasIdArgument = field.args.some((arg) => arg.name === 'id');
-  const path = getPath(fieldName, isSingle && hasIdArgument);
+
+  const hasId = isSingle && hasIdArgument;
+
+  const path = getPath(fieldName, hasId);
+  const pathFieldName = convertName(fieldName);
 
   const method = produceMethod({
     typeName: queryType.name,
@@ -176,10 +207,26 @@ function createQueryRoute({
     defaultValue: 'GET',
   });
 
-  router[method.toLocaleLowerCase() as ExpressMethod](
-    path,
-    useHandler({ info, fieldName, sofa, operation })
-  );
+  const route: Route = async (routeUrl, req, res) => {
+    if (req.method !== method.toUpperCase()) {
+      return;
+    }
+    const config = {
+      additionalVariables: {} as { [key: string]: string },
+      info,
+      fieldName,
+      sofa,
+      operation,
+    };
+    if (hasId === false && routeUrl === path) {
+      handler(config, req, res);
+    }
+    const chunks = routeUrl.split('/').slice(1);
+    if (hasId === true && chunks.length === 2 && chunks[0] === pathFieldName) {
+      config.additionalVariables['id'] = chunks[1];
+      handler(config, req, res);
+    }
+  };
 
   logger.debug(`[Router] ${fieldName} query available at ${method} ${path}`);
 
@@ -187,16 +234,15 @@ function createQueryRoute({
     document: operation,
     path,
     method: method.toUpperCase() as Method,
+    route,
   };
 }
 
 function createMutationRoute({
   sofa,
-  router,
   fieldName,
 }: {
   sofa: Sofa;
-  router: Router;
   fieldName: string;
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} mutation`);
@@ -224,10 +270,19 @@ function createMutationRoute({
     defaultValue: 'POST',
   });
 
-  router[method.toLowerCase() as ExpressMethod](
-    path,
-    useHandler({ info, fieldName, sofa, operation })
-  );
+  const route: Route = async (routeUrl, req, res) => {
+    if (req.method !== method.toUpperCase() || routeUrl !== path) {
+      return;
+    }
+    const config = {
+      additionalVariables: {},
+      info,
+      fieldName,
+      sofa,
+      operation,
+    };
+    handler(config, req, res);
+  };
 
   logger.debug(`[Router] ${fieldName} mutation available at ${method} ${path}`);
 
@@ -235,72 +290,78 @@ function createMutationRoute({
     document: operation,
     path,
     method: method.toUpperCase() as Method,
+    route,
   };
 }
 
-function useHandler(config: {
-  sofa: Sofa;
-  info: OperationInfo;
-  operation: DocumentNode;
-  fieldName: string;
-}) {
-  const { sofa, operation, fieldName } = config;
+async function handler(
+  config: {
+    additionalVariables: { [key: string]: string };
+    sofa: Sofa;
+    info: OperationInfo;
+    operation: DocumentNode;
+    fieldName: string;
+  },
+  req: Request,
+  res: http.ServerResponse
+) {
+  const { additionalVariables, sofa, operation, fieldName } = config;
   const info = config.info!;
-
-  return useAsync(async (req: Request, res: http.ServerResponse) => {
-    const variableValues = info.variables.reduce((variables, variable) => {
-      const name = variable.variable.name.value;
-      const value = parseVariable({
-        value: pickParam(req, name),
-        variable,
-        schema: sofa.schema,
-      });
-
-      if (typeof value === 'undefined') {
-        return variables;
-      }
-
-      return {
-        ...variables,
-        [name]: value,
-      };
-    }, {});
-
-    const contextValue = isContextFn(sofa.context)
-      ? await sofa.context({ req, res })
-      : sofa.context;
-
-    const result = await sofa.execute({
+  const variableValues = info.variables.reduce((variables, variable) => {
+    const name = variable.variable.name.value;
+    const value = parseVariable({
+      value: pickParam(req, additionalVariables, name),
+      variable,
       schema: sofa.schema,
-      source: print(operation),
-      contextValue,
-      variableValues,
-      operationName: info.operation.name && info.operation.name.value,
     });
 
-    if (result.errors) {
-      const defaultErrorHandler: ErrorHandler = (res, errors) => {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(errors[0]));
-      };
-      const errorHandler: ErrorHandler =
-        sofa.errorHandler || defaultErrorHandler;
-      errorHandler(res, result.errors);
-      return;
+    if (typeof value === 'undefined') {
+      return variables;
     }
 
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(result.data && result.data[fieldName]));
+    return {
+      ...variables,
+      [name]: value,
+    };
+  }, {});
+
+  const contextValue = isContextFn(sofa.context)
+    ? await sofa.context({ req, res })
+    : sofa.context;
+
+  const result = await sofa.execute({
+    schema: sofa.schema,
+    source: print(operation),
+    contextValue,
+    variableValues,
+    operationName: info.operation.name && info.operation.name.value,
   });
+
+  if (result.errors) {
+    const defaultErrorHandler: ErrorHandler = (res, errors) => {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(errors[0]));
+    };
+    const errorHandler: ErrorHandler = sofa.errorHandler || defaultErrorHandler;
+    errorHandler(res, result.errors);
+    return;
+  }
+
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify(result.data && result.data[fieldName]));
 }
 
 function getPath(fieldName: string, hasId = false) {
   return `/${convertName(fieldName)}${hasId ? '/:id' : ''}`;
 }
 
-function pickParam(req: Request, name: string) {
-  if (req.params && req.params.hasOwnProperty(name)) {
-    return req.params[name];
+function pickParam(
+  req: Request,
+  additionalVariables: { [key: string]: string },
+  name: string
+) {
+  if (additionalVariables.hasOwnProperty(name)) {
+    return additionalVariables[name];
   }
   if (req.query && req.query.hasOwnProperty(name)) {
     return req.query[name];
@@ -308,14 +369,6 @@ function pickParam(req: Request, name: string) {
   if (req.body && req.body.hasOwnProperty(name)) {
     return req.body[name];
   }
-}
-
-function useAsync<T = any>(
-  handler: (req: Request, res: http.ServerResponse) => Promise<T>
-) {
-  return (req: Request, res: http.ServerResponse, next: NextFunction) => {
-    Promise.resolve(handler(req, res)).catch((e) => next(e));
-  };
 }
 
 function produceMethod({
