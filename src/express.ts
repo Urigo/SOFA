@@ -1,4 +1,5 @@
-import { Router, Response, Request, NextFunction } from 'express';
+import * as http from 'http';
+import { Router, Request, NextFunction } from 'express';
 import {
   DocumentNode,
   print,
@@ -16,7 +17,10 @@ import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
 import { logger } from './logger';
 
-export type ErrorHandler = (res: Response, errors: ReadonlyArray<any>) => void;
+export type ErrorHandler = (
+  res: http.ServerResponse,
+  errors: ReadonlyArray<any>
+) => void;
 
 export type ExpressMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
@@ -64,13 +68,15 @@ export function createRouter(sofa: Sofa): Router {
           { req, res }
         );
 
-        res.statusCode = 200;
-        res.statusMessage = 'OK';
-        res.json(result);
+        res.writeHead(200, 'OK', {
+          'Content-Type': 'application/json',
+        });
+        res.end(JSON.stringify(result));
       } catch (e) {
-        res.statusCode = 500;
-        res.statusMessage = 'Subscription failed';
-        res.json(e);
+        res.writeHead(500, 'Subscription failed', {
+          'Content-Type': 'application/json',
+        });
+        res.end(JSON.stringify(e));
       }
     })
   );
@@ -93,13 +99,15 @@ export function createRouter(sofa: Sofa): Router {
           }
         );
 
-        res.statusCode = 200;
-        res.statusMessage = 'OK';
-        res.json(result);
+        res.writeHead(200, 'OK', {
+          'Content-Type': 'application/json',
+        });
+        res.end(JSON.stringify(result));
       } catch (e) {
-        res.statusCode = 500;
-        res.statusMessage = 'Subscription failed to update';
-        res.json(e);
+        res.writeHead(500, 'Subscription failed to update', {
+          'Content-Type': 'application/json',
+        });
+        res.end(JSON.stringify(e));
       }
     })
   );
@@ -112,13 +120,15 @@ export function createRouter(sofa: Sofa): Router {
       try {
         const result = await subscriptionManager.stop(id);
 
-        res.statusCode = 200;
-        res.statusMessage = 'OK';
-        res.json(result);
+        res.writeHead(200, 'OK', {
+          'Content-Type': 'application/json',
+        });
+        res.end(JSON.stringify(result));
       } catch (e) {
-        res.statusCode = 500;
-        res.statusMessage = 'Subscription failed to stop';
-        res.json(e);
+        res.writeHead(500, 'Subscription failed to stop', {
+          'Content-Type': 'application/json',
+        });
+        res.end(JSON.stringify(e));
       }
     })
   );
@@ -237,7 +247,7 @@ function useHandler(config: {
   const { sofa, operation, fieldName } = config;
   const info = config.info!;
 
-  return useAsync(async (req: Request, res: Response) => {
+  return useAsync(async (req: Request, res: http.ServerResponse) => {
     const variableValues = info.variables.reduce((variables, variable) => {
       const name = variable.variable.name.value;
       const value = parseVariable({
@@ -270,8 +280,8 @@ function useHandler(config: {
 
     if (result.errors) {
       const defaultErrorHandler: ErrorHandler = (res, errors) => {
-        res.statusCode = 500;
-        res.json(errors[0]);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(errors[0]));
       };
       const errorHandler: ErrorHandler =
         sofa.errorHandler || defaultErrorHandler;
@@ -279,7 +289,8 @@ function useHandler(config: {
       return;
     }
 
-    res.json(result.data && result.data[fieldName]);
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(result.data && result.data[fieldName]));
   });
 }
 
@@ -300,10 +311,10 @@ function pickParam(req: Request, name: string) {
 }
 
 function useAsync<T = any>(
-  handler: (req: Request, res: Response, next: NextFunction) => Promise<T>
+  handler: (req: Request, res: http.ServerResponse) => Promise<T>
 ) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(handler(req, res, next)).catch((e) => next(e));
+  return (req: Request, res: http.ServerResponse, next: NextFunction) => {
+    Promise.resolve(handler(req, res)).catch((e) => next(e));
   };
 }
 
