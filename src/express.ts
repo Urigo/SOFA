@@ -54,7 +54,7 @@ export function createRouter(sofa: Sofa) {
   }
 
   const startSubscriptionRoute: Route = async (routeUrl, req, res) => {
-    if (req.method !== 'post' || routeUrl !== '/webhook') {
+    if (req.method !== 'POST' || routeUrl !== '/webhook') {
       return;
     }
     const { subscription, variables, url }: StartSubscriptionEvent = req.body;
@@ -83,7 +83,7 @@ export function createRouter(sofa: Sofa) {
 
   const updateSubscriptionRoute: Route = async (routeUrl, req, res) => {
     const match = routeUrl.match(/^\/webhook\/([^/]+)$/);
-    if (req.method !== 'post' || match == null) {
+    if (req.method !== 'POST' || match == null) {
       return;
     }
     const id: string = match[1];
@@ -115,7 +115,7 @@ export function createRouter(sofa: Sofa) {
 
   const deleteSubscriptionRoute: Route = async (routeUrl, req, res) => {
     const match = routeUrl.match(/^\/webhook\/([^/]+)$/);
-    if (req.method !== 'delete' || match == null) {
+    if (req.method !== 'DELETE' || match == null) {
       return;
     }
     const id: string = match[1];
