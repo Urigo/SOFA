@@ -4,7 +4,7 @@ import {
   isInputObjectType,
   isIntrospectionType,
 } from 'graphql';
-import { safeDump as YAMLstringify } from 'js-yaml';
+import { dump as YAMLstringify } from 'js-yaml';
 import { writeFileSync } from 'fs';
 
 import { buildSchemaObjectFromType } from './types';
