@@ -41,7 +41,7 @@
     "js-yaml": "3.14.1",
     "param-case": "3.0.4",
     "title-case": "3.0.3",
-    "tslib": "2.0.3",
+    "tslib": "2.1.0",
     "uuid": "8.3.2"
   },
   "scripts": {
