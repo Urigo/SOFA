@@ -26,6 +26,7 @@ const app = express();
 app.use(
   '/api',
   useSofa({
+    basePath: '/api',
     schema,
   })
 );
@@ -94,6 +95,7 @@ In order for Sofa to resolve operations based on a Context, you need te be able 
 api.use(
   '/api',
   useSofa({
+    basePath: '/api',
     schema,
     async context({ req }) {
       return {
@@ -115,6 +117,7 @@ There are some cases where sending a full object makes more sense than passing o
 api.use(
   '/api',
   useSofa({
+    basePath: '/api',
     schema,
     ignore: ['Message.author'],
   })
@@ -153,6 +156,7 @@ Sofa prevents circular references by default, but only one level deep. In order 
 api.use(
   '/api',
   useSofa({
+    basePath: '/api',
     schema,
     depthLimit: 2,
   })
@@ -167,6 +171,7 @@ By default, Sofa uses `graphql` function from `graphql-js` to turn an operation 
 api.use(
   '/api',
   useSofa({
+    basePath: '/api',
     schema,
     async execute(args) {
       return yourOwnLogicHere(args);
@@ -259,6 +264,7 @@ const openApi = OpenAPI({
 app.use(
   '/api',
   useSofa({
+    basePath: '/api',
     schema,
     onRoute(info) {
       openApi.addRoute(info, {
@@ -302,6 +308,7 @@ const openApi = OpenAPI({
 app.use(
   '/api',
   useSofa({
+    basePath: '/api',
     schema,
     onRoute(info) {
       openApi.addRoute(info, {

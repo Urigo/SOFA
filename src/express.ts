@@ -1,5 +1,4 @@
 import * as http from 'http';
-import { Router, Request, NextFunction } from 'express';
 import {
   DocumentNode,
   print,
@@ -7,7 +6,7 @@ import {
   isNonNullType,
   Kind,
 } from 'graphql';
-
+import * as Trouter from 'trouter';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast';
 import { Sofa, isContextFn } from './sofa';
@@ -22,12 +21,36 @@ export type ErrorHandler = (
   errors: ReadonlyArray<any>
 ) => void;
 
-export type ExpressMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
+type Request = http.IncomingMessage & {
+  method: Trouter.HTTPMethod;
+  url: string;
+  originalUrl?: string;
+  body?: any;
+  query?: any;
+};
 
-export function createRouter(sofa: Sofa): Router {
+type Params = { [key: string]: string };
+
+type TrouterMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
+
+type TrouterMiddleware = (
+  req: Request,
+  res: http.ServerResponse,
+  params: Params
+) => unknown;
+
+type NextFunction = (err?: any) => void;
+
+export type Middleware = (
+  req: Request,
+  res: http.ServerResponse,
+  next: NextFunction
+) => unknown;
+
+export function createRouter(sofa: Sofa): Middleware {
   logger.debug('[Sofa] Creating router');
 
-  const router = Router();
+  const router = new Trouter<TrouterMiddleware>();
 
   const queryType = sofa.schema.getQueryType();
   const mutationType = sofa.schema.getMutationType();
@@ -53,87 +76,91 @@ export function createRouter(sofa: Sofa): Router {
     });
   }
 
-  router.post(
-    '/webhook',
-    useAsync(async (req, res) => {
-      const { subscription, variables, url }: StartSubscriptionEvent = req.body;
+  router.post('/webhook', async (req, res) => {
+    const { subscription, variables, url }: StartSubscriptionEvent = req.body;
 
-      try {
-        const result = await subscriptionManager.start(
-          {
-            subscription,
-            variables,
-            url,
-          },
-          { req, res }
-        );
+    try {
+      const result = await subscriptionManager.start(
+        {
+          subscription,
+          variables,
+          url,
+        },
+        { req, res }
+      );
 
-        res.writeHead(200, 'OK', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(result));
-      } catch (e) {
-        res.writeHead(500, 'Subscription failed', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(e));
+      res.writeHead(200, 'OK', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(result));
+    } catch (e) {
+      res.writeHead(500, 'Subscription failed', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(e));
+    }
+  });
+
+  router.post('/webhook/:id', async (req, res, params) => {
+    const id: string = params.id;
+    const variables: any = req.body.variables;
+
+    try {
+      const result = await subscriptionManager.update(
+        {
+          id,
+          variables,
+        },
+        {
+          req,
+          res,
+        }
+      );
+
+      res.writeHead(200, 'OK', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(result));
+    } catch (e) {
+      res.writeHead(500, 'Subscription failed to update', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(e));
+    }
+  });
+
+  router.delete('/webhook/:id', async (_, res, params) => {
+    const id: string = params.id;
+
+    try {
+      const result = await subscriptionManager.stop(id);
+
+      res.writeHead(200, 'OK', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(result));
+    } catch (e) {
+      res.writeHead(500, 'Subscription failed to stop', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(e));
+    }
+  });
+
+  return async (req, res, next) => {
+    const url = req.originalUrl ?? req.url;
+    const slicedUrl = url.startsWith(sofa.basePath)
+      ? url.slice(sofa.basePath.length)
+      : url;
+    const obj = router.find(req.method, slicedUrl);
+    try {
+      for (const handler of obj.handlers) {
+        await handler(req, res, obj.params);
       }
-    })
-  );
-
-  router.post(
-    '/webhook/:id',
-    useAsync(async (req, res) => {
-      const id: string = req.params.id;
-      const variables: any = req.body.variables;
-
-      try {
-        const result = await subscriptionManager.update(
-          {
-            id,
-            variables,
-          },
-          {
-            req,
-            res,
-          }
-        );
-
-        res.writeHead(200, 'OK', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(result));
-      } catch (e) {
-        res.writeHead(500, 'Subscription failed to update', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(e));
-      }
-    })
-  );
-
-  router.delete(
-    '/webhook/:id',
-    useAsync(async (req, res) => {
-      const id: string = req.params.id;
-
-      try {
-        const result = await subscriptionManager.stop(id);
-
-        res.writeHead(200, 'OK', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(result));
-      } catch (e) {
-        res.writeHead(500, 'Subscription failed to stop', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(e));
-      }
-    })
-  );
-
-  return router;
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 function createQueryRoute({
@@ -142,7 +169,7 @@ function createQueryRoute({
   fieldName,
 }: {
   sofa: Sofa;
-  router: Router;
+  router: Trouter;
   fieldName: string;
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} query`);
@@ -176,7 +203,7 @@ function createQueryRoute({
     defaultValue: 'GET',
   });
 
-  router[method.toLocaleLowerCase() as ExpressMethod](
+  router[method.toLocaleLowerCase() as TrouterMethod](
     path,
     useHandler({ info, fieldName, sofa, operation })
   );
@@ -196,7 +223,7 @@ function createMutationRoute({
   fieldName,
 }: {
   sofa: Sofa;
-  router: Router;
+  router: Trouter;
   fieldName: string;
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} mutation`);
@@ -224,7 +251,7 @@ function createMutationRoute({
     defaultValue: 'POST',
   });
 
-  router[method.toLowerCase() as ExpressMethod](
+  router[method.toLowerCase() as TrouterMethod](
     path,
     useHandler({ info, fieldName, sofa, operation })
   );
@@ -247,11 +274,11 @@ function useHandler(config: {
   const { sofa, operation, fieldName } = config;
   const info = config.info!;
 
-  return useAsync(async (req: Request, res: http.ServerResponse) => {
+  return async (req: Request, res: http.ServerResponse, params: Params) => {
     const variableValues = info.variables.reduce((variables, variable) => {
       const name = variable.variable.name.value;
       const value = parseVariable({
-        value: pickParam(req, name),
+        value: pickParam(req, params, name),
         variable,
         schema: sofa.schema,
       });
@@ -291,16 +318,16 @@ function useHandler(config: {
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(result.data && result.data[fieldName]));
-  });
+  };
 }
 
 function getPath(fieldName: string, hasId = false) {
   return `/${convertName(fieldName)}${hasId ? '/:id' : ''}`;
 }
 
-function pickParam(req: Request, name: string) {
-  if (req.params && req.params.hasOwnProperty(name)) {
-    return req.params[name];
+function pickParam(req: Request, params: Params, name: string) {
+  if (params && params.hasOwnProperty(name)) {
+    return params[name];
   }
   if (req.query && req.query.hasOwnProperty(name)) {
     return req.query[name];
@@ -308,14 +335,6 @@ function pickParam(req: Request, name: string) {
   if (req.body && req.body.hasOwnProperty(name)) {
     return req.body[name];
   }
-}
-
-function useAsync<T = any>(
-  handler: (req: Request, res: http.ServerResponse) => Promise<T>
-) {
-  return (req: Request, res: http.ServerResponse, next: NextFunction) => {
-    Promise.resolve(handler(req, res)).catch((e) => next(e));
-  };
 }
 
 function produceMethod({
