@@ -159,6 +159,9 @@ export function createRouter(sofa: Sofa): Middleware {
       for (const handler of obj.handlers) {
         await handler(req, res, obj.params);
       }
+      if (!res.headersSent) {
+        next();
+      }
     } catch (error) {
       next(error);
     }
