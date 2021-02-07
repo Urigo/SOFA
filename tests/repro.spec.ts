@@ -115,5 +115,5 @@ test('memory issue', async () => {
     })
   );
 
-  useSofa({ schema });
+  useSofa({ basePath: '/api', schema });
 });

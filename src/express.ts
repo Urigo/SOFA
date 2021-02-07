@@ -149,9 +149,11 @@ export function createRouter(sofa: Sofa): Middleware {
 
   return async (req, res, next) => {
     const url = req.originalUrl ?? req.url;
-    const slicedUrl = url.startsWith(sofa.basePath)
-      ? url.slice(sofa.basePath.length)
-      : url;
+    if (!url.startsWith(sofa.basePath)) {
+      next();
+      return;
+    }
+    const slicedUrl = url.slice(sofa.basePath.length);
     const obj = router.find(req.method, slicedUrl);
     try {
       for (const handler of obj.handlers) {
