@@ -2,60 +2,101 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import * as supertest from 'supertest';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import { schema, models } from './schema';
 import { createRouter } from '../src/express';
 import useSofa, { createSofa } from '../src';
 
-test('should work with Query and variables', async () => {
+test('should work with Query and variables', async (done) => {
+  const testUser = {
+    id: 'test-id',
+    name: 'Test User',
+  };
+  const spy = jest.fn(() => testUser);
   const sofa = createSofa({
-    schema,
+    basePath: '/api',
+    schema: makeExecutableSchema({
+      typeDefs: /* GraphQL */ `
+        type User {
+          id: ID
+          name: String
+        }
+        type Query {
+          user(id: ID!): User
+        }
+      `,
+      resolvers: {
+        Query: {
+          user: spy,
+        },
+      },
+    }),
   });
 
-  sofa.models = models;
-
   const router = createRouter(sofa);
-  const found = router.stack.find(
-    (r) => r.route && r.route.path === '/user/:id'
-  );
+  const app = express();
 
-  expect(found).toBeDefined();
+  app.use(bodyParser.json());
+  app.use('/api', router);
 
-  const route: {
-    path: string;
-    methods: {
-      get: boolean;
-      post: boolean;
-    };
-  } = found.route;
-
-  expect(Object.keys(route.methods).length).toEqual(1);
-  expect(route.methods.get).toEqual(true);
+  supertest(app)
+    .get('/api/user/test-id')
+    .expect(200, (err, res) => {
+      if (err) {
+        done.fail(err);
+      } else {
+        expect(res.body).toEqual(testUser);
+        expect((spy.mock.calls[0] as any[])[1]).toEqual({ id: 'test-id' });
+        done();
+      }
+    });
 });
 
-test('should work with Mutation', async () => {
+test('should work with Mutation', async (done) => {
+  const pizza = { dough: 'dough', toppings: ['topping'] };
+  const spy = jest.fn(() => ({ __typename: 'Pizza', ...pizza }));
   const sofa = createSofa({
-    schema,
+    basePath: '/api',
+    schema: makeExecutableSchema({
+      typeDefs: /* GraphQL */ `
+        type Pizza {
+          dough: String!
+          toppings: [String!]
+        }
+        type Salad {
+          ingredients: [String!]!
+        }
+        union Food = Pizza | Salad
+        type Query {
+          pizza: Pizza
+        }
+        type Mutation {
+          addRandomFood: Food
+        }
+      `,
+      resolvers: {
+        Mutation: {
+          addRandomFood: spy,
+        },
+      },
+    }),
   });
 
-  sofa.models = models;
-
   const router = createRouter(sofa);
-  const found = router.stack.find(
-    (r) => r.route && r.route.path === '/add-random-food'
-  );
+  const app = express();
 
-  expect(found).toBeDefined();
+  app.use(bodyParser.json());
+  app.use('/api', router);
 
-  const route: {
-    path: string;
-    methods: {
-      get: boolean;
-      post: boolean;
-    };
-  } = found.route;
-
-  expect(Object.keys(route.methods).length).toEqual(1);
-  expect(route.methods.post).toEqual(true);
+  supertest(app)
+    .post('/api/add-random-food')
+    .expect(200, (err, res) => {
+      if (err) {
+        done.fail(err);
+      } else {
+        expect(res.body).toEqual(pizza);
+        expect((spy.mock.calls[0] as any[])[1]).toEqual({});
+        done();
+      }
+    });
 });
 
 test('should overwrite a default http method on demand', (done) => {
@@ -70,6 +111,7 @@ test('should overwrite a default http method on demand', (done) => {
   const spyMutation = jest.fn(() => users[0]);
 
   const sofa = createSofa({
+    basePath: '/api',
     schema: makeExecutableSchema({
       typeDefs: /* GraphQL */ `
         input PageInfoInput {
@@ -149,6 +191,7 @@ test('should work with scalars', (done) => {
   app.use(
     '/api',
     useSofa({
+      basePath: '/api',
       schema: makeExecutableSchema({
         typeDefs: /* GraphQL */ `
           type Query {
