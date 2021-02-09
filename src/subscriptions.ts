@@ -65,11 +65,14 @@ export class SubscriptionManager {
   private operations = new Map<SubscriptionFieldName, BuiltOperation>();
   private clients = new Map<ID, StoredClient>();
 
-  constructor(private sofa: Sofa, private contextValue: ContextValue) {
+  constructor(private sofa: Sofa) {
     this.buildOperations();
   }
 
-  public async start(event: StartSubscriptionEvent) {
+  public async start(
+    event: StartSubscriptionEvent,
+    contextValue: ContextValue
+  ) {
     const id = uuid();
     const name = event.subscription;
 
@@ -88,6 +91,7 @@ export class SubscriptionManager {
       document,
       operationName,
       variables,
+      contextValue,
     });
 
     if (typeof result !== 'undefined') {
@@ -115,7 +119,10 @@ export class SubscriptionManager {
     return { id };
   }
 
-  public async update(event: UpdateSubscriptionEvent) {
+  public async update(
+    event: UpdateSubscriptionEvent,
+    contextValue: ContextValue
+  ) {
     const { variables, id } = event;
 
     logger.info(`[Subscription] Update ${id}`, event);
@@ -128,11 +135,14 @@ export class SubscriptionManager {
 
     this.stop(id);
 
-    return this.start({
-      url,
-      subscription,
-      variables,
-    });
+    return this.start(
+      {
+        url,
+        subscription,
+        variables,
+      },
+      contextValue
+    );
   }
 
   private async execute({
@@ -142,6 +152,7 @@ export class SubscriptionManager {
     url,
     operationName,
     variables,
+    contextValue,
   }: {
     id: ID;
     name: SubscriptionFieldName;
@@ -149,6 +160,7 @@ export class SubscriptionManager {
     document: DocumentNode;
     operationName: string;
     variables: Record<string, any>;
+    contextValue: ContextValue;
   }) {
     const variableNodes = this.operations.get(name)!.variables;
     const variableValues = variableNodes.reduce((values, variable) => {
@@ -173,7 +185,7 @@ export class SubscriptionManager {
       document,
       operationName,
       variableValues,
-      contextValue: this.contextValue,
+      contextValue,
     });
 
     if (isAsyncIterable(execution)) {

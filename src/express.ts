@@ -38,7 +38,6 @@ type TrouterMiddleware = (route: {
   res: http.ServerResponse;
   params: Params;
   contextValue: ContextValue;
-  subscriptionManager: SubscriptionManager;
 }) => unknown;
 
 type NextFunction = (err?: any) => void;
@@ -56,6 +55,7 @@ export function createRouter(sofa: Sofa): Middleware {
 
   const queryType = sofa.schema.getQueryType();
   const mutationType = sofa.schema.getMutationType();
+  const subscriptionManager = new SubscriptionManager(sofa);
 
   if (queryType) {
     Object.keys(queryType.getFields()).forEach((fieldName) => {
@@ -77,15 +77,18 @@ export function createRouter(sofa: Sofa): Middleware {
     });
   }
 
-  router.post('/webhook', async ({ req, res, subscriptionManager }) => {
+  router.post('/webhook', async ({ req, res, contextValue }) => {
     const { subscription, variables, url }: StartSubscriptionEvent = req.body;
 
     try {
-      const result = await subscriptionManager.start({
-        subscription,
-        variables,
-        url,
-      });
+      const result = await subscriptionManager.start(
+        {
+          subscription,
+          variables,
+          url,
+        },
+        contextValue
+      );
 
       res.writeHead(200, 'OK', {
         'Content-Type': 'application/json',
@@ -99,51 +102,48 @@ export function createRouter(sofa: Sofa): Middleware {
     }
   });
 
-  router.post(
-    '/webhook/:id',
-    async ({ req, res, params, subscriptionManager }) => {
-      const id: string = params.id;
-      const variables: any = req.body.variables;
+  router.post('/webhook/:id', async ({ req, res, params, contextValue }) => {
+    const id: string = params.id;
+    const variables: any = req.body.variables;
 
-      try {
-        const result = await subscriptionManager.update({
+    try {
+      const result = await subscriptionManager.update(
+        {
           id,
           variables,
-        });
+        },
+        contextValue
+      );
 
-        res.writeHead(200, 'OK', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(result));
-      } catch (e) {
-        res.writeHead(500, 'Subscription failed to update', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(e));
-      }
+      res.writeHead(200, 'OK', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(result));
+    } catch (e) {
+      res.writeHead(500, 'Subscription failed to update', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(e));
     }
-  );
+  });
 
-  router.delete(
-    '/webhook/:id',
-    async ({ res, params, subscriptionManager }) => {
-      const id: string = params.id;
+  router.delete('/webhook/:id', async ({ res, params }) => {
+    const id: string = params.id;
 
-      try {
-        const result = await subscriptionManager.stop(id);
+    try {
+      const result = await subscriptionManager.stop(id);
 
-        res.writeHead(200, 'OK', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(result));
-      } catch (e) {
-        res.writeHead(500, 'Subscription failed to stop', {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify(e));
-      }
+      res.writeHead(200, 'OK', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(result));
+    } catch (e) {
+      res.writeHead(500, 'Subscription failed to stop', {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(e));
     }
-  );
+  });
 
   return async (req, res, next) => {
     const url = req.originalUrl ?? req.url;
@@ -157,13 +157,11 @@ export function createRouter(sofa: Sofa): Middleware {
       const contextValue = isContextFn(sofa.context)
         ? await sofa.context({ req, res })
         : sofa.context;
-      const subscriptionManager = new SubscriptionManager(sofa, contextValue);
       for (const handler of obj.handlers) {
         await handler({
           req,
           res,
           params: obj.params,
-          subscriptionManager,
           contextValue,
         });
       }
