@@ -65,7 +65,7 @@ export class SubscriptionManager {
   private operations = new Map<SubscriptionFieldName, BuiltOperation>();
   private clients = new Map<ID, StoredClient>();
 
-  constructor(private sofa: Sofa, private context: ContextValue) {
+  constructor(private sofa: Sofa, private contextValue: ContextValue) {
     this.buildOperations();
   }
 
@@ -173,7 +173,7 @@ export class SubscriptionManager {
       document,
       operationName,
       variableValues,
-      contextValue: this.context,
+      contextValue: this.contextValue,
     });
 
     if (isAsyncIterable(execution)) {
