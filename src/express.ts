@@ -22,7 +22,7 @@ export type ErrorHandler = (
 ) => void;
 
 type Request = http.IncomingMessage & {
-  method: Trouter.HTTPMethod;
+  method: string;
   url: string;
   originalUrl?: string;
   body?: any;
@@ -154,7 +154,7 @@ export function createRouter(sofa: Sofa): Middleware {
       return;
     }
     const slicedUrl = url.slice(sofa.basePath.length);
-    const obj = router.find(req.method, slicedUrl);
+    const obj = router.find(req.method as Trouter.HTTPMethod, slicedUrl);
     try {
       for (const handler of obj.handlers) {
         await handler(req, res, obj.params);
@@ -334,8 +334,9 @@ function pickParam(req: Request, params: Params, name: string) {
   if (params && params.hasOwnProperty(name)) {
     return params[name];
   }
-  if (req.query && req.query.hasOwnProperty(name)) {
-    return req.query[name];
+  const searchParams = new URLSearchParams(req.url.split('?')[1]);
+  if (searchParams.has(name)) {
+    return searchParams.get(name);
   }
   if (req.body && req.body.hasOwnProperty(name)) {
     return req.body[name];
