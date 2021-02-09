@@ -9,7 +9,8 @@ import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import { forAwaitEach, isAsyncIterable } from 'iterall';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
-import { Sofa, isContextFn } from './sofa';
+import type { ContextValue } from './types';
+import type { Sofa } from './sofa';
 import { getOperationInfo } from './ast';
 import { parseVariable } from './parse';
 import { logger } from './logger';
@@ -64,20 +65,11 @@ export class SubscriptionManager {
   private operations = new Map<SubscriptionFieldName, BuiltOperation>();
   private clients = new Map<ID, StoredClient>();
 
-  constructor(private sofa: Sofa) {
+  constructor(private sofa: Sofa, private context: ContextValue) {
     this.buildOperations();
   }
 
-  public async start(
-    event: StartSubscriptionEvent,
-    {
-      req,
-      res,
-    }: {
-      req: any;
-      res: any;
-    }
-  ) {
+  public async start(event: StartSubscriptionEvent) {
     const id = uuid();
     const name = event.subscription;
 
@@ -96,8 +88,6 @@ export class SubscriptionManager {
       document,
       operationName,
       variables,
-      req,
-      res,
     });
 
     if (typeof result !== 'undefined') {
@@ -125,16 +115,7 @@ export class SubscriptionManager {
     return { id };
   }
 
-  public async update(
-    event: UpdateSubscriptionEvent,
-    {
-      req,
-      res,
-    }: {
-      req: any;
-      res: any;
-    }
-  ) {
+  public async update(event: UpdateSubscriptionEvent) {
     const { variables, id } = event;
 
     logger.info(`[Subscription] Update ${id}`, event);
@@ -147,17 +128,11 @@ export class SubscriptionManager {
 
     this.stop(id);
 
-    return this.start(
-      {
-        url,
-        subscription,
-        variables,
-      },
-      {
-        req,
-        res,
-      }
-    );
+    return this.start({
+      url,
+      subscription,
+      variables,
+    });
   }
 
   private async execute({
@@ -167,8 +142,6 @@ export class SubscriptionManager {
     url,
     operationName,
     variables,
-    req,
-    res,
   }: {
     id: ID;
     name: SubscriptionFieldName;
@@ -176,8 +149,6 @@ export class SubscriptionManager {
     document: DocumentNode;
     operationName: string;
     variables: Record<string, any>;
-    req: any;
-    res: any;
   }) {
     const variableNodes = this.operations.get(name)!.variables;
     const variableValues = variableNodes.reduce((values, variable) => {
@@ -197,15 +168,12 @@ export class SubscriptionManager {
       };
     }, {});
 
-    const C = isContextFn(this.sofa.context)
-      ? await this.sofa.context({ req, res })
-      : this.sofa.context;
     const execution = await subscribe({
       schema: this.sofa.schema,
       document,
       operationName,
       variableValues,
-      contextValue: C,
+      contextValue: this.context,
     });
 
     if (isAsyncIterable(execution)) {

@@ -10,7 +10,7 @@ import * as Trouter from 'trouter';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast';
 import { Sofa, isContextFn } from './sofa';
-import { RouteInfo, Method, MethodMap } from './types';
+import { RouteInfo, Method, MethodMap, ContextValue } from './types';
 import { convertName } from './common';
 import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
@@ -33,11 +33,13 @@ type Params = { [key: string]: string };
 
 type TrouterMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
-type TrouterMiddleware = (
-  req: Request,
-  res: http.ServerResponse,
-  params: Params
-) => unknown;
+type TrouterMiddleware = (route: {
+  req: Request;
+  res: http.ServerResponse;
+  params: Params;
+  contextValue: ContextValue;
+  subscriptionManager: SubscriptionManager;
+}) => unknown;
 
 type NextFunction = (err?: any) => void;
 
@@ -54,7 +56,6 @@ export function createRouter(sofa: Sofa): Middleware {
 
   const queryType = sofa.schema.getQueryType();
   const mutationType = sofa.schema.getMutationType();
-  const subscriptionManager = new SubscriptionManager(sofa);
 
   if (queryType) {
     Object.keys(queryType.getFields()).forEach((fieldName) => {
@@ -76,18 +77,15 @@ export function createRouter(sofa: Sofa): Middleware {
     });
   }
 
-  router.post('/webhook', async (req, res) => {
+  router.post('/webhook', async ({ req, res, subscriptionManager }) => {
     const { subscription, variables, url }: StartSubscriptionEvent = req.body;
 
     try {
-      const result = await subscriptionManager.start(
-        {
-          subscription,
-          variables,
-          url,
-        },
-        { req, res }
-      );
+      const result = await subscriptionManager.start({
+        subscription,
+        variables,
+        url,
+      });
 
       res.writeHead(200, 'OK', {
         'Content-Type': 'application/json',
@@ -101,51 +99,51 @@ export function createRouter(sofa: Sofa): Middleware {
     }
   });
 
-  router.post('/webhook/:id', async (req, res, params) => {
-    const id: string = params.id;
-    const variables: any = req.body.variables;
+  router.post(
+    '/webhook/:id',
+    async ({ req, res, params, subscriptionManager }) => {
+      const id: string = params.id;
+      const variables: any = req.body.variables;
 
-    try {
-      const result = await subscriptionManager.update(
-        {
+      try {
+        const result = await subscriptionManager.update({
           id,
           variables,
-        },
-        {
-          req,
-          res,
-        }
-      );
+        });
 
-      res.writeHead(200, 'OK', {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(result));
-    } catch (e) {
-      res.writeHead(500, 'Subscription failed to update', {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(e));
+        res.writeHead(200, 'OK', {
+          'Content-Type': 'application/json',
+        });
+        res.end(JSON.stringify(result));
+      } catch (e) {
+        res.writeHead(500, 'Subscription failed to update', {
+          'Content-Type': 'application/json',
+        });
+        res.end(JSON.stringify(e));
+      }
     }
-  });
+  );
 
-  router.delete('/webhook/:id', async (_, res, params) => {
-    const id: string = params.id;
+  router.delete(
+    '/webhook/:id',
+    async ({ res, params, subscriptionManager }) => {
+      const id: string = params.id;
 
-    try {
-      const result = await subscriptionManager.stop(id);
+      try {
+        const result = await subscriptionManager.stop(id);
 
-      res.writeHead(200, 'OK', {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(result));
-    } catch (e) {
-      res.writeHead(500, 'Subscription failed to stop', {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(e));
+        res.writeHead(200, 'OK', {
+          'Content-Type': 'application/json',
+        });
+        res.end(JSON.stringify(result));
+      } catch (e) {
+        res.writeHead(500, 'Subscription failed to stop', {
+          'Content-Type': 'application/json',
+        });
+        res.end(JSON.stringify(e));
+      }
     }
-  });
+  );
 
   return async (req, res, next) => {
     const url = req.originalUrl ?? req.url;
@@ -156,8 +154,18 @@ export function createRouter(sofa: Sofa): Middleware {
     const slicedUrl = url.slice(sofa.basePath.length);
     const obj = router.find(req.method as Trouter.HTTPMethod, slicedUrl);
     try {
+      const contextValue = isContextFn(sofa.context)
+        ? await sofa.context({ req, res })
+        : sofa.context;
+      const subscriptionManager = new SubscriptionManager(sofa, contextValue);
       for (const handler of obj.handlers) {
-        await handler(req, res, obj.params);
+        await handler({
+          req,
+          res,
+          params: obj.params,
+          subscriptionManager,
+          contextValue,
+        });
       }
       if (!res.headersSent) {
         next();
@@ -275,11 +283,11 @@ function useHandler(config: {
   info: OperationInfo;
   operation: DocumentNode;
   fieldName: string;
-}) {
+}): TrouterMiddleware {
   const { sofa, operation, fieldName } = config;
   const info = config.info!;
 
-  return async (req: Request, res: http.ServerResponse, params: Params) => {
+  return async ({ req, res, params, contextValue }) => {
     const variableValues = info.variables.reduce((variables, variable) => {
       const name = variable.variable.name.value;
       const value = parseVariable({
@@ -297,10 +305,6 @@ function useHandler(config: {
         [name]: value,
       };
     }, {});
-
-    const contextValue = isContextFn(sofa.context)
-      ? await sofa.context({ req, res })
-      : sofa.context;
 
     const result = await sofa.execute({
       schema: sofa.schema,
