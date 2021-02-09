@@ -29,6 +29,7 @@ import { ErrorHandler } from './express';
 // - context
 
 export interface SofaConfig {
+  basePath: string;
   schema: GraphQLSchema;
   context?: Context;
   execute?: ExecuteFn;
@@ -48,6 +49,7 @@ export interface SofaConfig {
 }
 
 export interface Sofa {
+  basePath: string;
   schema: GraphQLSchema;
   context: Context;
   models: string[];
