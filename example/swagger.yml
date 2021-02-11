@@ -14,7 +14,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  '/user/{id}':
+  /user/{id}:
     get:
       operationId: userQuery
       parameters:
@@ -80,7 +80,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-  '/book/{id}':
+  /book/{id}:
     get:
       operationId: bookQuery
       parameters:

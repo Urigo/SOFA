@@ -32,6 +32,7 @@ const openApi = OpenAPI({
 
 app.use(
   useSofa({
+    basePath: '',
     schema,
     ignore: ['User.favoriteBook'],
     onRoute(info) {
