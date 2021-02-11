@@ -10,14 +10,7 @@ import {
   GraphQLOutputType,
 } from 'graphql';
 
-import {
-  Ignore,
-  Context,
-  ContextFn,
-  ExecuteFn,
-  OnRoute,
-  MethodMap,
-} from './types';
+import { Ignore, ExecuteFn, OnRoute, MethodMap } from './types';
 import { convertName } from './common';
 import { logger } from './logger';
 import { ErrorHandler } from './express';
@@ -31,7 +24,6 @@ import { ErrorHandler } from './express';
 export interface SofaConfig {
   basePath: string;
   schema: GraphQLSchema;
-  context?: Context;
   execute?: ExecuteFn;
   /**
    * Treats an Object with an ID as not a model.
@@ -51,7 +43,6 @@ export interface SofaConfig {
 export interface Sofa {
   basePath: string;
   schema: GraphQLSchema;
-  context: Context;
   models: string[];
   ignore: Ignore;
   depthLimit: number;
@@ -72,9 +63,6 @@ export function createSofa(config: SofaConfig): Sofa {
   logger.debug(`[Sofa] ignore: ${ignore.join(', ')}`);
 
   return {
-    context({ req }) {
-      return { req };
-    },
     execute: graphql,
     models,
     ignore,
@@ -180,8 +168,4 @@ function hasID(type: GraphQLNamedType): type is GraphQLObjectType {
 
 function isNameEqual(a: string, b: string): boolean {
   return convertName(a) === convertName(b);
-}
-
-export function isContextFn(context: any): context is ContextFn {
-  return typeof context === 'function';
 }
