@@ -10,8 +10,7 @@ import { PubSub } from 'graphql-subscriptions';
 import * as supertest from 'supertest';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import { createRouter } from '../src/express';
-import { createSofa } from '../src';
+import { useSofa } from '../src';
 
 const delay = (ms: number) => {
   return new Promise((resolve) => {
@@ -44,7 +43,7 @@ const typeDefs = /* GraphQL */ `
 test('should start subscriptions', async () => {
   (axios.post as jest.Mock).mockClear();
   const pubsub = new PubSub();
-  const sofa = createSofa({
+  const sofa = useSofa({
     basePath: '/api',
     schema: makeExecutableSchema({
       typeDefs,
@@ -57,11 +56,10 @@ test('should start subscriptions', async () => {
       },
     }),
   });
-  const router = createRouter(sofa);
 
   const app = express();
   app.use(bodyParser.json());
-  app.use('/api', router);
+  app.use('/api', sofa);
 
   const res = await supertest(app)
     .post('/api/webhook')
@@ -85,7 +83,7 @@ test('should start subscriptions', async () => {
 test('should stop subscriptions', async () => {
   (axios.post as jest.Mock).mockClear();
   const pubsub = new PubSub();
-  const sofa = createSofa({
+  const sofa = useSofa({
     basePath: '/api',
     schema: makeExecutableSchema({
       typeDefs,
@@ -98,11 +96,10 @@ test('should stop subscriptions', async () => {
       },
     }),
   });
-  const router = createRouter(sofa);
 
   const app = express();
   app.use(bodyParser.json());
-  app.use('/api', router);
+  app.use('/api', sofa);
 
   const res = await supertest(app)
     .post('/api/webhook')
