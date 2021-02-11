@@ -214,3 +214,46 @@ test('should work with scalars', (done) => {
       }
     });
 });
+
+test('should support search params in url', async () => {
+  const users = [
+    {
+      id: 'user:foo',
+      name: 'Foo',
+    },
+  ];
+  const spy = jest.fn(() => users);
+
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: makeExecutableSchema({
+      typeDefs: /* GraphQL */ `
+        type User {
+          id: ID
+          name: String
+        }
+        type Query {
+          users(count: Int!): [User]
+        }
+      `,
+      resolvers: {
+        Query: {
+          users: spy,
+        },
+      },
+    }),
+  });
+
+  const app = express();
+  app.use(bodyParser.json());
+  app.use('/api', sofa);
+
+  const res = await supertest(app).get('/api/users?count=5').expect(200);
+  expect(res.body).toEqual(users);
+  expect(spy).lastCalledWith(
+    undefined,
+    { count: 5 },
+    expect.anything(),
+    expect.anything()
+  );
+});
