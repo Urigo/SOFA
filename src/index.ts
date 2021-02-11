@@ -1,6 +1,8 @@
 import * as http from 'http';
 import { createRouter } from './express';
-import { SofaConfig, createSofa, isContextFn } from './sofa';
+import type { ContextValue } from './types';
+import type { SofaConfig } from './sofa';
+import { createSofa } from './sofa';
 
 export { OpenAPI } from './open-api';
 
@@ -19,15 +21,32 @@ type Middleware = (
   next: NextFunction
 ) => unknown;
 
-function useSofa(config: SofaConfig): Middleware {
-  const sofa = createSofa(config);
-  const route = createRouter(sofa);
+export type ContextFn = (init: { req: any; res: any }) => ContextValue;
+
+export function isContextFn(context: any): context is ContextFn {
+  return typeof context === 'function';
+}
+
+interface SofaMiddlewareConfig extends SofaConfig {
+  context?: ContextValue | ContextFn;
+}
+
+export function useSofa({
+  context,
+  ...config
+}: SofaMiddlewareConfig): Middleware {
+  const invokeSofa = createSofaRouter(config);
   return async (req, res, next) => {
     try {
-      const contextValue = isContextFn(sofa.context)
-        ? await sofa.context({ req, res })
-        : sofa.context;
-      const response = await route({
+      let contextValue: ContextValue = { req };
+      if (context) {
+        if (typeof context === 'function') {
+          contextValue = await context({ req, res });
+        } else {
+          contextValue = context;
+        }
+      }
+      const response = await invokeSofa({
         method: req.method,
         url: req.originalUrl ?? req.url,
         body: req.body,
@@ -57,5 +76,8 @@ function useSofa(config: SofaConfig): Middleware {
   };
 }
 
-export { useSofa, createSofa };
-export default useSofa;
+export function createSofaRouter(config: SofaConfig) {
+  const sofa = createSofa(config);
+  const router = createRouter(sofa);
+  return router;
+}

@@ -15,9 +15,57 @@ The best way to create REST APIs (is GraphQL).
 
 ## Getting Started
 
-The most basic example possible:
+Here's complete example with no dependency on frameworks, but also integratable with any of them:
 
-```ts
+```js
+import http from 'http';
+import getStream from 'get-stream';
+import { createSofaRouter } from 'sofa-api';
+
+const invokeSofa = createSofaRouter({
+  basePath: '/api',
+  schema,
+});
+
+const server = http.createServer(async (req, res) => {
+  try {
+    consr response = await invokeSofa({
+      method: req.method,
+      url: req.url,
+      body: JSON.parse(await getStream(req)),
+      contextValue: {
+        req
+      },
+    });
+    if (response) {
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      if (response.statusMessage) {
+        res.writeHead(response.status, response.statusMessage, headers);
+      } else {
+        res.writeHead(response.status, headers);
+      }
+      if (response.type === 'result') {
+        res.end(JSON.stringify(response.body));
+      }
+      if (response.type === 'error') {
+        res.end(JSON.stringify(response.error));
+      }
+    } else {
+      res.writeHead(404);
+      res.end();
+    }
+  } catch (error) {
+    res.writeHead(500);
+    res.end(JSON.stringify(error));
+  }
+});
+```
+
+Another example with builtin express-like frameworks support
+
+```js
 import { useSofa } from 'sofa-api';
 import express from 'express';
 
