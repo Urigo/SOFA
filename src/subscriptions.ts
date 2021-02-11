@@ -7,12 +7,15 @@ import {
 } from 'graphql';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
-import { forAwaitEach, isAsyncIterable } from 'iterall';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { Sofa, isContextFn } from './sofa';
 import { getOperationInfo } from './ast';
 import { parseVariable } from './parse';
 import { logger } from './logger';
+
+function isAsyncIterable(obj: any): obj is AsyncIterable<any> {
+  return typeof obj[Symbol.asyncIterator] === 'function';
+}
 
 // To start subscription:
 //   - an url that Sofa should trigger
@@ -219,20 +222,22 @@ export class SubscriptionManager {
       });
 
       // success
-      forAwaitEach(execution, async (result) => {
-        await this.sendData({
-          id,
-          result,
-        });
-      }).then(
+      (async () => {
+        for await (const result of execution) {
+          await this.sendData({
+            id,
+            result,
+          });
+        }
+      })().then(
         () => {
           // completes
-          this.stop(id);
+          this.clients.delete(id);
         },
         (e) => {
           logger.info(`Subscription #${id} closed`);
           logger.error(e);
-          this.stop(id);
+          this.clients.delete(id);
         }
       );
     } else {
