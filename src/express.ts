@@ -16,10 +16,7 @@ import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
 import { logger } from './logger';
 
-export type ErrorHandler = (
-  res: http.ServerResponse,
-  errors: ReadonlyArray<any>
-) => void;
+export type ErrorHandler = (errors: ReadonlyArray<any>) => RouteError;
 
 type Request = http.IncomingMessage & {
   method: string;
@@ -33,12 +30,25 @@ type Params = { [key: string]: string };
 
 type TrouterMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
-type TrouterMiddleware = (route: {
+type RouteRequest = {
   req: Request;
-  res: http.ServerResponse;
   params: Params;
   contextValue: ContextValue;
-}) => unknown;
+};
+type RouteResult = {
+  type: 'result';
+  status: number;
+  statusMessage?: string;
+  body: any;
+};
+type RouteError = {
+  type: 'error';
+  status: number;
+  statusMessage?: string;
+  error: any;
+};
+type RouteResponse = RouteResult | RouteError;
+type RouteMiddleware = (request: RouteRequest) => Promise<RouteResponse>;
 
 type NextFunction = (err?: any) => void;
 
@@ -51,7 +61,7 @@ export type Middleware = (
 export function createRouter(sofa: Sofa): Middleware {
   logger.debug('[Sofa] Creating router');
 
-  const router = new Trouter<TrouterMiddleware>();
+  const router = new Trouter<RouteMiddleware>();
 
   const queryType = sofa.schema.getQueryType();
   const mutationType = sofa.schema.getMutationType();
@@ -77,9 +87,8 @@ export function createRouter(sofa: Sofa): Middleware {
     });
   }
 
-  router.post('/webhook', async ({ req, res, contextValue }) => {
+  router.post('/webhook', async ({ req, contextValue }) => {
     const { subscription, variables, url }: StartSubscriptionEvent = req.body;
-
     try {
       const result = await subscriptionManager.start(
         {
@@ -89,23 +98,25 @@ export function createRouter(sofa: Sofa): Middleware {
         },
         contextValue
       );
-
-      res.writeHead(200, 'OK', {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(result));
-    } catch (e) {
-      res.writeHead(500, 'Subscription failed', {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(e));
+      return {
+        type: 'result',
+        status: 200,
+        statusMessage: 'OK',
+        body: result,
+      };
+    } catch (error) {
+      return {
+        type: 'error',
+        status: 500,
+        statusMessage: 'Subscription failed',
+        error,
+      };
     }
   });
 
-  router.post('/webhook/:id', async ({ req, res, params, contextValue }) => {
+  router.post('/webhook/:id', async ({ req, params, contextValue }) => {
     const id: string = params.id;
     const variables: any = req.body.variables;
-
     try {
       const result = await subscriptionManager.update(
         {
@@ -114,34 +125,39 @@ export function createRouter(sofa: Sofa): Middleware {
         },
         contextValue
       );
-
-      res.writeHead(200, 'OK', {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(result));
-    } catch (e) {
-      res.writeHead(500, 'Subscription failed to update', {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(e));
+      return {
+        type: 'result',
+        status: 200,
+        statusMessage: 'OK',
+        body: result,
+      };
+    } catch (error) {
+      return {
+        type: 'error',
+        status: 500,
+        statusMessage: 'Subscription failed to update',
+        error,
+      };
     }
   });
 
-  router.delete('/webhook/:id', async ({ res, params }) => {
+  router.delete('/webhook/:id', async ({ params }) => {
     const id: string = params.id;
-
     try {
       const result = await subscriptionManager.stop(id);
-
-      res.writeHead(200, 'OK', {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(result));
-    } catch (e) {
-      res.writeHead(500, 'Subscription failed to stop', {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(e));
+      return {
+        type: 'result',
+        status: 200,
+        statusMessage: 'OK',
+        body: result,
+      };
+    } catch (error) {
+      return {
+        type: 'error',
+        status: 500,
+        statusMessage: 'Subscription failed to stop',
+        error,
+      };
     }
   });
 
@@ -158,12 +174,26 @@ export function createRouter(sofa: Sofa): Middleware {
         ? await sofa.context({ req, res })
         : sofa.context;
       for (const handler of obj.handlers) {
-        await handler({
+        const response = await handler({
           req,
-          res,
           params: obj.params,
           contextValue,
         });
+        const headers = {
+          'Content-Type': 'application/json',
+        };
+        if (response.statusMessage) {
+          res.writeHead(response.status, response.statusMessage, headers);
+        } else {
+          res.writeHead(response.status, headers);
+        }
+        if (response.type === 'result') {
+          res.end(JSON.stringify(response.body));
+        }
+        if (response.type === 'error') {
+          res.end(JSON.stringify(response.error));
+        }
+        break;
       }
       if (!res.headersSent) {
         next();
@@ -281,11 +311,11 @@ function useHandler(config: {
   info: OperationInfo;
   operation: DocumentNode;
   fieldName: string;
-}): TrouterMiddleware {
+}): RouteMiddleware {
   const { sofa, operation, fieldName } = config;
   const info = config.info!;
 
-  return async ({ req, res, params, contextValue }) => {
+  return async ({ req, params, contextValue }) => {
     const variableValues = info.variables.reduce((variables, variable) => {
       const name = variable.variable.name.value;
       const value = parseVariable({
@@ -313,18 +343,23 @@ function useHandler(config: {
     });
 
     if (result.errors) {
-      const defaultErrorHandler: ErrorHandler = (res, errors) => {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(errors[0]));
+      const defaultErrorHandler: ErrorHandler = (errors) => {
+        return {
+          type: 'error',
+          status: 500,
+          error: errors[0],
+        };
       };
       const errorHandler: ErrorHandler =
         sofa.errorHandler || defaultErrorHandler;
-      errorHandler(res, result.errors);
-      return;
+      return errorHandler(result.errors);
     }
 
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(result.data && result.data[fieldName]));
+    return {
+      type: 'result',
+      status: 200,
+      body: result.data && result.data[fieldName],
+    };
   };
 }
 
