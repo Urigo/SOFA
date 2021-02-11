@@ -35,7 +35,7 @@ export function useSofa({
   context,
   ...config
 }: SofaMiddlewareConfig): Middleware {
-  const route = createSofaRouter(config);
+  const invokeSofa = createSofaRouter(config);
   return async (req, res, next) => {
     try {
       let contextValue: ContextValue = { req };
@@ -46,7 +46,7 @@ export function useSofa({
           contextValue = context;
         }
       }
-      const response = await route({
+      const response = await invokeSofa({
         method: req.method,
         url: req.originalUrl ?? req.url,
         body: req.body,
