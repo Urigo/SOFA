@@ -8,7 +8,8 @@ import {
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
-import { Sofa, isContextFn } from './sofa';
+import type { ContextValue } from './types';
+import type { Sofa } from './sofa';
 import { getOperationInfo } from './ast';
 import { parseVariable } from './parse';
 import { logger } from './logger';
@@ -73,13 +74,7 @@ export class SubscriptionManager {
 
   public async start(
     event: StartSubscriptionEvent,
-    {
-      req,
-      res,
-    }: {
-      req: any;
-      res: any;
-    }
+    contextValue: ContextValue
   ) {
     const id = uuid();
     const name = event.subscription;
@@ -99,8 +94,7 @@ export class SubscriptionManager {
       document,
       operationName,
       variables,
-      req,
-      res,
+      contextValue,
     });
 
     if (typeof result !== 'undefined') {
@@ -130,13 +124,7 @@ export class SubscriptionManager {
 
   public async update(
     event: UpdateSubscriptionEvent,
-    {
-      req,
-      res,
-    }: {
-      req: any;
-      res: any;
-    }
+    contextValue: ContextValue
   ) {
     const { variables, id } = event;
 
@@ -156,10 +144,7 @@ export class SubscriptionManager {
         subscription,
         variables,
       },
-      {
-        req,
-        res,
-      }
+      contextValue
     );
   }
 
@@ -170,8 +155,7 @@ export class SubscriptionManager {
     url,
     operationName,
     variables,
-    req,
-    res,
+    contextValue,
   }: {
     id: ID;
     name: SubscriptionFieldName;
@@ -179,8 +163,7 @@ export class SubscriptionManager {
     document: DocumentNode;
     operationName: string;
     variables: Record<string, any>;
-    req: any;
-    res: any;
+    contextValue: ContextValue;
   }) {
     const variableNodes = this.operations.get(name)!.variables;
     const variableValues = variableNodes.reduce((values, variable) => {
@@ -200,15 +183,12 @@ export class SubscriptionManager {
       };
     }, {});
 
-    const C = isContextFn(this.sofa.context)
-      ? await this.sofa.context({ req, res })
-      : this.sofa.context;
     const execution = await subscribe({
       schema: this.sofa.schema,
       document,
       operationName,
       variableValues,
-      contextValue: C,
+      contextValue,
     });
 
     if (isAsyncIterable(execution)) {

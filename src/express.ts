@@ -10,7 +10,7 @@ import * as Trouter from 'trouter';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast';
 import { Sofa, isContextFn } from './sofa';
-import { RouteInfo, Method, MethodMap } from './types';
+import { RouteInfo, Method, MethodMap, ContextValue } from './types';
 import { convertName } from './common';
 import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
@@ -33,11 +33,12 @@ type Params = { [key: string]: string };
 
 type TrouterMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
-type TrouterMiddleware = (
-  req: Request,
-  res: http.ServerResponse,
-  params: Params
-) => unknown;
+type TrouterMiddleware = (route: {
+  req: Request;
+  res: http.ServerResponse;
+  params: Params;
+  contextValue: ContextValue;
+}) => unknown;
 
 type NextFunction = (err?: any) => void;
 
@@ -76,7 +77,7 @@ export function createRouter(sofa: Sofa): Middleware {
     });
   }
 
-  router.post('/webhook', async (req, res) => {
+  router.post('/webhook', async ({ req, res, contextValue }) => {
     const { subscription, variables, url }: StartSubscriptionEvent = req.body;
 
     try {
@@ -86,7 +87,7 @@ export function createRouter(sofa: Sofa): Middleware {
           variables,
           url,
         },
-        { req, res }
+        contextValue
       );
 
       res.writeHead(200, 'OK', {
@@ -101,7 +102,7 @@ export function createRouter(sofa: Sofa): Middleware {
     }
   });
 
-  router.post('/webhook/:id', async (req, res, params) => {
+  router.post('/webhook/:id', async ({ req, res, params, contextValue }) => {
     const id: string = params.id;
     const variables: any = req.body.variables;
 
@@ -111,10 +112,7 @@ export function createRouter(sofa: Sofa): Middleware {
           id,
           variables,
         },
-        {
-          req,
-          res,
-        }
+        contextValue
       );
 
       res.writeHead(200, 'OK', {
@@ -129,7 +127,7 @@ export function createRouter(sofa: Sofa): Middleware {
     }
   });
 
-  router.delete('/webhook/:id', async (_, res, params) => {
+  router.delete('/webhook/:id', async ({ res, params }) => {
     const id: string = params.id;
 
     try {
@@ -156,8 +154,16 @@ export function createRouter(sofa: Sofa): Middleware {
     const slicedUrl = url.slice(sofa.basePath.length);
     const obj = router.find(req.method as Trouter.HTTPMethod, slicedUrl);
     try {
+      const contextValue = isContextFn(sofa.context)
+        ? await sofa.context({ req, res })
+        : sofa.context;
       for (const handler of obj.handlers) {
-        await handler(req, res, obj.params);
+        await handler({
+          req,
+          res,
+          params: obj.params,
+          contextValue,
+        });
       }
       if (!res.headersSent) {
         next();
@@ -275,11 +281,11 @@ function useHandler(config: {
   info: OperationInfo;
   operation: DocumentNode;
   fieldName: string;
-}) {
+}): TrouterMiddleware {
   const { sofa, operation, fieldName } = config;
   const info = config.info!;
 
-  return async (req: Request, res: http.ServerResponse, params: Params) => {
+  return async ({ req, res, params, contextValue }) => {
     const variableValues = info.variables.reduce((variables, variable) => {
       const name = variable.variable.name.value;
       const value = parseVariable({
@@ -297,10 +303,6 @@ function useHandler(config: {
         [name]: value,
       };
     }, {});
-
-    const contextValue = isContextFn(sofa.context)
-      ? await sofa.context({ req, res })
-      : sofa.context;
 
     const result = await sofa.execute({
       schema: sofa.schema,
