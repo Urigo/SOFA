@@ -157,7 +157,8 @@ export function createRouter(sofa: Sofa): Router {
     if (!url.startsWith(sofa.basePath)) {
       return null;
     }
-    const slicedUrl = url.slice(sofa.basePath.length);
+    // trim base path and search
+    const [slicedUrl] = url.slice(sofa.basePath.length).split('?');
     const trouterMethod = method.toUpperCase() as Trouter.HTTPMethod;
     const obj = router.find(trouterMethod, slicedUrl);
     for (const handler of obj.handlers) {
