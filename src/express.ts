@@ -1,4 +1,3 @@
-import * as http from 'http';
 import {
   DocumentNode,
   print,
@@ -9,56 +8,49 @@ import {
 import * as Trouter from 'trouter';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast';
-import { Sofa, isContextFn } from './sofa';
+import { Sofa } from './sofa';
 import { RouteInfo, Method, MethodMap, ContextValue } from './types';
 import { convertName } from './common';
 import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
 import { logger } from './logger';
 
-export type ErrorHandler = (errors: ReadonlyArray<any>) => RouteError;
-
-type Request = http.IncomingMessage & {
-  method: string;
-  url: string;
-  originalUrl?: string;
-  body?: any;
-  query?: any;
-};
+export type ErrorHandler = (errors: ReadonlyArray<any>) => RouterError;
 
 type Params = { [key: string]: string };
 
 type TrouterMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
-type RouteRequest = {
-  req: Request;
-  params: Params;
+type RouterRequest = {
+  method: string;
+  url: string;
+  body: any;
   contextValue: ContextValue;
 };
-type RouteResult = {
+type RouterResult = {
   type: 'result';
   status: number;
   statusMessage?: string;
   body: any;
 };
-type RouteError = {
+type RouterError = {
   type: 'error';
   status: number;
   statusMessage?: string;
   error: any;
 };
-type RouteResponse = RouteResult | RouteError;
-type RouteMiddleware = (request: RouteRequest) => Promise<RouteResponse>;
+type RouterResponse = RouterResult | RouterError;
+type Router = (request: RouterRequest) => Promise<null | RouterResponse>;
 
-type NextFunction = (err?: any) => void;
+type RouteRequest = {
+  url: string;
+  body: any;
+  params: Params;
+  contextValue: ContextValue;
+};
+type RouteMiddleware = (request: RouteRequest) => Promise<RouterResponse>;
 
-export type Middleware = (
-  req: Request,
-  res: http.ServerResponse,
-  next: NextFunction
-) => unknown;
-
-export function createRouter(sofa: Sofa): Middleware {
+export function createRouter(sofa: Sofa): Router {
   logger.debug('[Sofa] Creating router');
 
   const router = new Trouter<RouteMiddleware>();
@@ -87,8 +79,8 @@ export function createRouter(sofa: Sofa): Middleware {
     });
   }
 
-  router.post('/webhook', async ({ req, contextValue }) => {
-    const { subscription, variables, url }: StartSubscriptionEvent = req.body;
+  router.post('/webhook', async ({ body, contextValue }) => {
+    const { subscription, variables, url }: StartSubscriptionEvent = body;
     try {
       const result = await subscriptionManager.start(
         {
@@ -114,9 +106,9 @@ export function createRouter(sofa: Sofa): Middleware {
     }
   });
 
-  router.post('/webhook/:id', async ({ req, params, contextValue }) => {
+  router.post('/webhook/:id', async ({ body, params, contextValue }) => {
     const id: string = params.id;
-    const variables: any = req.body.variables;
+    const variables: any = body.variables;
     try {
       const result = await subscriptionManager.update(
         {
@@ -161,46 +153,22 @@ export function createRouter(sofa: Sofa): Middleware {
     }
   });
 
-  return async (req, res, next) => {
-    const url = req.originalUrl ?? req.url;
+  return async ({ method, url, body, contextValue }) => {
     if (!url.startsWith(sofa.basePath)) {
-      next();
-      return;
+      return null;
     }
     const slicedUrl = url.slice(sofa.basePath.length);
-    const obj = router.find(req.method as Trouter.HTTPMethod, slicedUrl);
-    try {
-      const contextValue = isContextFn(sofa.context)
-        ? await sofa.context({ req, res })
-        : sofa.context;
-      for (const handler of obj.handlers) {
-        const response = await handler({
-          req,
-          params: obj.params,
-          contextValue,
-        });
-        const headers = {
-          'Content-Type': 'application/json',
-        };
-        if (response.statusMessage) {
-          res.writeHead(response.status, response.statusMessage, headers);
-        } else {
-          res.writeHead(response.status, headers);
-        }
-        if (response.type === 'result') {
-          res.end(JSON.stringify(response.body));
-        }
-        if (response.type === 'error') {
-          res.end(JSON.stringify(response.error));
-        }
-        break;
-      }
-      if (!res.headersSent) {
-        next();
-      }
-    } catch (error) {
-      next(error);
+    const trouterMethod = method.toUpperCase() as Trouter.HTTPMethod;
+    const obj = router.find(trouterMethod, slicedUrl);
+    for (const handler of obj.handlers) {
+      return await handler({
+        url,
+        body,
+        params: obj.params,
+        contextValue,
+      });
     }
+    return null;
   };
 }
 
@@ -315,11 +283,11 @@ function useHandler(config: {
   const { sofa, operation, fieldName } = config;
   const info = config.info!;
 
-  return async ({ req, params, contextValue }) => {
+  return async ({ url, body, params, contextValue }) => {
     const variableValues = info.variables.reduce((variables, variable) => {
       const name = variable.variable.name.value;
       const value = parseVariable({
-        value: pickParam(req, params, name),
+        value: pickParam({ url, body, params, name }),
         variable,
         schema: sofa.schema,
       });
@@ -367,16 +335,26 @@ function getPath(fieldName: string, hasId = false) {
   return `/${convertName(fieldName)}${hasId ? '/:id' : ''}`;
 }
 
-function pickParam(req: Request, params: Params, name: string) {
+function pickParam({
+  name,
+  url,
+  params,
+  body,
+}: {
+  name: string;
+  url: string;
+  params: Params;
+  body: any;
+}) {
   if (params && params.hasOwnProperty(name)) {
     return params[name];
   }
-  const searchParams = new URLSearchParams(req.url.split('?')[1]);
+  const searchParams = new URLSearchParams(url.split('?')[1]);
   if (searchParams.has(name)) {
     return searchParams.get(name);
   }
-  if (req.body && req.body.hasOwnProperty(name)) {
-    return req.body[name];
+  if (body && body.hasOwnProperty(name)) {
+    return body[name];
   }
 }
 

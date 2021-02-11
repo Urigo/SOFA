@@ -2,8 +2,7 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import * as supertest from 'supertest';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import { createRouter } from '../src/express';
-import useSofa, { createSofa } from '../src';
+import { useSofa } from '../src';
 
 test('should work with Query and variables', async (done) => {
   const testUser = {
@@ -11,7 +10,7 @@ test('should work with Query and variables', async (done) => {
     name: 'Test User',
   };
   const spy = jest.fn(() => testUser);
-  const sofa = createSofa({
+  const sofa = useSofa({
     basePath: '/api',
     schema: makeExecutableSchema({
       typeDefs: /* GraphQL */ `
@@ -31,11 +30,9 @@ test('should work with Query and variables', async (done) => {
     }),
   });
 
-  const router = createRouter(sofa);
   const app = express();
-
   app.use(bodyParser.json());
-  app.use('/api', router);
+  app.use('/api', sofa);
 
   supertest(app)
     .get('/api/user/test-id')
@@ -53,7 +50,7 @@ test('should work with Query and variables', async (done) => {
 test('should work with Mutation', async (done) => {
   const pizza = { dough: 'dough', toppings: ['topping'] };
   const spy = jest.fn(() => ({ __typename: 'Pizza', ...pizza }));
-  const sofa = createSofa({
+  const sofa = useSofa({
     basePath: '/api',
     schema: makeExecutableSchema({
       typeDefs: /* GraphQL */ `
@@ -80,11 +77,9 @@ test('should work with Mutation', async (done) => {
     }),
   });
 
-  const router = createRouter(sofa);
   const app = express();
-
   app.use(bodyParser.json());
-  app.use('/api', router);
+  app.use('/api', sofa);
 
   supertest(app)
     .post('/api/add-random-food')
@@ -110,7 +105,7 @@ test('should overwrite a default http method on demand', (done) => {
   const spy = jest.fn(() => users);
   const spyMutation = jest.fn(() => users[0]);
 
-  const sofa = createSofa({
+  const sofa = useSofa({
     basePath: '/api',
     schema: makeExecutableSchema({
       typeDefs: /* GraphQL */ `
@@ -147,11 +142,9 @@ test('should overwrite a default http method on demand', (done) => {
     },
   });
 
-  const router = createRouter(sofa);
   const app = express();
-
   app.use(bodyParser.json());
-  app.use('/api', router);
+  app.use('/api', sofa);
 
   const params = {
     pageInfo: {
