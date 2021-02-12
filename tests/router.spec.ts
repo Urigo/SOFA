@@ -4,7 +4,7 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import { useSofa } from '../src';
 
-test('should work with Query and variables', async (done) => {
+test('should work with Query and variables', async () => {
   const testUser = {
     id: 'test-id',
     name: 'Test User',
@@ -34,20 +34,12 @@ test('should work with Query and variables', async (done) => {
   app.use(bodyParser.json());
   app.use('/api', sofa);
 
-  supertest(app)
-    .get('/api/user/test-id')
-    .expect(200, (err, res) => {
-      if (err) {
-        done.fail(err);
-      } else {
-        expect(res.body).toEqual(testUser);
-        expect((spy.mock.calls[0] as any[])[1]).toEqual({ id: 'test-id' });
-        done();
-      }
-    });
+  const res = await supertest(app).get('/api/user/test-id').expect(200);
+  expect(res.body).toEqual(testUser);
+  expect((spy.mock.calls[0] as any[])[1]).toEqual({ id: 'test-id' });
 });
 
-test('should work with Mutation', async (done) => {
+test('should work with Mutation', async () => {
   const pizza = { dough: 'dough', toppings: ['topping'] };
   const spy = jest.fn(() => ({ __typename: 'Pizza', ...pizza }));
   const sofa = useSofa({
@@ -81,20 +73,12 @@ test('should work with Mutation', async (done) => {
   app.use(bodyParser.json());
   app.use('/api', sofa);
 
-  supertest(app)
-    .post('/api/add-random-food')
-    .expect(200, (err, res) => {
-      if (err) {
-        done.fail(err);
-      } else {
-        expect(res.body).toEqual(pizza);
-        expect((spy.mock.calls[0] as any[])[1]).toEqual({});
-        done();
-      }
-    });
+  const res = await supertest(app).post('/api/add-random-food').expect(200);
+  expect(res.body).toEqual(pizza);
+  expect((spy.mock.calls[0] as any[])[1]).toEqual({});
 });
 
-test('should overwrite a default http method on demand', (done) => {
+test('should overwrite a default http method on demand', async () => {
   const users = [
     {
       id: 'user:foo',
@@ -152,32 +136,21 @@ test('should overwrite a default http method on demand', (done) => {
     },
   };
 
-  supertest(app)
+  const queryRes = await supertest(app)
     .post('/api/users')
     .send(params)
-    .expect(200, (err, res) => {
-      if (err) {
-        done.fail(err);
-      } else {
-        expect(res.body).toEqual(users);
-        expect((spy.mock.calls[0] as any[])[1]).toEqual(params);
+    .expect(200);
+  expect(queryRes.body).toEqual(users);
+  expect((spy.mock.calls[0] as any[])[1]).toEqual(params);
 
-        supertest(app)
-          .get('/api/add-random-user')
-          .send()
-          .expect(200, (err, res) => {
-            if (err) {
-              done.fail(err);
-            } else {
-              expect(res.body).toEqual(users[0]);
-              done();
-            }
-          });
-      }
-    });
+  const mutationRes = await supertest(app)
+    .get('/api/add-random-user')
+    .send()
+    .expect(200);
+  expect(mutationRes.body).toEqual(users[0]);
 });
 
-test('should work with scalars', (done) => {
+test('should work with scalars', async () => {
   const app = express();
 
   app.use(bodyParser.json());
@@ -202,17 +175,8 @@ test('should work with scalars', (done) => {
     })
   );
 
-  supertest(app)
-    .get('/api/foo')
-    .send()
-    .expect(200, (err, res) => {
-      if (err) {
-        done.fail(err);
-      } else {
-        expect(res.body).toEqual('bar');
-        done();
-      }
-    });
+  const res = await supertest(app).get('/api/foo').send().expect(200);
+  expect(res.body).toEqual('bar');
 });
 
 test('should support search params in url', async () => {
