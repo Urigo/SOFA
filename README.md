@@ -29,7 +29,7 @@ const invokeSofa = createSofaRouter({
 
 const server = http.createServer(async (req, res) => {
   try {
-    consr response = await invokeSofa({
+    const response = await invokeSofa({
       method: req.method,
       url: req.url,
       body: JSON.parse(await getStream(req)),
