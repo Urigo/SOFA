@@ -34,7 +34,7 @@ const server = http.createServer(async (req, res) => {
       url: req.url,
       body: JSON.parse(await getStream(req)),
       contextValue: {
-        req
+        req,
       },
     });
     if (response) {
@@ -176,17 +176,17 @@ Whenever Sofa tries to resolve an author of a message, instead of exposing an ID
 
 > Pattern is easy: `Type.field` or `Type`
 
-### Customize endpoint's HTTP Method
+### Customize endpoint's HTTP Method, path and response status code
 
-Sofa allows you to cutomize the http method. For example, in case you need `POST` instead of `GET` method in one of your query, you do the following:
+Sofa allows you to cutomize the http method, path and response status. For example, in case you need `POST` instead of `GET` method in one of your query, you do the following:
 
 ```typescript
 api.use(
   '/api',
   sofa({
     schema,
-    method: {
-      'Query.feed': 'POST',
+    routes: {
+      'Query.feed': { method: 'POST' },
     },
   })
 );
@@ -195,6 +195,8 @@ api.use(
 When Sofa tries to define a route for `feed` of `Query`, instead of exposing it under `GET` (default for Query type) it will use `POST` method.
 
 > Pattern is easy: `Type.field` where `Type` is your query or mutation type.
+
+You can also specify `path` with dynamic params support (for example `/feed/:offset/:limit`) and `responseStatus`.
 
 ### Custom depth limit
 

@@ -8,8 +8,8 @@ import {
 import * as Trouter from 'trouter';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast';
-import { Sofa } from './sofa';
-import { RouteInfo, Method, MethodMap, ContextValue } from './types';
+import type { Sofa, Route } from './sofa';
+import type { RouteInfo, Method, ContextValue } from './types';
 import { convertName } from './common';
 import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
@@ -204,26 +204,28 @@ function createQueryRoute({
     isObjectType(fieldType) ||
     (isNonNullType(fieldType) && isObjectType(fieldType.ofType));
   const hasIdArgument = field.args.some((arg) => arg.name === 'id');
-  const path = getPath(fieldName, isSingle && hasIdArgument);
 
-  const method = produceMethod({
-    typeName: queryType.name,
-    fieldName,
-    methodMap: sofa.method,
-    defaultValue: 'GET',
-  });
+  const graphqlPath = `${queryType.name}.${fieldName}`;
+  const routeConfig = sofa.routes?.[graphqlPath];
+  const route = {
+    method: routeConfig?.method ?? 'GET',
+    path: routeConfig?.path ?? getPath(fieldName, isSingle && hasIdArgument),
+    responseStatus: routeConfig?.responseStatus ?? 200,
+  };
 
-  router[method.toLocaleLowerCase() as TrouterMethod](
-    path,
-    useHandler({ info, fieldName, sofa, operation })
+  router[route.method.toLocaleLowerCase() as TrouterMethod](
+    route.path,
+    useHandler({ info, route, fieldName, sofa, operation })
   );
 
-  logger.debug(`[Router] ${fieldName} query available at ${method} ${path}`);
+  logger.debug(
+    `[Router] ${fieldName} query available at ${route.method} ${route.path}`
+  );
 
   return {
     document: operation,
-    path,
-    method: method.toUpperCase() as Method,
+    path: route.path,
+    method: route.method.toUpperCase() as Method,
   };
 }
 
@@ -252,18 +254,19 @@ function createMutationRoute({
     definitions: [operationNode],
   };
   const info = getOperationInfo(operation)!;
-  const path = getPath(fieldName);
 
-  const method = produceMethod({
-    typeName: mutationType.name,
-    fieldName,
-    methodMap: sofa.method,
-    defaultValue: 'POST',
-  });
+  const graphqlPath = `${mutationType.name}.${fieldName}`;
+  const routeConfig = sofa.routes?.[graphqlPath];
+  const route = {
+    method: routeConfig?.method ?? 'POST',
+    path: routeConfig?.path ?? getPath(fieldName),
+    responseStatus: routeConfig?.responseStatus ?? 200,
+  };
+  const { method, path } = route;
 
   router[method.toLowerCase() as TrouterMethod](
     path,
-    useHandler({ info, fieldName, sofa, operation })
+    useHandler({ info, route, fieldName, sofa, operation })
   );
 
   logger.debug(`[Router] ${fieldName} mutation available at ${method} ${path}`);
@@ -271,13 +274,14 @@ function createMutationRoute({
   return {
     document: operation,
     path,
-    method: method.toUpperCase() as Method,
+    method,
   };
 }
 
 function useHandler(config: {
   sofa: Sofa;
   info: OperationInfo;
+  route: Route;
   operation: DocumentNode;
   fieldName: string;
 }): RouteMiddleware {
@@ -326,7 +330,7 @@ function useHandler(config: {
 
     return {
       type: 'result',
-      status: 200,
+      status: config.route.responseStatus,
       body: result.data && result.data[fieldName],
     };
   };
@@ -357,24 +361,4 @@ function pickParam({
   if (body && body.hasOwnProperty(name)) {
     return body[name];
   }
-}
-
-function produceMethod({
-  typeName,
-  fieldName,
-  methodMap,
-  defaultValue,
-}: {
-  typeName: string;
-  fieldName: string;
-  methodMap?: MethodMap;
-  defaultValue: Method;
-}): Method {
-  const path = `${typeName}.${fieldName}`;
-
-  if (methodMap && methodMap[path]) {
-    return methodMap[path];
-  }
-
-  return defaultValue;
 }
