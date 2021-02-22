@@ -7,7 +7,7 @@
 
 const React = require('react');
 
-const Highlights = props => {
+const Highlights = (props) => {
   return (
     <div className="highlights">
       <div className="feature">
@@ -53,12 +53,12 @@ const Highlights = props => {
 const Animation = () => {
   return (
     <div className="animation-container">
-      <iframe src={'/animation/'} />
+      <iframe src={'/animation/index.html'} />
     </div>
   );
 };
 
-const Import = props => {
+const Import = (props) => {
   return (
     <div>
       <span className="gray">import</span>{' '}
@@ -70,7 +70,7 @@ const Import = props => {
   );
 };
 
-const Comment = props => {
+const Comment = (props) => {
   return <div className="faded">// {props.value}</div>;
 };
 
