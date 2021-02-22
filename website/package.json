@@ -1,13 +1,13 @@
 {
   "scripts": {
+    "prestart": "yarn build:animation",
     "start": "docusaurus-start",
-    "prestart": "npm run animation:dev",
-    "build": "docusaurus-build && npm run animation:prod",
+    "prebuild": "yarn build:animation",
+    "build": "docusaurus-build",
     "version": "docusaurus-version",
     "rename-version": "docusaurus-rename-version",
-    "animation:dev": "rm -rf static/animation && cd animation && yarn && npm run build && cp -r ./build ../static/animation",
-    "animation:prod": "rm -rf build/sofa/animation && cd animation && yarn && npm run build && cp -r ./build ../build/sofa/animation",
-    "predeploy": "yarn build",
+    "build:animation": "rm -rf static/animation && cd animation && yarn && npm run build && cp -r ./build ../static/animation",
+    "predeploy": "yarn build:animation",
     "deploy": "docusaurus-publish"
   },
   "devDependencies": {

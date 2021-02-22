@@ -39,6 +39,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-15-15-yarn-
       - name: Deploy 🚀
-        run: cd website && yarn && yarn build && yarn docusaurus-publish
+        run: cd website && yarn && yarn deploy
         env:
           GIT_USER: theguild-bot
