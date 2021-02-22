@@ -8,11 +8,17 @@
       "api/context": {
         "title": "Using context"
       },
+      "api/error-handler": {
+        "title": "Error Handling"
+      },
       "api/execute": {
         "title": "Custom execute phase"
       },
       "api/ignore": {
         "title": "Using objects instead of IDs"
+      },
+      "api/method": {
+        "title": "Customize endpoint's HTTP Method"
       },
       "api/models": {
         "title": "Nested data and Models"
