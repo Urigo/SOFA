@@ -11,6 +11,6 @@
     "deploy": "docusaurus-publish"
   },
   "devDependencies": {
-    "docusaurus": "1.14.6"
+    "docusaurus": "1.14.7"
   }
 }
