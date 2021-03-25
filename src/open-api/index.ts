@@ -15,18 +15,24 @@ import { OpenAPI } from './interfaces';
 export function OpenAPI({
   schema,
   info,
+  servers,
   components,
   security,
+  tags,
 }: {
   schema: GraphQLSchema;
   info: Record<string, any>;
+  servers?: Record<string, any>[];
   components?: Record<string, any>;
   security?: Record<string, any>[];
+  tags?: Record<string, any>[];
 }) {
   const types = schema.getTypeMap();
   const swagger: any = {
     openapi: '3.0.0',
     info,
+    servers,
+    tags,
     paths: {},
     components: {
       schemas: {},
