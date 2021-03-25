@@ -4,6 +4,12 @@
     "title": "Example API",
     "version": "3.0.0"
   },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Development server"
+    }
+  ],
   "paths": {
     "/me": {
       "get": {

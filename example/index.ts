@@ -24,6 +24,12 @@ const schema = makeExecutableSchema({
 
 const openApi = OpenAPI({
   schema,
+  servers: [
+    {
+      url: '/', // Specify Server's URL.
+      description: 'Development server',
+    },
+  ],
   info: {
     title: 'Example API',
     version: '3.0.0',
