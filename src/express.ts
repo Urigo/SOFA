@@ -352,7 +352,8 @@ function pickParam({
   }
   const searchParams = new URLSearchParams(url.split('?')[1]);
   if (searchParams.has(name)) {
-    return searchParams.get(name);
+    const values = searchParams.getAll(name);
+    return values.length === 1 ? values[0] : values;
   }
   if (body && body.hasOwnProperty(name)) {
     return body[name];
