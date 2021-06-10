@@ -105,7 +105,7 @@
   },
   "bundlesize": [
     {
-      "path": "./dist/index.esm.js",
+      "path": "./dist/index.mjs",
       "maxSize": "36 kB",
       "compression": "none"
     }
