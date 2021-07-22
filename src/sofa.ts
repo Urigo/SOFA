@@ -10,7 +10,7 @@ import {
   GraphQLOutputType,
 } from 'graphql';
 
-import { Ignore, ExecuteFn, OnRoute, MethodMap } from './types';
+import { Ignore, ExecuteFn, OnRoute, Method } from './types';
 import { convertName } from './common';
 import { logger } from './logger';
 import { ErrorHandler } from './express';
@@ -20,6 +20,18 @@ import { ErrorHandler } from './express';
 // - error handler
 // - execute function
 // - context
+
+interface RouteConfig {
+  method?: Method;
+  path?: string;
+  responseStatus?: number;
+}
+
+export interface Route {
+  method: Method;
+  path: string;
+  responseStatus: number;
+}
 
 export interface SofaConfig {
   basePath: string;
@@ -34,10 +46,9 @@ export interface SofaConfig {
   depthLimit?: number;
   errorHandler?: ErrorHandler;
   /**
-   * Overwrites the default HTTP method.
-   * @example {"Query.field": "GET", "Mutation.field": "POST"}
+   * Overwrites the default HTTP route.
    */
-  method?: MethodMap;
+  routes?: Record<string, RouteConfig>;
 }
 
 export interface Sofa {
@@ -46,7 +57,7 @@ export interface Sofa {
   models: string[];
   ignore: Ignore;
   depthLimit: number;
-  method?: MethodMap;
+  routes?: Record<string, RouteConfig>;
   execute: ExecuteFn;
   onRoute?: OnRoute;
   errorHandler?: ErrorHandler;
