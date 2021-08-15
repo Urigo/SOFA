@@ -78,6 +78,48 @@ test('should work with Mutation', async () => {
   expect((spy.mock.calls[0] as any[])[1]).toEqual({});
 });
 
+test('should work with Mutation + Query', async () => {
+  const pizza = { dough: 'dough', toppings: ['topping'] };
+  const spy = jest.fn(() => ({ __typename: 'Pizza', query: {}, ...pizza }));
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: makeExecutableSchema({
+      typeDefs: /* GraphQL */ `
+        type Pizza {
+          dough: String!
+          toppings: [String!]
+          query: Query
+        }
+        type Salad {
+          ingredients: [String!]!
+          query: Query
+        }
+        union Food = Pizza | Salad
+        type Query {
+          pizza: Pizza
+          getPizzaById(id: String!): Pizza
+        }
+        type Mutation {
+          addRandomFood(name: String!): Food
+        }
+      `,
+      resolvers: {
+        Mutation: {
+          addRandomFood: spy,
+        },
+      },
+    }),
+  });
+
+  const app = express();
+  app.use(bodyParser.json());
+  app.use('/api', sofa);
+
+  const res = await supertest(app).post('/api/add-random-food?name=test').expect(200);
+  expect(res.body).toEqual(pizza);
+  expect((spy.mock.calls[0] as any[])[1]).toEqual({ name: "test" });
+});
+
 test('should overwrite a default http method on demand', async () => {
   const users = [
     {
