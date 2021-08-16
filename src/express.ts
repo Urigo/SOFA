@@ -5,7 +5,7 @@ import {
   isNonNullType,
   Kind,
 } from 'graphql';
-import * as Trouter from 'trouter';
+import Trouter from 'trouter';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast';
 import type { Sofa, Route } from './sofa';
@@ -159,7 +159,7 @@ export function createRouter(sofa: Sofa): Router {
     }
     // trim base path and search
     const [slicedUrl] = url.slice(sofa.basePath.length).split('?');
-    const trouterMethod = method.toUpperCase() as Trouter.HTTPMethod;
+    const trouterMethod = method.toUpperCase() as any;
     const obj = router.find(trouterMethod, slicedUrl);
     for (const handler of obj.handlers) {
       return await handler({
