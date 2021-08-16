@@ -1,7 +1,7 @@
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import * as supertest from 'supertest';
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
+import supertest from 'supertest';
+import express from 'express';
+import bodyParser from 'body-parser';
 import { useSofa } from '../src';
 
 test('should work with Query and variables', async () => {

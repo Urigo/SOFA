@@ -1,15 +1,13 @@
 jest.mock('axios', () => ({
-  default: {
-    post: jest.fn(),
-  },
+  post: jest.fn(),
 }));
 
 import axios from 'axios';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { PubSub } from 'graphql-subscriptions';
-import * as supertest from 'supertest';
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
+import supertest from 'supertest';
+import express from 'express';
+import bodyParser from 'body-parser';
 import { useSofa } from '../src';
 
 const delay = (ms: number) => {
