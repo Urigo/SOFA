@@ -14,5 +14,3 @@ export interface RouteInfo {
   method: Method;
 }
 export type OnRoute = (info: RouteInfo) => void;
-
-export type MethodMap = Record<string, Method>;

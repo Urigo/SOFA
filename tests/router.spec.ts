@@ -120,9 +120,9 @@ test('should overwrite a default http method on demand', async () => {
         },
       },
     }),
-    method: {
-      'Query.users': 'POST',
-      'Mutation.addRandomUser': 'GET',
+    routes: {
+      'Query.users': { method: 'POST' },
+      'Mutation.addRandomUser': { method: 'GET' },
     },
   });
 
@@ -148,6 +148,51 @@ test('should overwrite a default http method on demand', async () => {
     .send()
     .expect(200);
   expect(mutationRes.body).toEqual(users[0]);
+});
+
+test('should overwrite a default path and responseStatus on demand', async () => {
+  const users = [
+    {
+      id: 'user:foo',
+      name: 'Foo',
+    },
+  ];
+  const spy = jest.fn(() => users);
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: makeExecutableSchema({
+      typeDefs: /* GraphQL */ `
+        type User {
+          id: ID
+          name: String
+        }
+        type Query {
+          users(offset: Int, limit: Int!): [User]
+        }
+      `,
+      resolvers: {
+        Query: {
+          users: spy,
+        },
+      },
+    }),
+    routes: {
+      'Query.users': { path: '/my-users/:offset/:limit', responseStatus: 201 },
+    },
+  });
+
+  const app = express();
+  app.use(bodyParser.json());
+  app.use('/api', sofa);
+
+  const queryRes = await supertest(app).get(`/api/my-users/2/5`).expect(201);
+  expect(queryRes.body).toEqual(users);
+  expect(spy).lastCalledWith(
+    /* source */ undefined,
+    /* args */ { offset: 2, limit: 5 },
+    /* context */ expect.anything(),
+    /* info */ expect.anything()
+  );
 });
 
 test('should work with scalars', async () => {
@@ -215,9 +260,9 @@ test('should support search params in url', async () => {
   const res = await supertest(app).get('/api/users?count=5').expect(200);
   expect(res.body).toEqual(users);
   expect(spy).lastCalledWith(
-    undefined,
-    { count: 5 },
-    expect.anything(),
-    expect.anything()
+    /* source */ undefined,
+    /* args */ { count: 5 },
+    /* context */ expect.anything(),
+    /* info */ expect.anything()
   );
 });
