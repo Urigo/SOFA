@@ -45,11 +45,11 @@ test('handle query', async () => {
     useRequestBody: false,
   });
 
-  expect(result.operationId).toEqual('feedQuery');
+  expect(result.operationId).toEqual('feed_query');
   expect(result.parameters.length).toEqual(1);
   expect(result.parameters[0]).toEqual({
     in: 'query',
-    name: 'feedCommentsFilter',
+    name: 'feed_comments_filter',
     required: true,
     schema: {
       type: 'string',
@@ -85,7 +85,7 @@ test('handle mutation', async () => {
   });
 
   // id
-  expect(result.operationId).toEqual('addPostMutation');
+  expect(result.operationId).toEqual('addPost_mutation');
 
   // params
   expect(result.parameters).not.toBeDefined();
@@ -95,7 +95,7 @@ test('handle mutation', async () => {
 
   expect(result.requestBody).toBeDefined();
   expect(def.type).toEqual('object');
-  expect(def.required).toEqual(['comments', 'addPostCommentsFilter']);
+  expect(def.required).toEqual(['comments', 'addPost_comments_filter']);
   expect(def.properties!.comments).toEqual({
     type: 'array',
     items: {
