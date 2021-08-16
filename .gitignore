@@ -4,5 +4,4 @@ dist/
 *.log
 npm-debug.log*
 lerna-debug.log
-yarn.lock
 package-lock.json
