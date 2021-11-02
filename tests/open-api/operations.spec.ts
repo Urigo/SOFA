@@ -1,4 +1,4 @@
-import { buildSchema, Kind } from 'graphql';
+import { buildSchema, Kind, OperationTypeNode } from 'graphql';
 
 import { buildPathFromOperation } from '../../src/open-api/operations';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
@@ -29,7 +29,7 @@ const schema = buildSchema(/* GraphQL */ `
 test('handle query', async () => {
   const operation = buildOperationNodeForField({
     schema,
-    kind: 'query',
+    kind: 'query' as OperationTypeNode,
     field: 'feed',
     models: [],
     ignore: [],
@@ -68,7 +68,7 @@ test('handle query', async () => {
 test('handle mutation', async () => {
   const operation = buildOperationNodeForField({
     schema,
-    kind: 'mutation',
+    kind: 'mutation' as OperationTypeNode,
     field: 'addPost',
     models: [],
     ignore: [],

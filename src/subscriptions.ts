@@ -4,6 +4,7 @@ import {
   VariableDefinitionNode,
   ExecutionResult,
   Kind,
+  OperationTypeNode,
 } from 'graphql';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
@@ -248,7 +249,7 @@ export class SubscriptionManager {
 
     for (const field in fieldMap) {
       const operationNode = buildOperationNodeForField({
-        kind: 'subscription',
+        kind: 'subscription' as OperationTypeNode,
         field,
         schema: this.sofa.schema,
         models: this.sofa.models,

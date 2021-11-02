@@ -4,12 +4,11 @@ import {
   GraphQLField,
   GraphQLInputField,
   isNonNullType,
-  GraphQLOutputType,
   isListType,
   isObjectType,
   isScalarType,
-  GraphQLNamedType,
   isEnumType,
+  GraphQLType,
 } from 'graphql';
 import { mapToPrimitive, mapToRef } from './utils';
 
@@ -50,7 +49,7 @@ function resolveField(field: GraphQLField<any, any> | GraphQLInputField) {
 // type -> $ref
 // scalar -> swagger primitive
 export function resolveFieldType(
-  type: GraphQLOutputType | GraphQLNamedType
+  type: GraphQLType
 ): any {
   if (isNonNullType(type)) {
     return resolveFieldType(type.ofType);
