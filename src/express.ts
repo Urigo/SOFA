@@ -4,6 +4,7 @@ import {
   isObjectType,
   isNonNullType,
   Kind,
+  OperationTypeNode,
 } from 'graphql';
 import Trouter from 'trouter';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
@@ -186,7 +187,7 @@ function createQueryRoute({
 
   const queryType = sofa.schema.getQueryType()!;
   const operationNode = buildOperationNodeForField({
-    kind: 'query',
+    kind: 'query' as OperationTypeNode,
     schema: sofa.schema,
     field: fieldName,
     models: sofa.models,
@@ -242,7 +243,7 @@ function createMutationRoute({
 
   const mutationType = sofa.schema.getMutationType()!;
   const operationNode = buildOperationNodeForField({
-    kind: 'mutation',
+    kind: 'mutation' as OperationTypeNode,
     schema: sofa.schema,
     field: fieldName,
     models: sofa.models,

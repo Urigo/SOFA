@@ -5,7 +5,6 @@ import {
   GraphQLObjectType,
   getNamedType,
   GraphQLNamedType,
-  isListType,
   isNonNullType,
   GraphQLOutputType,
 } from 'graphql';
@@ -147,30 +146,8 @@ function isArrayOf(
   type: GraphQLOutputType,
   expected: GraphQLObjectType
 ): boolean {
-  if (isOptionalList(type)) {
-    return true;
-  }
-
-  if (isNonNullType(type) && isOptionalList(type.ofType)) {
-    return true;
-  }
-
-  function isOptionalList(list: GraphQLOutputType) {
-    if (isListType(list)) {
-      if (list.ofType.name === expected.name) {
-        return true;
-      }
-
-      if (
-        isNonNullType(list.ofType) &&
-        list.ofType.ofType.name === expected.name
-      ) {
-        return true;
-      }
-    }
-  }
-
-  return false;
+  const typeNameInSdl = type.toString();
+  return (typeNameInSdl.includes('[') && typeNameInSdl.includes(expected.toString()));
 }
 
 function hasID(type: GraphQLNamedType): type is GraphQLObjectType {
