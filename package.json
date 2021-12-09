@@ -42,7 +42,7 @@
     "graphql": "^0.13.2 || ^14.0.0 || ^15.0.0 || ^16.0.0"
   },
   "dependencies": {
-    "@graphql-tools/utils": "8.5.3",
+    "@graphql-tools/utils": "8.5.4",
     "@types/js-yaml": "4.0.5",
     "ansi-colors": "4.1.1",
     "axios": "0.24.0",
