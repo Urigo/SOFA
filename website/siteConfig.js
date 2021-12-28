@@ -68,6 +68,13 @@ const siteConfig = {
   // You may provide arbitrary config keys to be used as needed by your
   // template. For example, if you need your repo's URL...
   repoUrl: 'https://github.com/Urigo/sofa',
+  scripts: [
+    {
+      src:
+        'https://the-guild.dev/static/crisp.js',
+      async: true,
+    },
+  ],
 };
 
 module.exports = siteConfig;
