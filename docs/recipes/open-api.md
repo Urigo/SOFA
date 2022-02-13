@@ -19,6 +19,7 @@ app.use(
   '/api',
   useSofa({
     schema,
+    basePath: '/api',
     onRoute(info) {
       openApi.addRoute(info, {
         basePath: '/api',
