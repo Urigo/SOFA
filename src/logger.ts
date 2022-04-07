@@ -1,4 +1,4 @@
-import * as colors from 'ansi-colors';
+import colors from 'ansi-colors';
 
 type Level = 'error' | 'warn' | 'info' | 'debug';
 

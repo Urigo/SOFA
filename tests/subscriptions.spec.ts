@@ -1,8 +1,10 @@
-jest.mock('axios', () => ({
-  post: jest.fn(),
+jest.mock('cross-undici-fetch', () => ({
+  fetch: jest.fn().mockResolvedValue(({
+    text: () => ({})
+  })),
 }));
 
-import axios from 'axios';
+import { fetch } from 'cross-undici-fetch';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { PubSub } from 'graphql-subscriptions';
 import supertest from 'supertest';
@@ -39,7 +41,7 @@ const typeDefs = /* GraphQL */ `
 `;
 
 test('should start subscriptions', async () => {
-  (axios.post as jest.Mock).mockClear();
+  (fetch as jest.Mock).mockClear();
   const pubsub = new PubSub();
   const sofa = useSofa({
     basePath: '/api',
@@ -66,20 +68,34 @@ test('should start subscriptions', async () => {
   expect(res.body).toEqual({ id: expect.any(String) });
   pubsub.publish(BOOK_ADDED, { onBook: testBook1 });
   await delay(1000);
-  expect(axios.post).toBeCalledTimes(1);
-  expect(axios.post).toBeCalledWith('/book', {
-    data: { onBook: { id: 'book-id-1', title: 'Test Book 1' } },
+  expect(fetch).toBeCalledTimes(1);
+  expect(fetch).toBeCalledWith('/book', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      data: { onBook: { id: 'book-id-1', title: 'Test Book 1' } },
+    }),
   });
   pubsub.publish(BOOK_ADDED, { onBook: testBook2 });
   await delay(1000);
-  expect(axios.post).toBeCalledTimes(2);
-  expect(axios.post).toBeCalledWith('/book', {
-    data: { onBook: { id: 'book-id-2', title: 'Test Book 2' } },
+  expect(fetch).toBeCalledTimes(2);
+  expect(fetch).toBeCalledWith('/book', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ 
+      data: {
+        onBook: { id: 'book-id-2', title: 'Test Book 2' } 
+      }
+    }),
   });
 });
 
 test('should stop subscriptions', async () => {
-  (axios.post as jest.Mock).mockClear();
+  (fetch as jest.Mock).mockClear();
   const pubsub = new PubSub();
   const sofa = useSofa({
     basePath: '/api',
@@ -105,9 +121,9 @@ test('should stop subscriptions', async () => {
     .expect(200);
   pubsub.publish(BOOK_ADDED, { onBook: testBook1 });
   await delay(1000);
-  expect(axios.post).toBeCalledTimes(1);
+  expect(fetch).toBeCalledTimes(1);
   await supertest(app).delete(`/api/webhook/${res.body.id}`).expect(200);
   pubsub.publish(BOOK_ADDED, { onBook: testBook2 });
   await delay(1000);
-  expect(axios.post).toBeCalledTimes(1);
+  expect(fetch).toBeCalledTimes(1);
 });

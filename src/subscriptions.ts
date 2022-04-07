@@ -7,7 +7,7 @@ import {
   OperationTypeNode,
 } from 'graphql';
 import { v4 as uuid } from 'uuid';
-import axios from 'axios';
+import { fetch } from 'cross-undici-fetch';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import type { ContextValue } from './types';
 import type { Sofa } from './sofa';
@@ -235,7 +235,14 @@ export class SubscriptionManager {
 
     logger.info(`[Subscription] Trigger ${id}`);
 
-    await axios.post(url, result);
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(result),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    await response.text();
   }
 
   private buildOperations() {
