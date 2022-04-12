@@ -75,6 +75,8 @@ const siteConfig = {
       async: true,
     },
   ],
+  gaTrackingId: 'G-R3NX5BTVJ3',
+  gaGtag: true,
 };
 
 module.exports = siteConfig;
