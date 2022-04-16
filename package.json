@@ -45,7 +45,7 @@
     "@graphql-tools/utils": "8.6.8",
     "@types/js-yaml": "4.0.5",
     "ansi-colors": "4.1.1",
-    "cross-undici-fetch": "0.2.5",
+    "cross-undici-fetch": "0.3.0",
     "js-yaml": "4.1.0",
     "param-case": "3.0.4",
     "title-case": "3.0.3",
