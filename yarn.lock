@@ -1610,10 +1610,10 @@ cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-cross-undici-fetch@0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/cross-undici-fetch/-/cross-undici-fetch-0.3.3.tgz#3ca35aea7e836ee023d276228d8cdf32f447c439"
-  integrity sha512-pNariiu7YGO/00sFPAUxgQUDEJcoYbalF4XwmA6p2fYICbcv5y9FsybnuaNGZ2wEk49HhiN8xaFt7s+Lk4EQ/w==
+cross-undici-fetch@0.3.6:
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/cross-undici-fetch/-/cross-undici-fetch-0.3.6.tgz#da1476842ddf79a301f8b8e026129877d619117d"
+  integrity sha512-2SKnxOcYMkWM0RsEqx1JUycqorU0bqG2ALMKWnnoYN/91lt7nQWb9mXGC6V7D9P45ASPrDT16dir+wkBd73nmA==
   dependencies:
     abort-controller "^3.0.0"
     form-data-encoder "^1.7.1"
