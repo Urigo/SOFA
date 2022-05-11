@@ -721,10 +721,10 @@
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-1.3.2.tgz#93e25bf9ee75fe0fd80b594bc4feb0e862111b5a"
   integrity sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw==
 
-"@types/node@*", "@types/node@14.18.16":
-  version "14.18.16"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.16.tgz#878f670ba3f00482bf859b6550b6010610fc54b5"
-  integrity sha512-X3bUMdK/VmvrWdoTkz+VCn6nwKwrKCFTHtqwBIaQJNx4RUIBBUFXM00bqPz/DsDd+Icjmzm6/tyYZzeGVqb6/Q==
+"@types/node@*", "@types/node@14.18.17":
+  version "14.18.17"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.17.tgz#37d3c01043fd09f3f17ffa8c17062bbb580f9558"
+  integrity sha512-oajWz4kOajqpKJMPgnCvBajPq8QAvl2xIWoFjlAJPKGu6n7pjov5SxGE45a+0RxHDoo4ycOMoZw1SCOWtDERbw==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -1127,10 +1127,10 @@ bl@^4.0.3:
     inherits "^2.0.4"
     readable-stream "^3.4.0"
 
-bob-the-bundler@1.7.1:
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/bob-the-bundler/-/bob-the-bundler-1.7.1.tgz#42fdf6a5426343ad956d70eedeae447add78b527"
-  integrity sha512-jycXxGEXysR522hIMqtGg3zKoLYxGrwCxsDOTjQN8fxREFx6lP9xk4cIMi7SVt9ma0UVPlWCzpsK9eLh3cX0Hw==
+bob-the-bundler@1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/bob-the-bundler/-/bob-the-bundler-1.7.2.tgz#edbf1e1fd0df7d37ed9f61d0a8c4f51b345b9f81"
+  integrity sha512-8d6B9U9TjnpABvbs29PEeja13pnHo903taygnV28ThlqC4dyfDjVAaO7H6S4uTrs9sinmY5JV8lJlXuxivaTEQ==
   dependencies:
     "@rollup/plugin-json" "4.1.0"
     "@rollup/plugin-node-resolve" "7.1.1"
