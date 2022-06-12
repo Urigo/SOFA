@@ -372,7 +372,7 @@ app.use(
 openApi.save('./swagger.yml');
 ```
 
-OpenAPI (Swagger) with custom tags, summary and description
+OpenAPI (Swagger) with custom tags, summary and description  
 
 ```ts
 const openApi = OpenAPI({
@@ -392,7 +392,9 @@ const openApi = OpenAPI({
         },
     ],
 });
+```
 
+```ts
 @Resolver(Book)
 export class BookResolver {
     @Query(() => Book, { description: 'Get book by id' }) // custom summary tag
@@ -400,22 +402,36 @@ export class BookResolver {
         return 'book';
     }
 }
+```
 
+```ts
+const routes: SofaConfig['routes'] = {
+    'Query.getBookById': {
+        method: 'POST',
+        path: '/book/:id',
+        tags: ['Book'],
+        description: 'This is a custom detailed description for getBookById',
+    },
+}
 
-api.use(
-    '/api',
-    sofa({
+const createSofaMiddleware = (
+    schema: GraphQLSchema,
+    openApi: ReturnType<typeof OpenAPI>,
+    basePath = ''
+): ReturnType<typeof useSofa> => {
+    return useSofa({
+        routes,
+        basePath,
         schema,
-        routes: {
-            'Query.getBookById': { 
-                method: 'POST',
-                path: '/book/:id',
-                tags: ['Book'],
-                description: 'This is a custom detailed description for getBookById',
-            },
+        errorHandler: errorHandlerSofa,
+        onRoute(info) {
+            openApi.addRoute(info, { basePath });
         },
-    })
-);
+        async context(expressContext) {
+            return getRestContext(expressContext);
+        },
+    });
+};
 // writes every recorder route
 openApi.save('./swagger.yml');
 ```
