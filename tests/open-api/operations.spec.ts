@@ -55,7 +55,6 @@ test('handle query', async () => {
       type: 'string',
     },
   });
-  console.log(result);
 
   expect(result.responses[200].description).toMatch('Feed of posts');
 
