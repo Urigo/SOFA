@@ -372,6 +372,54 @@ app.use(
 openApi.save('./swagger.yml');
 ```
 
+OpenAPI (Swagger) with custom tags, summary and description
+
+```ts
+const openApi = OpenAPI({
+  schema,
+  info: {
+    title: 'Example API',
+    version: '3.0.0',
+  },
+    tags: [
+        {
+            name: 'Book',
+            description: 'Book related operations',
+        },
+        {
+            name: 'Author',
+            description: 'Author related operations',
+        },
+    ],
+});
+
+@Resolver(Book)
+export class BookResolver {
+    @Query(() => Book, { description: 'Get book by id' }) // custom summary tag
+    getBookById(@Arg('id', () => Int) id: number) {
+        return 'book';
+    }
+}
+
+
+api.use(
+    '/api',
+    sofa({
+        schema,
+        routes: {
+            'Query.getBookById': { 
+                method: 'POST',
+                path: '/book/:id',
+                tags: ['Book'],
+                description: 'This is a custom detailed description for getBookById',
+            },
+        },
+    })
+);
+// writes every recorder route
+openApi.save('./swagger.yml');
+```
+
 ## License
 
 [MIT](https://github.com/Urigo/sofa/blob/master/LICENSE) © Uri Goldshtein

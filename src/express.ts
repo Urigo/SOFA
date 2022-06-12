@@ -278,8 +278,8 @@ function createMutationRoute({
     document: operation,
     path,
     method,
-    tags: routeConfig?.tags ?? [],
-    description: routeConfig?.description ?? '',
+    tags: routeConfig?.tags ||  [],
+    description: routeConfig?.description || '',
   };
 }
 
