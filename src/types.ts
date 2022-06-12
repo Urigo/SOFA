@@ -12,5 +12,7 @@ export interface RouteInfo {
   document: DocumentNode;
   path: string;
   method: Method;
+  tags?: string[];
+  description?: string;
 }
 export type OnRoute = (info: RouteInfo) => void;

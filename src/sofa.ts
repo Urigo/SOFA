@@ -24,6 +24,8 @@ interface RouteConfig {
   method?: Method;
   path?: string;
   responseStatus?: number;
+  tags?: string[];
+  description?: string;
 }
 
 export interface Route {

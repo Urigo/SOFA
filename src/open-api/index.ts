@@ -32,7 +32,7 @@ export function OpenAPI({
     openapi: '3.0.0',
     info,
     servers,
-    tags,
+    tags: [],
     paths: {},
     components: {
       schemas: {},
@@ -56,6 +56,10 @@ export function OpenAPI({
 
   if (security) {
     swagger.security = security;
+  }
+
+  if (tags) {
+    swagger.tags = tags;
   }
 
   return {
@@ -82,6 +86,8 @@ export function OpenAPI({
         operation: info.document,
         schema,
         useRequestBody: ['POST', 'PUT', 'PATCH'].includes(info.method),
+        tags: info.tags?? [],
+        description: info.description?? '',
       });
     },
     get() {
