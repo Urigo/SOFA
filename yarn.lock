@@ -1638,10 +1638,10 @@ cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-cross-undici-fetch@0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/cross-undici-fetch/-/cross-undici-fetch-0.4.5.tgz#077bbd299301b0ad517aa7451d17894c931406ef"
-  integrity sha512-3u5LFSPiD5frvhBmU2bH7kv7pa8/WSh3gfwyLsx84oP5mSGttd8eNXU7UofketwKCnCb2gjhCGnVpoUCb1RxDQ==
+cross-undici-fetch@0.4.7:
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/cross-undici-fetch/-/cross-undici-fetch-0.4.7.tgz#50e12694bad4e16e456a88d528791bc8f69a626c"
+  integrity sha512-e5KZdjHigxFECfw1B7cjmXLm3yT8eiffSJYUSyIWxy6c+f/MGiJsV1NHegZvG23ZgQ0o8rNaZxbtu5NdF5FmwQ==
   dependencies:
     abort-controller "^3.0.0"
     busboy "^1.6.0"
@@ -3632,10 +3632,10 @@ prebuild-install@^5.3.3:
     tunnel-agent "^0.6.0"
     which-pm-runs "^1.0.0"
 
-prettier@2.7.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.7.0.tgz#a4fdae07e5596c51c9857ea676cd41a0163879d6"
-  integrity sha512-nwoX4GMFgxoPC6diHvSwmK/4yU8FFH3V8XWtLQrbj4IBsK2pkYhG4kf/ljF/haaZ/aii+wNJqISrCDPgxGWDVQ==
+prettier@2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.7.1.tgz#e235806850d057f97bb08368a4f7d899f7760c64"
+  integrity sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==
 
 pretty-format@^27.0.0, pretty-format@^27.5.1:
   version "27.5.1"
