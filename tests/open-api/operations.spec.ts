@@ -44,7 +44,6 @@ test('handle query', async () => {
     schema,
     useRequestBody: false,
   });
-
   expect(result.operationId).toEqual('feed_query');
   expect(result.parameters.length).toEqual(1);
   expect(result.parameters[0]).toEqual({
@@ -102,4 +101,26 @@ test('handle mutation', async () => {
       type: 'string',
     },
   });
+});
+
+
+test('handle tags and descriptions', async () => {
+  const operation = buildOperationNodeForField({
+    schema,
+    kind: 'query' as OperationTypeNode,
+    field: 'feed',
+  });
+  const result = buildPathFromOperation({
+    url: '/api/feed',
+    operation: {
+      kind: Kind.DOCUMENT,
+      definitions: [operation],
+    },
+    tags: ['Feed', 'Posts', 'Test'],
+    description: 'Feed for test posts',
+    schema,
+    useRequestBody: false,
+  });
+  expect(result.description).toMatch('Feed for test posts');
+  expect(result.tags).toContain('Feed' && 'Posts' && 'Test');
 });

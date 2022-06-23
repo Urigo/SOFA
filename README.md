@@ -423,12 +423,8 @@ const createSofaMiddleware = (
         routes,
         basePath,
         schema,
-        errorHandler: errorHandlerSofa,
         onRoute(info) {
             openApi.addRoute(info, { basePath });
-        },
-        async context(expressContext) {
-            return getRestContext(expressContext);
         },
     });
 };
