@@ -90,7 +90,7 @@
     "supertest": "6.2.4",
     "swagger-ui-express": "4.4.0",
     "ts-jest": "28.0.5",
-    "ts-node": "10.8.1",
+    "ts-node": "10.8.2",
     "typescript": "4.7.4"
   },
   "husky": {
