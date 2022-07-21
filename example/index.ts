@@ -1,21 +1,16 @@
-import * as express from 'express';
+import { createServer } from 'http';
+import { createServerAdapter } from '@whatwg-node/server';
+import { Router } from 'itty-router';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import * as bodyParser from 'body-parser';
-import { graphqlHTTP } from 'express-graphql';
-import * as swaggerUi from 'swagger-ui-express';
-import * as chalk from 'chalk';
-import { resolve } from 'path';
+import { createServer as createYoga } from '@graphql-yoga/common';
+import chalk from 'chalk';
 import { typeDefs } from './types';
 import { resolvers } from './resolvers';
-import * as swaggerDocument from './swagger.json';
 
 // Sofa
 
 import { useSofa, OpenAPI } from '../src';
-
-const app = express();
-
-app.use(bodyParser.json());
+import { Response } from '@whatwg-node/fetch';
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -36,7 +31,10 @@ const openApi = OpenAPI({
   },
 });
 
-app.use(
+const app = createServerAdapter(Router());
+
+app.all(
+  '*',
   useSofa({
     basePath: '',
     schema,
@@ -49,28 +47,65 @@ app.use(
   })
 );
 
-openApi.save(resolve(__dirname, './swagger.json'));
-openApi.save(resolve(__dirname, './swagger.yml'));
+app.post('/collect-book', async (req: Request) => {
+  const body = await req.json();
+  console.log('Received a webhook', body);
 
-app.post('/collect-book', (req, res) => {
-  console.log('Received a webhook', req.body);
-
-  res.statusCode = 200;
-  res.statusMessage = 'OK';
-  res.end();
+  return new Response(null, {
+    status: 200,
+    statusText: 'OK',
+  });
 });
 
-app.use(
-  '/graphql',
-  graphqlHTTP({
-    schema,
-    graphiql: true,
-  })
-);
+const yoga = createYoga({
+  schema,
+});
+app.all('/graphql', (req: Request) => yoga.handleRequest(req));
 
 const port = 4000;
 
-app.listen(port, () => {
+const server = createServer(app);
+
+app.get(
+  '/',
+  async () =>
+    new Response(
+      `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="SwaggerUI"
+    />
+    <title>SwaggerUI</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css" />
+  </head>
+  <body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js" crossorigin></script>
+  <script>
+    window.onload = () => {
+      window.ui = SwaggerUIBundle({
+        spec: ${JSON.stringify(openApi.get())},
+        dom_id: '#swagger-ui',
+      });
+    };
+  </script>
+  </body>
+  </html>
+`,
+      {
+        headers: {
+          'Content-Type': 'text/html',
+        },
+      }
+    )
+);
+
+server.listen(port, () => {
   const url = `http://localhost:${4000}`;
 
   function printUrl(path: string) {
@@ -93,5 +128,3 @@ app.listen(port, () => {
   )}
   `);
 });
-
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

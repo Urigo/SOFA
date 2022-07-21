@@ -8,7 +8,7 @@ servers:
 paths:
   /me:
     get:
-      operationId: meQuery
+      operationId: me_query
       parameters: []
       responses:
         '200':
@@ -19,7 +19,7 @@ paths:
                 $ref: '#/components/schemas/User'
   /user/{id}:
     get:
-      operationId: userQuery
+      operationId: user_query
       parameters:
         - in: path
           name: id
@@ -35,7 +35,7 @@ paths:
                 $ref: '#/components/schemas/User'
   /users:
     get:
-      operationId: usersQuery
+      operationId: users_query
       parameters: []
       responses:
         '200':
@@ -48,7 +48,7 @@ paths:
                   $ref: '#/components/schemas/User'
   /users-limit:
     get:
-      operationId: usersLimitQuery
+      operationId: usersLimit_query
       parameters:
         - in: query
           name: limit
@@ -67,7 +67,7 @@ paths:
                   $ref: '#/components/schemas/User'
   /users-sort:
     get:
-      operationId: usersSortQuery
+      operationId: usersSort_query
       parameters:
         - in: query
           name: sort
@@ -85,7 +85,7 @@ paths:
                   $ref: '#/components/schemas/User'
   /book/{id}:
     get:
-      operationId: bookQuery
+      operationId: book_query
       parameters:
         - in: path
           name: id
@@ -101,7 +101,7 @@ paths:
                 $ref: '#/components/schemas/Book'
   /books:
     get:
-      operationId: booksQuery
+      operationId: books_query
       parameters: []
       responses:
         '200':
@@ -114,7 +114,7 @@ paths:
                   $ref: '#/components/schemas/Book'
   /never:
     get:
-      operationId: neverQuery
+      operationId: never_query
       parameters: []
       responses:
         '200':
@@ -125,10 +125,10 @@ paths:
                 type: string
   /feed:
     get:
-      operationId: feedQuery
+      operationId: feed_query
       parameters:
         - in: query
-          name: feedCommentsFilter
+          name: feed_comments_filter
           required: true
           schema:
             type: string
@@ -143,7 +143,7 @@ paths:
                   $ref: '#/components/schemas/Post'
   /add-book:
     post:
-      operationId: addBookMutation
+      operationId: addBook_mutation
       requestBody:
         content:
           application/json:

@@ -1,7 +1,4 @@
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import supertest from 'supertest';
-import express from 'express';
-import bodyParser from 'body-parser';
 import { useSofa } from '../src';
 
 test('should work with Query and variables', async () => {
@@ -30,12 +27,10 @@ test('should work with Query and variables', async () => {
     }),
   });
 
-  const app = express();
-  app.use(bodyParser.json());
-  app.use('/api', sofa);
-
-  const res = await supertest(app).get('/api/user/test-id').expect(200);
-  expect(res.body).toEqual(testUser);
+  const res = await sofa.fetch('http://localhost:4000/api/user/test-id');
+  expect(res.status).toBe(200);
+  const resBody = await res.json();
+  expect(resBody).toEqual(testUser);
   expect((spy.mock.calls[0] as any[])[1]).toEqual({ id: 'test-id' });
 });
 
@@ -69,12 +64,12 @@ test('should work with Mutation', async () => {
     }),
   });
 
-  const app = express();
-  app.use(bodyParser.json());
-  app.use('/api', sofa);
-
-  const res = await supertest(app).post('/api/add-random-food').expect(200);
-  expect(res.body).toEqual(pizza);
+  const res = await sofa.fetch('http://localhost:4000/api/add-random-food', {
+    method: 'POST',
+  });
+  expect(res.status).toBe(200);
+  const resBody = await res.json();
+  expect(resBody).toEqual(pizza);
   expect((spy.mock.calls[0] as any[])[1]).toEqual({});
 });
 
@@ -111,13 +106,15 @@ test('should work with Mutation + Query', async () => {
     }),
   });
 
-  const app = express();
-  app.use(bodyParser.json());
-  app.use('/api', sofa);
-
-  const res = await supertest(app).post('/api/add-random-food?name=test').expect(200);
-  expect(res.body).toEqual(pizza);
-  expect((spy.mock.calls[0] as any[])[1]).toEqual({ name: "test" });
+  const res = await sofa.fetch(
+    'http://localhost:4000/api/add-random-food?name=test',
+    {
+      method: 'POST',
+    }
+  );
+  const resBody = await res.json();
+  expect(resBody).toEqual(pizza);
+  expect((spy.mock.calls[0] as any[])[1]).toEqual({ name: 'test' });
 });
 
 test('should overwrite a default http method on demand', async () => {
@@ -168,28 +165,30 @@ test('should overwrite a default http method on demand', async () => {
     },
   });
 
-  const app = express();
-  app.use(bodyParser.json());
-  app.use('/api', sofa);
-
   const params = {
     pageInfo: {
       limit: 5,
     },
   };
 
-  const queryRes = await supertest(app)
-    .post('/api/users')
-    .send(params)
-    .expect(200);
-  expect(queryRes.body).toEqual(users);
+  const queryRes = await sofa.fetch('http://localhost:4000/api/users', {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+  expect(queryRes.status).toBe(200);
+  const queryResBody = await queryRes.json();
+  expect(queryResBody).toEqual(users);
   expect((spy.mock.calls[0] as any[])[1]).toEqual(params);
 
-  const mutationRes = await supertest(app)
-    .get('/api/add-random-user')
-    .send()
-    .expect(200);
-  expect(mutationRes.body).toEqual(users[0]);
+  const mutationRes = await sofa.fetch(
+    'http://localhost:4000/api/add-random-user',
+    {
+      method: 'GET',
+    }
+  );
+  expect(mutationRes.status).toBe(200);
+  const mutationResBody = await mutationRes.json();
+  expect(mutationResBody).toEqual(users[0]);
 });
 
 test('should overwrite a default path and responseStatus on demand', async () => {
@@ -223,12 +222,10 @@ test('should overwrite a default path and responseStatus on demand', async () =>
     },
   });
 
-  const app = express();
-  app.use(bodyParser.json());
-  app.use('/api', sofa);
-
-  const queryRes = await supertest(app).get(`/api/my-users/2/5`).expect(201);
-  expect(queryRes.body).toEqual(users);
+  const queryRes = await sofa.fetch('http://localhost:4000/api/my-users/2/5');
+  expect(queryRes.status).toBe(201);
+  const queryResBody = await queryRes.json();
+  expect(queryResBody).toEqual(users);
   expect(spy).lastCalledWith(
     /* source */ undefined,
     /* args */ { offset: 2, limit: 5 },
@@ -238,32 +235,28 @@ test('should overwrite a default path and responseStatus on demand', async () =>
 });
 
 test('should work with scalars', async () => {
-  const app = express();
-
-  app.use(bodyParser.json());
-  app.use(
-    '/api',
-    useSofa({
-      basePath: '/api',
-      schema: makeExecutableSchema({
-        typeDefs: /* GraphQL */ `
-          type Query {
-            foo: String
-          }
-        `,
-        resolvers: {
-          Query: {
-            foo() {
-              return 'bar';
-            },
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: makeExecutableSchema({
+      typeDefs: /* GraphQL */ `
+        type Query {
+          foo: String
+        }
+      `,
+      resolvers: {
+        Query: {
+          foo() {
+            return 'bar';
           },
         },
-      }),
-    })
-  );
+      },
+    }),
+  });
 
-  const res = await supertest(app).get('/api/foo').send().expect(200);
-  expect(res.body).toEqual('bar');
+  const res = await sofa.fetch('http://localhost:4000/api/foo');
+  expect(res.status).toBe(200);
+  const resBody = await res.json();
+  expect(resBody).toEqual('bar');
 });
 
 test('should support search params in url', async () => {
@@ -295,12 +288,10 @@ test('should support search params in url', async () => {
     }),
   });
 
-  const app = express();
-  app.use(bodyParser.json());
-  app.use('/api', sofa);
-
-  const res = await supertest(app).get('/api/users?count=5').expect(200);
-  expect(res.body).toEqual(users);
+  const res = await sofa.fetch('http://localhost:4000/api/users?count=5');
+  expect(res.status).toBe(200);
+  const resBody = await res.json();
+  expect(resBody).toEqual(users);
   expect(spy).lastCalledWith(
     /* source */ undefined,
     /* args */ { count: 5 },

@@ -6,7 +6,8 @@
   dark-sky-blue: #37a9e2;
 */
 
-@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {}
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
+}
 
 @media only screen and (max-width: 1024px) {
   .contentWrapper {
@@ -17,7 +18,7 @@
     font-size: 35px;
   }
 
-  .animation-container>iframe {
+  .animation-container > iframe {
     width: 100vw;
     height: 760px;
   }
@@ -26,7 +27,7 @@
     flex-direction: column;
   }
 
-  .highlights>.feature {
+  .highlights > .feature {
     padding-bottom: 50px;
   }
 
@@ -54,7 +55,7 @@
 }
 
 @media only screen and (min-width: 1024px) {
-  body:not(.separateOnPageNav) .navPusher> :first-child {
+  body:not(.separateOnPageNav) .navPusher > :first-child {
     flex-grow: 0;
   }
 
@@ -63,13 +64,13 @@
   }
 
   .animation-container {
-    height: calc(((731/1300) * 100vw));
+    height: calc(((731 / 1300) * 100vw));
     min-height: 730px;
   }
 
-  .animation-container>iframe {
+  .animation-container > iframe {
     width: 100vw;
-    height: calc(((731/1300) * 100vw));
+    height: calc(((731 / 1300) * 100vw));
     min-height: 730px;
   }
 
@@ -100,11 +101,14 @@
   }
 }
 
-@media only screen and (max-width: 1023px) {}
+@media only screen and (max-width: 1023px) {
+}
 
-@media only screen and (min-width: 1400px) {}
+@media only screen and (min-width: 1400px) {
+}
 
-@media only screen and (min-width: 1500px) {}
+@media only screen and (min-width: 1500px) {
+}
 
 /* body {
   background: #e535ab url(../img/ui/graphql-bg.svg) no-repeat top center;
@@ -215,7 +219,7 @@ body.separateOnPageNav .navPusher {
   Index
 */
 
-.contentWrapper>.title {
+.contentWrapper > .title {
   padding-top: 10px;
   padding-bottom: 30px;
   margin-top: 0;
@@ -233,7 +237,7 @@ body.separateOnPageNav .navPusher {
   justify-content: space-evenly;
 }
 
-.highlights>.feature {
+.highlights > .feature {
   flex: 1;
   padding-right: 90px;
   display: flex;
@@ -241,14 +245,14 @@ body.separateOnPageNav .navPusher {
   justify-content: space-between;
 }
 
-.feature>.title {
+.feature > .title {
   flex: 0;
   font-size: 18px;
   font-weight: bold;
   color: #000;
 }
 
-.feature>.text {
+.feature > .text {
   flex: 1;
   font-size: 14px;
   font-weight: normal;
@@ -256,7 +260,7 @@ body.separateOnPageNav .navPusher {
   padding: 10px 0;
 }
 
-.feature>.links {
+.feature > .links {
   flex: 0;
 }
 
@@ -317,7 +321,7 @@ body.separateOnPageNav .navPusher {
   align-items: center;
 }
 
-.footer-logo>a {
+.footer-logo > a {
   display: block;
 }
 

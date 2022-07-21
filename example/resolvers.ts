@@ -71,7 +71,7 @@ export const resolvers = {
   Post: {
     comments(post: { comments: string[] }, { filter }: { filter: string }) {
       return post.comments.filter(
-        comment =>
+        (comment) =>
           !filter || comment.toLowerCase().indexOf(filter.toLowerCase()) > -1
       );
     },

@@ -1,18 +1,19 @@
 import {
   GraphQLSchema,
-  graphql,
   isObjectType,
   GraphQLObjectType,
   getNamedType,
   GraphQLNamedType,
   isNonNullType,
   GraphQLOutputType,
+  subscribe,
+  execute,
 } from 'graphql';
 
-import { Ignore, ExecuteFn, OnRoute, Method } from './types';
+import { Ignore, OnRoute, Method, ContextFn, ContextValue } from './types';
 import { convertName } from './common';
 import { logger } from './logger';
-import { ErrorHandler } from './express';
+import { ErrorHandler } from './router';
 
 // user passes:
 // - schema
@@ -37,7 +38,8 @@ export interface Route {
 export interface SofaConfig {
   basePath: string;
   schema: GraphQLSchema;
-  execute?: ExecuteFn;
+  execute?: typeof execute;
+  subscribe?: typeof subscribe;
   /**
    * Treats an Object with an ID as not a model.
    * @example ["User", "Message.author"]
@@ -50,6 +52,7 @@ export interface SofaConfig {
    * Overwrites the default HTTP route.
    */
   routes?: Record<string, RouteConfig>;
+  context?: ContextFn | ContextValue;
 }
 
 export interface Sofa {
@@ -59,9 +62,11 @@ export interface Sofa {
   ignore: Ignore;
   depthLimit: number;
   routes?: Record<string, RouteConfig>;
-  execute: ExecuteFn;
+  execute: typeof execute;
+  subscribe: typeof subscribe;
   onRoute?: OnRoute;
   errorHandler?: ErrorHandler;
+  contextFactory: ContextFn;
 }
 
 export function createSofa(config: SofaConfig): Sofa {
@@ -75,12 +80,27 @@ export function createSofa(config: SofaConfig): Sofa {
   logger.debug(`[Sofa] ignore: ${ignore.join(', ')}`);
 
   return {
-    execute: graphql,
+    execute,
+    subscribe,
     models,
     ignore,
     depthLimit,
+    contextFactory(serverContext) {
+      if (config.context != null) {
+        if (isContextFn(config.context)) {
+          return config.context(serverContext);
+        } else {
+          return config.context;
+        }
+      }
+      return serverContext;
+    },
     ...config,
   };
+}
+
+export function isContextFn(context: any): context is ContextFn {
+  return typeof context === 'function';
 }
 
 // Objects and Unions are the only things that are used to define return types
@@ -149,7 +169,9 @@ function isArrayOf(
   expected: GraphQLObjectType
 ): boolean {
   const typeNameInSdl = type.toString();
-  return (typeNameInSdl.includes('[') && typeNameInSdl.includes(expected.toString()));
+  return (
+    typeNameInSdl.includes('[') && typeNameInSdl.includes(expected.toString())
+  );
 }
 
 function hasID(type: GraphQLNamedType): type is GraphQLObjectType {

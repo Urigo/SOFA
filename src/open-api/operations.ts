@@ -103,7 +103,7 @@ function resolveRequestBody(
   const properties: Record<string, any> = {};
   const required: string[] = [];
 
-  variables.forEach(variable => {
+  variables.forEach((variable) => {
     if (variable.type.kind === Kind.NON_NULL_TYPE) {
       required.push(variable.variable.name.value);
     }
@@ -197,7 +197,7 @@ function resolveSummary(
   }
 
   const fieldNode = definitionNode.fields!.find(
-    field => field.name.value === fieldName
+    (field) => field.name.value === fieldName
   );
   const descriptionDefinition = fieldNode && fieldNode.description;
   return descriptionDefinition && descriptionDefinition.value

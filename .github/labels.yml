@@ -13,7 +13,7 @@
 - color: 7057ff
   description: Good for newcomers
   name: good first issue
-- color: "008672"
+- color: '008672'
   description: Extra attention is needed
   name: help wanted
 - color: e4e669
@@ -26,7 +26,7 @@
   description: This issue or pull request is released
   name: released
 - color: fef2c0
-  description: ""
+  description: ''
   name: waiting-for-answer
 - color: 56ACD7
   description: This issue or pull request is waiting to be released

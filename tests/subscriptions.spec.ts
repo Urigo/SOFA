@@ -1,15 +1,16 @@
-jest.mock('cross-undici-fetch', () => ({
-  fetch: jest.fn().mockResolvedValue(({
-    text: () => ({})
-  })),
-}));
+jest.mock('@whatwg-node/fetch', () => {
+  const original = jest.requireActual('@whatwg-node/fetch'); // Step 2.
+  return {
+    ...original,
+    fetch: jest.fn().mockResolvedValue({
+      text: () => ({}),
+    }),
+  };
+});
 
-import { fetch } from 'cross-undici-fetch';
+import { fetch } from '@whatwg-node/fetch';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import { PubSub, withFilter } from 'graphql-subscriptions';
-import supertest from 'supertest';
-import express from 'express';
-import bodyParser from 'body-parser';
+import { PubSub } from 'graphql-subscriptions';
 import { useSofa } from '../src';
 
 const delay = (ms: number) => {
@@ -61,15 +62,17 @@ test('should start subscriptions', async () => {
     }),
   });
 
-  const app = express();
-  app.use(bodyParser.json());
-  app.use('/api', sofa);
+  const res = await sofa.fetch('http://localhost:4000/api/webhook', {
+    method: 'POST',
+    body: JSON.stringify({
+      subscription: 'onBook',
+      url: '/book',
+    }),
+  });
 
-  const res = await supertest(app)
-    .post('/api/webhook')
-    .send({ subscription: 'onBook', url: '/book' })
-    .expect(200);
-  expect(res.body).toEqual({ id: expect.any(String) });
+  expect(res.status).toBe(200);
+  const resBody = await res.json();
+  expect(resBody).toEqual({ id: expect.any(String) });
   pubsub.publish(BOOK_ADDED, { onBook: testBook1 });
   await delay(1000);
   expect(fetch).toBeCalledTimes(1);
@@ -90,7 +93,7 @@ test('should start subscriptions', async () => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ 
+    body: JSON.stringify({
       data: {
         onBook: { id: 'book-id-2', title: 'Test Book 2', author: 'Test Author 2' } 
       }
@@ -115,18 +118,25 @@ test('should stop subscriptions', async () => {
     }),
   });
 
-  const app = express();
-  app.use(bodyParser.json());
-  app.use('/api', sofa);
-
-  const res = await supertest(app)
-    .post('/api/webhook')
-    .send({ subscription: 'onBook', url: '/book' })
-    .expect(200);
+  const res = await sofa.fetch('http://localhost:4000/api/webhook', {
+    method: 'POST',
+    body: JSON.stringify({
+      subscription: 'onBook',
+      url: '/book',
+    }),
+  });
+  expect(res.status).toBe(200);
+  const resBody = await res.json();
   pubsub.publish(BOOK_ADDED, { onBook: testBook1 });
   await delay(1000);
   expect(fetch).toBeCalledTimes(1);
-  await supertest(app).delete(`/api/webhook/${res.body.id}`).expect(200);
+  const deleteRes = await sofa.fetch(
+    `http://localhost:4000/api/webhook/${resBody.id}`,
+    {
+      method: 'DELETE',
+    }
+  );
+  expect(deleteRes.status).toBe(200);
   pubsub.publish(BOOK_ADDED, { onBook: testBook2 });
   await delay(1000);
   expect(fetch).toBeCalledTimes(1);

@@ -1,5 +1,4 @@
 import {
-  subscribe,
   DocumentNode,
   VariableDefinitionNode,
   ExecutionResult,
@@ -7,7 +6,7 @@ import {
   OperationTypeNode,
 } from 'graphql';
 import { v4 as uuid } from 'uuid';
-import { fetch } from 'cross-undici-fetch';
+import { fetch } from '@whatwg-node/fetch';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import type { ContextValue } from './types';
 import type { Sofa } from './sofa';
@@ -177,7 +176,7 @@ export class SubscriptionManager {
       };
     }, {});
 
-    const execution = await subscribe({
+    const execution = await this.sofa.subscribe({
       schema: this.sofa.schema,
       document,
       operationName,
@@ -233,8 +232,8 @@ export class SubscriptionManager {
       body: JSON.stringify(result),
       headers: {
         'Content-Type': 'application/json',
-      }
-    })
+      },
+    });
     await response.text();
   }
 
