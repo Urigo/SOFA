@@ -309,13 +309,6 @@
     tslib "^2.4.0"
     value-or-promise "1.0.11"
 
-"@graphql-tools/utils@8.9.0":
-  version "8.9.0"
-  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-8.9.0.tgz#c6aa5f651c9c99e1aca55510af21b56ec296cdb7"
-  integrity sha512-pjJIWH0XOVnYGXCqej8g/u/tsfV4LvLlj0eATKQu5zwnxd/TiTHq7Cg313qUPTFFHZ3PP5wJ15chYVtLDwaymg==
-  dependencies:
-    tslib "^2.4.0"
-
 "@graphql-tools/utils@8.9.1":
   version "8.9.1"
   resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-8.9.1.tgz#11d6c8a292ac5f224dfda655b87adfece3a257c6"
