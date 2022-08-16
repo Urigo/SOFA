@@ -81,7 +81,7 @@
     "chalk": "5.0.1",
     "express": "4.18.1",
     "express-graphql": "0.12.0",
-    "graphql": "16.5.0",
+    "graphql": "16.6.0",
     "graphql-subscriptions": "2.0.0",
     "husky": "8.0.1",
     "jest": "28.1.3",
