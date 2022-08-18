@@ -84,7 +84,7 @@ export class SubscriptionManager {
       throw new Error(`Subscription '${name}' is not available`);
     }
 
-    const { document, operationName, variables } = this.operations.get(name)!;
+    const { document, operationName } = this.operations.get(name)!;
 
     logger.info(`[Subscription] Start ${id}`, event);
 
@@ -94,7 +94,7 @@ export class SubscriptionManager {
       url: event.url,
       document,
       operationName,
-      variables,
+      variables: event.variables,
       contextValue,
     });
 
@@ -180,7 +180,7 @@ export class SubscriptionManager {
 
       return {
         ...values,
-        [name]: value,
+        [variable.variable.name.value]: value,
       };
     }, {});
 
