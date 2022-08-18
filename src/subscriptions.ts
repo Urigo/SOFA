@@ -90,7 +90,7 @@ export class SubscriptionManager {
       id,
       name,
       url: event.url,
-      boundVariables: event.variables,
+      variables: event.variables,
       contextValue,
     });
 
@@ -149,20 +149,20 @@ export class SubscriptionManager {
     id,
     name,
     url,
-    boundVariables,
+    variables,
     contextValue,
   }: {
     id: ID;
     name: SubscriptionFieldName;
     url: string;
-    boundVariables: Record<string, any>;
+    variables: Record<string, any>;
     contextValue: ContextValue;
   }) {
-    const { document, operationName, variables } = this.operations.get(name)!;
+    const { document, operationName, variables: variableNodes } = this.operations.get(name)!;
 
-    const variableValues = variables.reduce((values, variable) => {
+    const variableValues = variableNodes.reduce((values, variable) => {
       const value = parseVariable({
-        value: boundVariables[variable.variable.name.value],
+        value: variables[variable.variable.name.value],
         variable,
         schema: this.sofa.schema,
       });
