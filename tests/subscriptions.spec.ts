@@ -142,8 +142,8 @@ test('should start subscriptions with parameters', async () => {
       resolvers: {
         Subscription: {
           onBookBy: {
-            subscribe: withFilter(() => pubsub.asyncIterator(BOOK_ADDED), (payload, variables) => {
-              return payload.onBookBy.author === variables.author;
+            subscribe: withFilter(() => pubsub.asyncIterator(BOOK_ADDED), ( { onBookBy: { author: publishedBy } }, { author: targetAuthor }) => {
+              return publishedBy === targetAuthor;
             }),
           },
         },
