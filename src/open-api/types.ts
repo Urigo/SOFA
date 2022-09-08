@@ -79,7 +79,7 @@ export function resolveFieldType(
   if (isEnumType(type)) {
     return {
       type: 'string',
-      enum: type.astNode?.values?.map((value) => value.name.value),
+      enum: type.getValues().map((value) => value.name),
     };
   }
 
