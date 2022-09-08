@@ -19,6 +19,7 @@ export function OpenAPI({
   components,
   security,
   tags,
+  customScalars = {},
 }: {
   schema: GraphQLSchema;
   info: Record<string, any>;
@@ -26,6 +27,16 @@ export function OpenAPI({
   components?: Record<string, any>;
   security?: Record<string, any>[];
   tags?: Record<string, any>[];
+  /**
+   * Override mapping of custom scalars to OpenAPI
+   * @example
+   * ```js
+   * {
+   *   Date: { type: "string",  format: "date" }
+   * }
+   * ```
+   */
+  customScalars?: Record<string, any>;
 }) {
   const types = schema.getTypeMap();
   const swagger: any = {
@@ -46,7 +57,9 @@ export function OpenAPI({
       (isObjectType(type) || isInputObjectType(type)) &&
       !isIntrospectionType(type)
     ) {
-      swagger.components!.schemas![typeName] = buildSchemaObjectFromType(type);
+      swagger.components!.schemas![typeName] = buildSchemaObjectFromType(type, {
+        customScalars,
+      });
     }
   }
 
@@ -82,6 +95,7 @@ export function OpenAPI({
         operation: info.document,
         schema,
         useRequestBody: ['POST', 'PUT', 'PATCH'].includes(info.method),
+        customScalars,
       });
     },
     get() {
