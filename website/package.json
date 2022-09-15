@@ -1,16 +1,33 @@
 {
+  "name": "website",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
   "scripts": {
-    "prestart": "yarn build:animation",
-    "start": "docusaurus-start",
-    "prebuild": "yarn build:animation",
-    "build": "docusaurus-build",
-    "version": "docusaurus-version",
-    "rename-version": "docusaurus-rename-version",
-    "build:animation": "rm -rf static/animation && cd animation && yarn && npm run build && cp -r ./build ../static/animation",
-    "predeploy": "yarn build:animation",
-    "deploy": "docusaurus-publish"
+    "algolia-sync": "node scripts/algolia-ci.mjs",
+    "build": "next build && next-sitemap --config next-sitemap.config.cjs ",
+    "dev": "next dev",
+    "next": "next",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@theguild/components": "3.0.3",
+    "guild-docs": "4.1.0",
+    "next": "12.3.0",
+    "next-sitemap": "3.1.22",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "wrangler": "2.1.4"
   },
   "devDependencies": {
-    "docusaurus": "1.14.7"
+    "@guild-docs/algolia": "0.2.2",
+    "@theguild/tailwind-config": "0.0.2",
+    "@types/node": "18.6.1",
+    "@types/react": "18.0.19",
+    "cross-env": "7.0.3",
+    "eslint-config-next": "12.3.0",
+    "postcss-import": "15.0.0",
+    "tailwindcss": "3.1.8",
+    "typescript": "4.8.3"
   }
 }

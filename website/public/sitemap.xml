@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url><loc>https://the-guild.dev/graphql/sofa-api</loc><lastmod>2022-09-15T14:11:44.788Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://the-guild.dev/graphql/sofa-api/docs</loc><lastmod>2022-09-15T14:11:44.788Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://the-guild.dev/graphql/sofa-api/docs/api/context</loc><lastmod>2022-09-15T14:11:44.788Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://the-guild.dev/graphql/sofa-api/docs/api/error-handler</loc><lastmod>2022-09-15T14:11:44.788Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://the-guild.dev/graphql/sofa-api/docs/api/execute</loc><lastmod>2022-09-15T14:11:44.788Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://the-guild.dev/graphql/sofa-api/docs/api/ignore</loc><lastmod>2022-09-15T14:11:44.788Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://the-guild.dev/graphql/sofa-api/docs/api/method</loc><lastmod>2022-09-15T14:11:44.788Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://the-guild.dev/graphql/sofa-api/docs/api/models</loc><lastmod>2022-09-15T14:11:44.788Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://the-guild.dev/graphql/sofa-api/docs/essentials/mutations</loc><lastmod>2022-09-15T14:11:44.788Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://the-guild.dev/graphql/sofa-api/docs/essentials/queries</loc><lastmod>2022-09-15T14:11:44.788Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://the-guild.dev/graphql/sofa-api/docs/essentials/subscriptions</loc><lastmod>2022-09-15T14:11:44.788Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://the-guild.dev/graphql/sofa-api/docs/recipes/open-api</loc><lastmod>2022-09-15T14:11:44.788Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+</urlset>
