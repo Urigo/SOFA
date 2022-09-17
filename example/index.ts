@@ -11,6 +11,8 @@ import { resolvers } from './resolvers';
 
 import { useSofa, OpenAPI } from '../src';
 import { Response } from '@whatwg-node/fetch';
+import { writeFileSync } from 'fs';
+import { join } from 'path';
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -128,3 +130,6 @@ server.listen(port, () => {
   )}
   `);
 });
+
+// Save swagger file to the disk
+writeFileSync(join(__dirname, './swagger.json'), JSON.stringify(openApi.get(), null, 2));

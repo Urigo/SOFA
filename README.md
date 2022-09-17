@@ -269,6 +269,7 @@ Thanks to GraphQL's Type System Sofa is able to generate OpenAPI (Swagger) defin
 
 ```ts
 import { useSofa, OpenAPI } from 'sofa-api';
+import { writeFileSync } from 'fs';
 
 const openApi = OpenAPI({
   schema,
@@ -292,13 +293,14 @@ app.use(
 );
 
 // writes every recorder route
-openApi.save('./swagger.yml');
+writeFileSync('./swagger.json', JSON.stringify(openApi.get(), null, 2));
 ```
 
 OpenAPI (Swagger) with Bearer Authentication
 
 ```ts
 import { useSofa, OpenAPI } from 'sofa-api';
+import { writeFileSync } from 'fs';
 
 const openApi = OpenAPI({
   schema,
@@ -336,7 +338,7 @@ app.use(
 );
 
 // writes every recorder route
-openApi.save('./swagger.yml');
+writeFileSync('./swagger.json', JSON.stringify(openApi.get(), null, 2));
 ```
 
 OpenAPI (Swagger) with custom tags, summary and description  

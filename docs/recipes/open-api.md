@@ -6,6 +6,7 @@ Thanks to GraphQL's Type System Sofa is able to generate OpenAPI (Swagger) defin
 
 ```ts
 import { OpenAPI, useSofa } from 'sofa-api';
+import { writeFileSync } from 'fs';
 
 const openApi = OpenAPI({
   schema,
@@ -29,5 +30,5 @@ app.use(
 );
 
 // writes every recorder route
-openApi.save('./swagger.yml');
+writeFileSync('./swagger.json', JSON.stringify(openApi.get(), null, 2));
 ```
