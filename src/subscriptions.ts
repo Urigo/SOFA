@@ -84,17 +84,13 @@ export class SubscriptionManager {
       throw new Error(`Subscription '${name}' is not available`);
     }
 
-    const { document, operationName, variables } = this.operations.get(name)!;
-
     logger.info(`[Subscription] Start ${id}`, event);
 
     const result = await this.execute({
       id,
       name,
       url: event.url,
-      document,
-      operationName,
-      variables,
+      variables: event.variables,
       contextValue,
     });
 
@@ -151,22 +147,19 @@ export class SubscriptionManager {
 
   private async execute({
     id,
-    document,
     name,
     url,
-    operationName,
     variables,
     contextValue,
   }: {
     id: ID;
     name: SubscriptionFieldName;
     url: string;
-    document: DocumentNode;
-    operationName: string;
     variables: Record<string, any>;
     contextValue: ContextValue;
   }) {
-    const variableNodes = this.operations.get(name)!.variables;
+    const { document, operationName, variables: variableNodes } = this.operations.get(name)!;
+
     const variableValues = variableNodes.reduce((values, variable) => {
       const value = parseVariable({
         value: variables[variable.variable.name.value],
@@ -180,7 +173,7 @@ export class SubscriptionManager {
 
       return {
         ...values,
-        [name]: value,
+        [variable.variable.name.value]: value,
       };
     }, {});
 
