@@ -2,7 +2,7 @@
 
 ### vNEXT
 
-### v0.11.0
+### v0.12.0
 - Allow to override mapping of custom scalar to OpenAPI (#1159) - Thanks @izumin5210
 - Stop using AST Node to retrieve Enum values in OpenAPI (#1158) - Thanks @izumin5210
 - Feature/openapi tags description (#1114) - Thanks @NorbertRuff
