@@ -74,7 +74,7 @@
     "@types/yamljs": "0.2.31",
     "bob-the-bundler": "1.7.3",
     "bundlesize": "0.18.1",
-    "chalk": "^4",
+    "chalk": "4.1.2",
     "graphql": "16.6.0",
     "graphql-yoga": "3.0.0-next.0",
     "husky": "8.0.1",
