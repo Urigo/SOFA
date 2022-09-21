@@ -46,8 +46,8 @@ test('handle query', async () => {
     customScalars: {},
   });
   expect(result.operationId).toEqual('feed_query');
-  expect(result.parameters.length).toEqual(1);
-  expect(result.parameters[0]).toEqual({
+  expect(result.parameters?.length).toEqual(1);
+  expect(result.parameters?.[0]).toEqual({
     in: 'query',
     name: 'feed_comments_filter',
     required: true,
@@ -56,9 +56,9 @@ test('handle query', async () => {
     },
   });
 
-  expect(result.responses[200].description).toMatch('Feed of posts');
+  expect((result.responses[200] as any).description).toMatch('Feed of posts');
 
-  const response = result.responses[200].content['application/json'].schema;
+  const response = (result.responses[200] as any).content['application/json'].schema;
   expect(response).toEqual({
     type: 'array',
     items: { $ref: '#/components/schemas/Post' },
@@ -92,7 +92,7 @@ test('handle mutation', async () => {
   expect(result.parameters).not.toBeDefined();
 
   // request body
-  const def = result.requestBody!.content['application/json'].schema;
+  const def =( result.requestBody as any).content['application/json'].schema;
 
   expect(result.requestBody).toBeDefined();
   expect(def.type).toEqual('object');

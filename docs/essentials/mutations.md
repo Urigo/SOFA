@@ -49,7 +49,6 @@ curl --header "Content-Type: application/json" \
   http://localhost:3000/api/add-comment?text=Sofa%20is%20awesome%21
 ```
 
-
 How to enable `body-parser`:
 
 ```
@@ -59,12 +58,9 @@ npm i body-parser
 ```
 
 Then you can simply initialise it like this:
+
 ```js
-import bodyParser from "body-parser";
+import bodyParser from 'body-parser';
 
 app.use(bodyParser.json());
 ```
-
-
-
-

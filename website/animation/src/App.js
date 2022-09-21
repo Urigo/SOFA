@@ -79,7 +79,7 @@ class App extends Component {
               onMouseLeave={() => {
                 this.playToStart();
               }}
-              onClick={e => {
+              onClick={(e) => {
                 if (!this.state.clicked) {
                   e.preventDefault();
                   this.playFromClick();

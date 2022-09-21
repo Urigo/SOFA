@@ -2,6 +2,75 @@
 
 ### vNEXT
 
+### v0.11.0
+- Allow to override mapping of custom scalar to OpenAPI (#1159) - Thanks @izumin5210
+- Stop using AST Node to retrieve Enum values in OpenAPI (#1158) - Thanks @izumin5210
+- Feature/openapi tags description (#1114) - Thanks @NorbertRuff
+- Fix payload parsing for subscriptions (#1148) - Thanks @csuriano23
+
+## BREAKING CHANGES
+- `createSofaRouter` is no longer exported, use `useSofa` directly
+- `useSofa` now supports more server frameworks. It uses `itty-router` and `@whatwg-node/server` so it supports almost all JS environments;
+[See more](https://github.com/ardatan/whatwg-node/tree/master/packages/server#integrations)
+Documentation on SOFA's docs will be updated soon.
+- `OpenAPI` no longer has `.save` method. Use `.get` to get the schema;
+```diff
+const openApi = OpenAPI({
+  schema,
+  servers: [
+    {
+      url: '/', // Specify Server's URL.
+      description: 'Development server',
+    },
+  ],
+  info: {
+    title: 'Example API',
+    version: '3.0.0',
+  },
+});
+
+- openApi.save('swagger.json');
++ fs.writeFileSync('swagger.json', JSON.stringify(openApi.get(), null, 2));
+```
+
+### v0.10.2
+In this release express is removed as dependency. New `basePath` option is required to resolve sofa routes properly
+```js
+app.use(
+  '/api',
+  useSofa({
+    basePath: '/api',
+    schema,
+  })
+);
+```
+
+Added new server framework agnostic api
+```js
+const invokeSofa = createSofaRouter({
+  basePath: '/api',
+  schema,
+});
+...
+const response = await invokeSofa({
+  method: req.method,
+  url: req.url,
+  body: JSON.parse(await getStream(req)),
+  contextValue: {
+    req
+  },
+});
+```
+
+### v0.8.2
+- Replace winston with custom logger ([#534](https://github.com/Urigo/SOFA/pull/534)) - Thanks @TrySound !
+
+### v0.8.1
+- Bump @graphql-tools/utils to fix [ardatan/graphql-tools#1928](https://github.com/ardatan/graphql-tools/pull/1928)
+
+### v0.8.0
+- Update dependencies
+
 ### v0.7.0
 
 - feat(swagger): custom components and security for OpenAPI [PR #296](https://github.com/Urigo/SOFA/pull/296)

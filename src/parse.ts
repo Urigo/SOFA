@@ -60,7 +60,7 @@ function resolveVariable({
   }
 
   if (type.kind === Kind.LIST_TYPE) {
-    return (Array.isArray(value) ? value : [value]).map(val =>
+    return (Array.isArray(value) ? value : [value]).map((val) =>
       resolveVariable({
         value: val,
         type: type.type,

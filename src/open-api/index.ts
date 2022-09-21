@@ -4,13 +4,11 @@ import {
   isInputObjectType,
   isIntrospectionType,
 } from 'graphql';
-import { dump as YAMLstringify } from 'js-yaml';
-import { writeFileSync } from 'fs';
 
 import { buildSchemaObjectFromType } from './types';
 import { buildPathFromOperation } from './operations';
 import { RouteInfo } from '../types';
-import { OpenAPI } from './interfaces';
+import { OpenAPIV3 } from 'openapi-types';
 
 export function OpenAPI({
   schema,
@@ -22,11 +20,11 @@ export function OpenAPI({
   customScalars = {},
 }: {
   schema: GraphQLSchema;
-  info: Record<string, any>;
-  servers?: Record<string, any>[];
+  info: OpenAPIV3.InfoObject;
+  servers?: OpenAPIV3.ServerObject[];
   components?: Record<string, any>;
-  security?: Record<string, any>[];
-  tags?: Record<string, any>[];
+  security?: OpenAPIV3.SecurityRequirementObject[];
+  tags?: OpenAPIV3.TagObject[];
   /**
    * Override mapping of custom scalars to OpenAPI
    * @example
@@ -39,7 +37,7 @@ export function OpenAPI({
   customScalars?: Record<string, any>;
 }) {
   const types = schema.getTypeMap();
-  const swagger: any = {
+  const swagger: OpenAPIV3.Document = {
     openapi: '3.0.0',
     info,
     servers,
@@ -94,7 +92,9 @@ export function OpenAPI({
         swagger.paths[path] = {};
       }
 
-      swagger.paths[path][info.method.toLowerCase()] = buildPathFromOperation({
+      const pathsObj = swagger.paths[path] as OpenAPIV3.PathItemObject;
+
+      pathsObj[info.method.toLowerCase() as OpenAPIV3.HttpMethods] = buildPathFromOperation({
         url: path,
         operation: info.document,
         schema,
@@ -107,23 +107,5 @@ export function OpenAPI({
     get() {
       return swagger;
     },
-    save(filepath: string) {
-      const isJSON = /\.json$/i;
-      const isYAML = /.ya?ml$/i;
-
-      if (isJSON.test(filepath)) {
-        writeOutput(filepath, JSON.stringify(swagger, null, 2));
-      } else if (isYAML.test(filepath)) {
-        writeOutput(filepath, YAMLstringify(swagger));
-      } else {
-        throw new Error('We only support JSON and YAML files');
-      }
-    },
   };
-}
-
-function writeOutput(filepath: string, contents: string) {
-  writeFileSync(filepath, contents, {
-    encoding: 'utf-8',
-  });
 }

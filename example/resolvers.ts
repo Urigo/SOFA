@@ -1,6 +1,6 @@
-import { PubSub } from 'graphql-subscriptions';
+import { createPubSub } from 'graphql-yoga';
 
-const pubsub = new PubSub();
+const pubsub = createPubSub();
 
 import {
   UsersCollection,
@@ -52,7 +52,7 @@ export const resolvers = {
   },
   Subscription: {
     onBook: {
-      subscribe: () => pubsub.asyncIterator([BOOK_ADDED]),
+      subscribe: () => pubsub.subscribe(BOOK_ADDED),
     },
   },
   Food: {
@@ -71,7 +71,7 @@ export const resolvers = {
   Post: {
     comments(post: { comments: string[] }, { filter }: { filter: string }) {
       return post.comments.filter(
-        comment =>
+        (comment) =>
           !filter || comment.toLowerCase().indexOf(filter.toLowerCase()) > -1
       );
     },

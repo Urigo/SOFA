@@ -1,60 +1,32 @@
 import {
   DocumentNode,
-  print,
   isObjectType,
   isNonNullType,
   Kind,
   OperationTypeNode,
 } from 'graphql';
-import Trouter from 'trouter';
+import { Request as IttyRequest, RouteHandler, Router } from 'itty-router';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast';
 import type { Sofa, Route } from './sofa';
-import type { RouteInfo, Method, ContextValue } from './types';
+import type { RouteInfo, Method } from './types';
 import { convertName } from './common';
 import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
 import { logger } from './logger';
+import { Response } from '@whatwg-node/fetch';
+import { DefaultServerAdapterContext } from '@whatwg-node/server';
 
-export type ErrorHandler = (errors: ReadonlyArray<any>) => RouterError;
+export type ErrorHandler = (errors: ReadonlyArray<any>) => Response;
 
-type Params = { [key: string]: string };
+type SofaRequest = IttyRequest & Request;
 
-type TrouterMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
-
-type RouterRequest = {
-  method: string;
-  url: string;
-  body: any;
-  contextValue: ContextValue;
-};
-type RouterResult = {
-  type: 'result';
-  status: number;
-  statusMessage?: string;
-  body: any;
-};
-type RouterError = {
-  type: 'error';
-  status: number;
-  statusMessage?: string;
-  error: any;
-};
-type RouterResponse = RouterResult | RouterError;
-type Router = (request: RouterRequest) => Promise<null | RouterResponse>;
-
-type RouteRequest = {
-  url: string;
-  body: any;
-  params: Params;
-  contextValue: ContextValue;
-};
-type RouteMiddleware = (request: RouteRequest) => Promise<RouterResponse>;
-
-export function createRouter(sofa: Sofa): Router {
+export function createRouter(sofa: Sofa) {
   logger.debug('[Sofa] Creating router');
 
-  const router = new Trouter<RouteMiddleware>();
+  const router = Router<SofaRequest>({
+    base: sofa.basePath,
+  });
 
   const queryType = sofa.schema.getQueryType();
   const mutationType = sofa.schema.getMutationType();
@@ -80,98 +52,94 @@ export function createRouter(sofa: Sofa): Router {
     });
   }
 
-  router.post('/webhook', async ({ body, contextValue }) => {
-    const { subscription, variables, url }: StartSubscriptionEvent = body;
-    try {
-      const result = await subscriptionManager.start(
-        {
-          subscription,
-          variables,
-          url,
-        },
-        contextValue
-      );
-      return {
-        type: 'result',
-        status: 200,
-        statusMessage: 'OK',
-        body: result,
-      };
-    } catch (error) {
-      return {
-        type: 'error',
-        status: 500,
-        statusMessage: 'Subscription failed',
-        error,
-      };
+  router.post(
+    '/webhook',
+    async (
+      request: SofaRequest,
+      serverContext: DefaultServerAdapterContext
+    ) => {
+      const { subscription, variables, url }: StartSubscriptionEvent =
+        await request.json();
+      try {
+        const contextValue = await sofa.contextFactory(serverContext);
+        const result = await subscriptionManager.start(
+          {
+            subscription,
+            variables,
+            url,
+          },
+          contextValue
+        );
+        return new Response(JSON.stringify(result), {
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      } catch (error) {
+        return new Response(JSON.stringify(error), {
+          status: 500,
+          statusText: 'Subscription failed',
+        });
+      }
     }
-  });
+  );
 
-  router.post('/webhook/:id', async ({ body, params, contextValue }) => {
-    const id: string = params.id;
-    const variables: any = body.variables;
-    try {
-      const result = await subscriptionManager.update(
-        {
-          id,
-          variables,
-        },
-        contextValue
-      );
-      return {
-        type: 'result',
-        status: 200,
-        statusMessage: 'OK',
-        body: result,
-      };
-    } catch (error) {
-      return {
-        type: 'error',
-        status: 500,
-        statusMessage: 'Subscription failed to update',
-        error,
-      };
+  router.post(
+    '/webhook/:id',
+    async (
+      request: SofaRequest,
+      serverContext: DefaultServerAdapterContext
+    ) => {
+      const id = request.params?.id!;
+      const body = await request.json();
+      const variables: any = body.variables;
+      try {
+        const contextValue = await sofa.contextFactory(serverContext);
+        const result = await subscriptionManager.update(
+          {
+            id,
+            variables,
+          },
+          contextValue
+        );
+        return new Response(JSON.stringify(result), {
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      } catch (error) {
+        return new Response(JSON.stringify(error), {
+          status: 500,
+          statusText: 'Subscription failed to update',
+        });
+      }
     }
-  });
+  );
 
-  router.delete('/webhook/:id', async ({ params }) => {
-    const id: string = params.id;
+  router.delete('/webhook/:id', async (request) => {
+    const id = request.params?.id!;
     try {
       const result = await subscriptionManager.stop(id);
-      return {
-        type: 'result',
+      return new Response(JSON.stringify(result), {
         status: 200,
-        statusMessage: 'OK',
-        body: result,
-      };
+        statusText: 'OK',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
     } catch (error) {
-      return {
-        type: 'error',
+      return new Response(JSON.stringify(error), {
         status: 500,
-        statusMessage: 'Subscription failed to stop',
-        error,
-      };
+        statusText: 'Subscription failed to stop',
+      });
     }
   });
 
-  return async ({ method, url, body, contextValue }) => {
-    if (!url.startsWith(sofa.basePath)) {
-      return null;
-    }
-    // trim base path and search
-    const [slicedUrl] = url.slice(sofa.basePath.length).split('?');
-    const trouterMethod = method.toUpperCase() as any;
-    const obj = router.find(trouterMethod, slicedUrl);
-    for (const handler of obj.handlers) {
-      return await handler({
-        url,
-        body,
-        params: obj.params,
-        contextValue,
-      });
-    }
-    return null;
-  };
+  return router;
 }
 
 function createQueryRoute({
@@ -180,7 +148,7 @@ function createQueryRoute({
   fieldName,
 }: {
   sofa: Sofa;
-  router: Trouter;
+  router: Router<SofaRequest>;
   fieldName: string;
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} query`);
@@ -214,7 +182,7 @@ function createQueryRoute({
     responseStatus: routeConfig?.responseStatus ?? 200,
   };
 
-  router[route.method.toLocaleLowerCase() as TrouterMethod](
+  router[route.method](
     route.path,
     useHandler({ info, route, fieldName, sofa, operation })
   );
@@ -238,7 +206,7 @@ function createMutationRoute({
   fieldName,
 }: {
   sofa: Sofa;
-  router: Trouter;
+  router: Router<SofaRequest>;
   fieldName: string;
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} mutation`);
@@ -267,10 +235,7 @@ function createMutationRoute({
   };
   const { method, path } = route;
 
-  router[method.toLowerCase() as TrouterMethod](
-    path,
-    useHandler({ info, route, fieldName, sofa, operation })
-  );
+  router[method](path, useHandler({ info, route, fieldName, sofa, operation }));
 
   logger.debug(`[Router] ${fieldName} mutation available at ${method} ${path}`);
 
@@ -289,15 +254,30 @@ function useHandler(config: {
   route: Route;
   operation: DocumentNode;
   fieldName: string;
-}): RouteMiddleware {
+}): RouteHandler<Request> {
   const { sofa, operation, fieldName } = config;
   const info = config.info!;
 
-  return async ({ url, body, params, contextValue }) => {
+  return async (
+    request: SofaRequest,
+    serverContext: DefaultServerAdapterContext
+  ) => {
+    let body = {};
+    if (request.body != null) {
+      const strBody = await request.text();
+      if (strBody) {
+        body = JSON.parse(strBody);
+      }
+    }
     const variableValues = info.variables.reduce((variables, variable) => {
       const name = variable.variable.name.value;
       const value = parseVariable({
-        value: pickParam({ url, body, params, name }),
+        value: pickParam({
+          url: request.url,
+          body,
+          params: request.params || {},
+          name,
+        }),
         variable,
         schema: sofa.schema,
       });
@@ -312,9 +292,10 @@ function useHandler(config: {
       };
     }, {});
 
+    const contextValue = await sofa.contextFactory(serverContext);
     const result = await sofa.execute({
       schema: sofa.schema,
-      source: print(operation),
+      document: operation,
       contextValue,
       variableValues,
       operationName: info.operation.name && info.operation.name.value,
@@ -322,22 +303,21 @@ function useHandler(config: {
 
     if (result.errors) {
       const defaultErrorHandler: ErrorHandler = (errors) => {
-        return {
-          type: 'error',
+        return new Response(errors[0], {
           status: 500,
-          error: errors[0],
-        };
+        });
       };
       const errorHandler: ErrorHandler =
         sofa.errorHandler || defaultErrorHandler;
       return errorHandler(result.errors);
     }
 
-    return {
-      type: 'result',
+    return new Response(JSON.stringify(result.data?.[fieldName]), {
       status: config.route.responseStatus,
-      body: result.data && result.data[fieldName],
-    };
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   };
 }
 
@@ -353,10 +333,10 @@ function pickParam({
 }: {
   name: string;
   url: string;
-  params: Params;
+  params: any;
   body: any;
 }) {
-  if (params && params.hasOwnProperty(name)) {
+  if (name in params) {
     return params[name];
   }
   const searchParams = new URLSearchParams(url.split('?')[1]);

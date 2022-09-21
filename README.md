@@ -20,47 +20,14 @@ Here's complete example with no dependency on frameworks, but also integratable 
 ```js
 import http from 'http';
 import getStream from 'get-stream';
-import { createSofaRouter } from 'sofa-api';
+import { useSofa } from 'sofa-api';
 
-const invokeSofa = createSofaRouter({
-  basePath: '/api',
-  schema,
-});
-
-const server = http.createServer(async (req, res) => {
-  try {
-    const response = await invokeSofa({
-      method: req.method,
-      url: req.url,
-      body: JSON.parse(await getStream(req)),
-      contextValue: {
-        req,
-      },
-    });
-    if (response) {
-      const headers = {
-        'Content-Type': 'application/json',
-      };
-      if (response.statusMessage) {
-        res.writeHead(response.status, response.statusMessage, headers);
-      } else {
-        res.writeHead(response.status, headers);
-      }
-      if (response.type === 'result') {
-        res.end(JSON.stringify(response.body));
-      }
-      if (response.type === 'error') {
-        res.end(JSON.stringify(response.error));
-      }
-    } else {
-      res.writeHead(404);
-      res.end();
-    }
-  } catch (error) {
-    res.writeHead(500);
-    res.end(JSON.stringify(error));
-  }
-});
+const server = http.createServer(
+  useSofa({
+    basePath: '/api',
+    schema,
+  })
+);
 ```
 
 Another example with builtin express-like frameworks support
@@ -302,6 +269,7 @@ Thanks to GraphQL's Type System Sofa is able to generate OpenAPI (Swagger) defin
 
 ```ts
 import { useSofa, OpenAPI } from 'sofa-api';
+import { writeFileSync } from 'fs';
 
 const openApi = OpenAPI({
   schema,
@@ -325,13 +293,14 @@ app.use(
 );
 
 // writes every recorder route
-openApi.save('./swagger.yml');
+writeFileSync('./swagger.json', JSON.stringify(openApi.get(), null, 2));
 ```
 
 OpenAPI (Swagger) with Bearer Authentication
 
 ```ts
 import { useSofa, OpenAPI } from 'sofa-api';
+import { writeFileSync } from 'fs';
 
 const openApi = OpenAPI({
   schema,
@@ -369,7 +338,7 @@ app.use(
 );
 
 // writes every recorder route
-openApi.save('./swagger.yml');
+writeFileSync('./swagger.json', JSON.stringify(openApi.get(), null, 2));
 ```
 
 OpenAPI (Swagger) with custom tags, summary and description  

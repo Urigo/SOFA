@@ -70,8 +70,7 @@ const siteConfig = {
   repoUrl: 'https://github.com/Urigo/sofa',
   scripts: [
     {
-      src:
-        'https://the-guild.dev/static/crisp.js',
+      src: 'https://the-guild.dev/static/crisp.js',
       async: true,
     },
   ],

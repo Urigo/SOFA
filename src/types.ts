@@ -1,10 +1,8 @@
-import { GraphQLArgs, ExecutionResult, DocumentNode } from 'graphql';
+import { DocumentNode } from 'graphql';
 
 export type ContextValue = Record<string, any>;
 
 export type Ignore = string[];
-
-export type ExecuteFn = (args: GraphQLArgs) => Promise<ExecutionResult<any>>;
 
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
@@ -16,3 +14,8 @@ export interface RouteInfo {
   description?: string;
 }
 export type OnRoute = (info: RouteInfo) => void;
+
+export type ContextFn = (init: {
+  req: any;
+  res: any;
+}) => Promise<ContextValue> | ContextValue;

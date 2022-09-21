@@ -15,6 +15,7 @@ import { getOperationInfo } from '../ast';
 import { mapToPrimitive, mapToRef } from './utils';
 import { resolveFieldType } from './types';
 import { titleCase } from 'title-case';
+import { OpenAPIV3 } from 'openapi-types';
 
 export function buildPathFromOperation({
   url,
@@ -32,7 +33,7 @@ export function buildPathFromOperation({
   tags?: string[];
   description?: string;
   customScalars: Record<string, any>;
-}): any {
+}): OpenAPIV3.OperationObject {
   const info = getOperationInfo(operation)!;
 
   const summary = resolveSummary(schema, info.operation);
@@ -103,7 +104,7 @@ function resolveRequestBody(
   const properties: Record<string, any> = {};
   const required: string[] = [];
 
-  variables.forEach(variable => {
+  variables.forEach((variable) => {
     if (variable.type.kind === Kind.NON_NULL_TYPE) {
       required.push(variable.variable.name.value);
     }
@@ -197,7 +198,7 @@ function resolveSummary(
   }
 
   const fieldNode = definitionNode.fields!.find(
-    field => field.name.value === fieldName
+    (field) => field.name.value === fieldName
   );
   const descriptionDefinition = fieldNode && fieldNode.description;
   return descriptionDefinition && descriptionDefinition.value

@@ -14,23 +14,23 @@ jobs:
       matrix:
         node_version: [14, 16, 18]
     steps:
-    - uses: actions/checkout@master
-    - name: Use Node.js ${{ matrix.node_version }}
-      uses: actions/setup-node@master
-      with:
-        node-version: ${{ matrix.node_version }}
-    - name: Install
-      run: yarn --ignore-engines
-    - name: Build
-      run: yarn build
-    - name: Test
-      run: yarn test
-    - name: Bundle Size
-      run: yarn bundlesize
-    - name: Publish Canary
-      env: # Or as an environment variable
-        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-      run: |
+      - uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@master
+        with:
+          node-version: ${{ matrix.node_version }}
+      - name: Install
+        run: yarn --ignore-engines
+      - name: Build
+        run: yarn build
+      - name: Test
+        run: yarn test
+      - name: Bundle Size
+        run: yarn bundlesize
+      - name: Publish Canary
+        env: # Or as an environment variable
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+        run: |
           echo "Fork PR: ${{github.repository}}"
           if [ "${{github.repository}}" == "Urigo/SOFA" ] && [ "${{ secrets.NODE_AUTH_TOKEN }}" != "" ]
           then
@@ -38,4 +38,4 @@ jobs:
               npm run ci:release:canary
           else    
               echo "Skipping canary publish due to a fork/PR..."
-          fi    
+          fi
