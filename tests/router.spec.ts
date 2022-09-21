@@ -1,4 +1,4 @@
-import { makeExecutableSchema } from '@graphql-tools/schema';
+import { createSchema} from 'graphql-yoga'
 import { useSofa } from '../src';
 
 test('should work with Query and variables', async () => {
@@ -9,7 +9,7 @@ test('should work with Query and variables', async () => {
   const spy = jest.fn(() => testUser);
   const sofa = useSofa({
     basePath: '/api',
-    schema: makeExecutableSchema({
+    schema: createSchema({
       typeDefs: /* GraphQL */ `
         type User {
           id: ID
@@ -39,7 +39,7 @@ test('should work with Mutation', async () => {
   const spy = jest.fn(() => ({ __typename: 'Pizza', ...pizza }));
   const sofa = useSofa({
     basePath: '/api',
-    schema: makeExecutableSchema({
+    schema: createSchema({
       typeDefs: /* GraphQL */ `
         type Pizza {
           dough: String!
@@ -78,7 +78,7 @@ test('should work with Mutation + Query', async () => {
   const spy = jest.fn(() => ({ __typename: 'Pizza', query: {}, ...pizza }));
   const sofa = useSofa({
     basePath: '/api',
-    schema: makeExecutableSchema({
+    schema: createSchema({
       typeDefs: /* GraphQL */ `
         type Pizza {
           dough: String!
@@ -130,7 +130,7 @@ test('should overwrite a default http method on demand', async () => {
 
   const sofa = useSofa({
     basePath: '/api',
-    schema: makeExecutableSchema({
+    schema: createSchema({
       typeDefs: /* GraphQL */ `
         input PageInfoInput {
           offset: Int
@@ -201,7 +201,7 @@ test('should overwrite a default path and responseStatus on demand', async () =>
   const spy = jest.fn(() => users);
   const sofa = useSofa({
     basePath: '/api',
-    schema: makeExecutableSchema({
+    schema: createSchema({
       typeDefs: /* GraphQL */ `
         type User {
           id: ID
@@ -237,7 +237,7 @@ test('should overwrite a default path and responseStatus on demand', async () =>
 test('should work with scalars', async () => {
   const sofa = useSofa({
     basePath: '/api',
-    schema: makeExecutableSchema({
+    schema: createSchema({
       typeDefs: /* GraphQL */ `
         type Query {
           foo: String
@@ -270,7 +270,7 @@ test('should support search params in url', async () => {
 
   const sofa = useSofa({
     basePath: '/api',
-    schema: makeExecutableSchema({
+    schema: createSchema({
       typeDefs: /* GraphQL */ `
         type User {
           id: ID

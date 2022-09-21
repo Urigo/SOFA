@@ -5,8 +5,7 @@ import {
   Kind,
   OperationTypeNode,
 } from 'graphql';
-import { v4 as uuid } from 'uuid';
-import { fetch } from '@whatwg-node/fetch';
+import { fetch, crypto } from '@whatwg-node/fetch';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import type { ContextValue } from './types';
 import type { Sofa } from './sofa';
@@ -76,7 +75,7 @@ export class SubscriptionManager {
     event: StartSubscriptionEvent,
     contextValue: ContextValue
   ) {
-    const id = uuid();
+    const id = crypto.randomUUID();
     const name = event.subscription;
 
     if (!this.operations.has(name)) {

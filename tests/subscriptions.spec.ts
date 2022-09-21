@@ -9,8 +9,7 @@ jest.mock('@whatwg-node/fetch', () => {
 });
 
 import { fetch } from '@whatwg-node/fetch';
-import { makeExecutableSchema } from '@graphql-tools/schema';
-import { PubSub } from 'graphql-subscriptions';
+import { createSchema, createPubSub } from 'graphql-yoga'
 import { useSofa } from '../src';
 
 const delay = (ms: number) => {
@@ -47,15 +46,15 @@ const typeDefs = /* GraphQL */ `
 
 test('should start subscriptions', async () => {
   (fetch as jest.Mock).mockClear();
-  const pubsub = new PubSub();
+  const pubsub = createPubSub();
   const sofa = useSofa({
     basePath: '/api',
-    schema: makeExecutableSchema({
+    schema: createSchema({
       typeDefs,
       resolvers: {
         Subscription: {
           onBook: {
-            subscribe: () => pubsub.asyncIterator([BOOK_ADDED]),
+            subscribe: () => pubsub.subscribe(BOOK_ADDED),
           },
         },
       },
@@ -103,15 +102,15 @@ test('should start subscriptions', async () => {
 
 test('should stop subscriptions', async () => {
   (fetch as jest.Mock).mockClear();
-  const pubsub = new PubSub();
+  const pubsub = createPubSub();
   const sofa = useSofa({
     basePath: '/api',
-    schema: makeExecutableSchema({
+    schema: createSchema({
       typeDefs,
       resolvers: {
         Subscription: {
           onBook: {
-            subscribe: () => pubsub.asyncIterator([BOOK_ADDED]),
+            subscribe: () => pubsub.subscribe(BOOK_ADDED),
           },
         },
       },

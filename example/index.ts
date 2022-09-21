@@ -1,8 +1,7 @@
 import { createServer } from 'http';
 import { createServerAdapter } from '@whatwg-node/server';
 import { Router } from 'itty-router';
-import { makeExecutableSchema } from '@graphql-tools/schema';
-import { createServer as createYoga } from '@graphql-yoga/common';
+import { createYoga, createSchema } from 'graphql-yoga';
 import chalk from 'chalk';
 import { typeDefs } from './types';
 import { resolvers } from './resolvers';
@@ -14,7 +13,7 @@ import { Response } from '@whatwg-node/fetch';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 
-const schema = makeExecutableSchema({
+const schema = createSchema({
   typeDefs,
   resolvers,
 });
@@ -62,7 +61,7 @@ app.post('/collect-book', async (req: Request) => {
 const yoga = createYoga({
   schema,
 });
-app.all('/graphql', (req: Request) => yoga.handleRequest(req));
+app.all('/graphql', yoga);
 
 const port = 4000;
 

@@ -15,6 +15,7 @@ import { getOperationInfo } from '../ast';
 import { mapToPrimitive, mapToRef } from './utils';
 import { resolveFieldType } from './types';
 import { titleCase } from 'title-case';
+import { OpenAPIV3 } from 'openapi-types';
 
 export function buildPathFromOperation({
   url,
@@ -32,7 +33,7 @@ export function buildPathFromOperation({
   tags?: string[];
   description?: string;
   customScalars: Record<string, any>;
-}): any {
+}): OpenAPIV3.OperationObject {
   const info = getOperationInfo(operation)!;
 
   const summary = resolveSummary(schema, info.operation);

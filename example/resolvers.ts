@@ -1,6 +1,6 @@
-import { PubSub } from 'graphql-subscriptions';
+import { createPubSub } from 'graphql-yoga';
 
-const pubsub = new PubSub();
+const pubsub = createPubSub();
 
 import {
   UsersCollection,
@@ -52,7 +52,7 @@ export const resolvers = {
   },
   Subscription: {
     onBook: {
-      subscribe: () => pubsub.asyncIterator([BOOK_ADDED]),
+      subscribe: () => pubsub.subscribe(BOOK_ADDED),
     },
   },
   Food: {

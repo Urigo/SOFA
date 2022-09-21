@@ -2,6 +2,36 @@
 
 ### vNEXT
 
+### v0.11.0
+- Allow to override mapping of custom scalar to OpenAPI (#1159) - Thanks @izumin5210
+- Stop using AST Node to retrieve Enum values in OpenAPI (#1158) - Thanks @izumin5210
+- Feature/openapi tags description (#1114) - Thanks @NorbertRuff
+
+## BREAKING CHANGES
+- `createSofaRouter` is no longer exported, use `useSofa` directly
+- `useSofa` now supports more server frameworks. It uses `itty-router` and `@whatwg-node/server` so it supports almost all JS environments;
+[See more](https://github.com/ardatan/whatwg-node/tree/master/packages/server#integrations)
+Documentation on SOFA's docs will be updated soon.
+- `OpenAPI` no longer has `.save` method. Use `.get` to get the schema;
+```diff
+const openApi = OpenAPI({
+  schema,
+  servers: [
+    {
+      url: '/', // Specify Server's URL.
+      description: 'Development server',
+    },
+  ],
+  info: {
+    title: 'Example API',
+    version: '3.0.0',
+  },
+});
+
+- openApi.save('swagger.json');
++ fs.writeFileSync('swagger.json', JSON.stringify(openApi.get(), null, 2));
+```
+
 ### v0.10.2
 In this release express is removed as dependency. New `basePath` option is required to resolve sofa routes properly
 ```js
