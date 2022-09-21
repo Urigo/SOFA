@@ -2,6 +2,44 @@
 
 ### vNEXT
 
+### v0.10.2
+In this release express is removed as dependency. New `basePath` option is required to resolve sofa routes properly
+```js
+app.use(
+  '/api',
+  useSofa({
+    basePath: '/api',
+    schema,
+  })
+);
+```
+
+Added new server framework agnostic api
+```js
+const invokeSofa = createSofaRouter({
+  basePath: '/api',
+  schema,
+});
+...
+const response = await invokeSofa({
+  method: req.method,
+  url: req.url,
+  body: JSON.parse(await getStream(req)),
+  contextValue: {
+    req
+  },
+});
+```
+
+### v0.8.2
+- Replace winston with custom logger ([#534](https://github.com/Urigo/SOFA/pull/534)) - Thanks @TrySound !
+
+### v0.8.1
+- Bump @graphql-tools/utils to fix [ardatan/graphql-tools#1928](https://github.com/ardatan/graphql-tools/pull/1928)
+
+### v0.8.0
+- Update dependencies
+
 ### v0.7.0
 
 - feat(swagger): custom components and security for OpenAPI [PR #296](https://github.com/Urigo/SOFA/pull/296)
