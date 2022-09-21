@@ -1,5 +1,11 @@
 name: CI
-on: [push]
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
 jobs:
   test:
     name: Test on node ${{ matrix.node_version }}
