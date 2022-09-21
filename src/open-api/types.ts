@@ -13,7 +13,8 @@ import {
 import { mapToPrimitive, mapToRef } from './utils';
 
 export function buildSchemaObjectFromType(
-  type: GraphQLObjectType | GraphQLInputObjectType
+  type: GraphQLObjectType | GraphQLInputObjectType,
+  opts: { customScalars: Record<string, any> }
 ): any {
   const required: string[] = [];
   const properties: Record<string, any> = {};
@@ -27,7 +28,7 @@ export function buildSchemaObjectFromType(
       required.push(field.name);
     }
 
-    properties[fieldName] = resolveField(field);
+    properties[fieldName] = resolveField(field, opts);
     if (field.description) {
       properties[fieldName].description = field.description;
     }
@@ -41,24 +42,28 @@ export function buildSchemaObjectFromType(
   };
 }
 
-function resolveField(field: GraphQLField<any, any> | GraphQLInputField) {
-  return resolveFieldType(field.type);
+function resolveField(
+  field: GraphQLField<any, any> | GraphQLInputField,
+  opts: { customScalars: Record<string, any> }
+) {
+  return resolveFieldType(field.type, opts);
 }
 
 // array -> [type]
 // type -> $ref
 // scalar -> swagger primitive
 export function resolveFieldType(
-  type: GraphQLType
+  type: GraphQLType,
+  opts: { customScalars: Record<string, any> }
 ): any {
   if (isNonNullType(type)) {
-    return resolveFieldType(type.ofType);
+    return resolveFieldType(type.ofType, opts);
   }
 
   if (isListType(type)) {
     return {
       type: 'array',
-      items: resolveFieldType(type.ofType),
+      items: resolveFieldType(type.ofType, opts),
     };
   }
 
@@ -70,7 +75,8 @@ export function resolveFieldType(
 
   if (isScalarType(type)) {
     return (
-      mapToPrimitive(type.name) || {
+      mapToPrimitive(type.name) ||
+      opts.customScalars[type.name] || {
         type: 'object',
       }
     );

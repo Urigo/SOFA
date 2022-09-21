@@ -34,6 +34,7 @@ test('handle ObjectType', async () => {
       name: String!
       age: Int!
       profile: Profile
+      birthday: Date!
     }
 
     input UserInput {
@@ -41,6 +42,8 @@ test('handle ObjectType', async () => {
       age: Int!
       profile: Profile
     }
+
+    scalar Date
   `);
 
   const userType = schema.getType('User') as GraphQLObjectType;
@@ -48,14 +51,15 @@ test('handle ObjectType', async () => {
   const addressType = schema.getType('Address') as GraphQLObjectType;
   const userInputType = schema.getType('UserInput') as GraphQLInputObjectType;
 
-  const user = buildSchemaObjectFromType(userType);
-  const profile = buildSchemaObjectFromType(profileType);
-  const address = buildSchemaObjectFromType(addressType);
-  const userInput = buildSchemaObjectFromType(userInputType);
+  const customScalars = { Date: { type: 'string', format: 'date' } };
+  const user = buildSchemaObjectFromType(userType, { customScalars });
+  const profile = buildSchemaObjectFromType(profileType, { customScalars });
+  const address = buildSchemaObjectFromType(addressType, { customScalars });
+  const userInput = buildSchemaObjectFromType(userInputType, { customScalars });
 
   expect(user).toEqual({
     type: 'object',
-    required: ['role', 'name', 'age'],
+    required: ['role', 'name', 'age', 'birthday'],
     properties: {
       role: {
         enum: ['ADMIN', 'NORMAL'],
@@ -67,6 +71,10 @@ test('handle ObjectType', async () => {
       age: {
         type: 'integer',
         format: 'int32',
+      },
+      birthday: {
+        type: 'string',
+        format: 'date',
       },
       profile: {
         $ref: '#/components/schemas/Profile',
