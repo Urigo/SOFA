@@ -9,7 +9,7 @@ jest.mock('@whatwg-node/fetch', () => {
 });
 
 import { fetch } from '@whatwg-node/fetch';
-import { createSchema, createPubSub } from 'graphql-yoga'
+import { createSchema, createPubSub, filter, pipe } from 'graphql-yoga'
 import { useSofa } from '../src';
 
 const delay = (ms: number) => {
@@ -143,32 +143,32 @@ test('should stop subscriptions', async () => {
 
 test('should start subscriptions with parameters', async () => {
   (fetch as jest.Mock).mockClear();
-  const pubsub = new PubSub();
+  const pubsub = createPubSub();
   const sofa = useSofa({
     basePath: '/api',
-    schema: makeExecutableSchema({
+    schema: createSchema({
       typeDefs,
       resolvers: {
         Subscription: {
           onBookBy: {
-            subscribe: withFilter(() => pubsub.asyncIterator(BOOK_ADDED), ( { onBookBy: { author: publishedBy } }, { author: targetAuthor }) => {
-              return publishedBy === targetAuthor;
-            }),
+            subscribe: (root, args, context, info) => pipe(
+              pubsub.subscribe(BOOK_ADDED),
+            filter((payload) => payload.onBookBy.author === args.author)
+              )
           },
         },
       },
     }),
   });
 
-  const app = express();
-  app.use(bodyParser.json());
-  app.use('/api', sofa);
 
-  const res = await supertest(app)
-    .post('/api/webhook')
-    .send({ subscription: 'onBookBy', url: '/bookBy', variables: { author: 'Test Author 1' } })
-    .expect(200);
-  expect(res.body).toEqual({ id: expect.any(String) });
+  const response = await sofa.fetch('http://localhost:4000/api/webhook', {
+    method: 'POST',
+    body: JSON.stringify({ subscription: 'onBookBy', url: '/bookBy', variables: { author: 'Test Author 1' } })
+  })
+  expect(response.status).toBe(200);
+  const resBody = await response.json();
+  expect(resBody).toEqual({ id: expect.any(String) });
   pubsub.publish(BOOK_ADDED, { onBookBy: testBook1 });
   await delay(1000);
   expect(fetch).toBeCalledTimes(1);

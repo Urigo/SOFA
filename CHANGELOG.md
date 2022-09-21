@@ -6,6 +6,7 @@
 - Allow to override mapping of custom scalar to OpenAPI (#1159) - Thanks @izumin5210
 - Stop using AST Node to retrieve Enum values in OpenAPI (#1158) - Thanks @izumin5210
 - Feature/openapi tags description (#1114) - Thanks @NorbertRuff
+- Fix payload parsing for subscriptions (#1148) - Thanks @csuriano23
 
 ## BREAKING CHANGES
 - `createSofaRouter` is no longer exported, use `useSofa` directly
