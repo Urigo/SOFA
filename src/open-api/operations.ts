@@ -21,19 +21,26 @@ export function buildPathFromOperation({
   schema,
   operation,
   useRequestBody,
+  tags,
+  description,
   customScalars,
 }: {
   url: string;
   schema: GraphQLSchema;
   operation: DocumentNode;
   useRequestBody: boolean;
+  tags?: string[];
+  description?: string;
   customScalars: Record<string, any>;
 }): any {
   const info = getOperationInfo(operation)!;
 
-  const description = resolveDescription(schema, info.operation);
+  const summary = resolveSummary(schema, info.operation);
 
   return {
+    tags,
+    description ,
+    summary,
     operationId: info.name,
     ...(useRequestBody
       ? {
@@ -53,7 +60,7 @@ export function buildPathFromOperation({
         }),
     responses: {
       200: {
-        description,
+        description: summary,
         content: {
           'application/json': {
             schema: resolveResponse({
@@ -170,7 +177,7 @@ function isInPath(url: string, param: string): boolean {
   return url.indexOf(`{${param}}`) !== -1;
 }
 
-function resolveDescription(
+function resolveSummary(
   schema: GraphQLSchema,
   operation: OperationDefinitionNode
 ) {

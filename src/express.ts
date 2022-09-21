@@ -227,6 +227,8 @@ function createQueryRoute({
     document: operation,
     path: route.path,
     method: route.method.toUpperCase() as Method,
+    tags: routeConfig?.tags ?? [],
+    description: routeConfig?.description ?? '',
   };
 }
 
@@ -276,6 +278,8 @@ function createMutationRoute({
     document: operation,
     path,
     method,
+    tags: routeConfig?.tags ||  [],
+    description: routeConfig?.description || '',
   };
 }
 
