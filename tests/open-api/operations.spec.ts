@@ -122,6 +122,7 @@ test('handle tags and descriptions', async () => {
     description: 'Feed for test posts',
     schema,
     useRequestBody: false,
+    customScalars: {},
   });
   expect(result.description).toMatch('Feed for test posts');
   expect(result.tags).toContain('Feed' && 'Posts' && 'Test');
