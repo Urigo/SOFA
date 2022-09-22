@@ -43,12 +43,14 @@
   },
   "dependencies": {
     "@graphql-tools/utils": "8.12.0",
-    "ansi-colors": "4.1.3",
     "@whatwg-node/fetch": "^0.4.3",
     "@whatwg-node/server": "^0.4.1",
+    "ansi-colors": "4.1.3",
     "itty-router": "^2.6.1",
     "openapi-types": "12.0.2",
     "param-case": "3.0.4",
+    "patch-package": "6.4.7",
+    "postinstall-postinstall": "2.1.0",
     "title-case": "3.0.3",
     "tslib": "2.4.0"
   },
@@ -61,17 +63,17 @@
     "prepare-release": "yarn build && yarn test",
     "release": "yarn prepare-release && bob prepack && cd dist && npm publish",
     "ci:release:canary": "node bump.js && bob prepack && cd dist && npm publish --tag alpha --access public",
-    "postinstall": "husky install"
+    "postinstall": "husky install && patch-package"
   },
   "devDependencies": {
     "@babel/core": "7.19.1",
     "@babel/plugin-proposal-class-properties": "7.18.6",
     "@babel/preset-env": "7.19.1",
     "@babel/preset-typescript": "7.18.6",
-    "babel-jest": "29.0.3",
     "@types/jest": "29.0.3",
     "@types/swagger-ui-dist": "3.30.1",
     "@types/yamljs": "0.2.31",
+    "babel-jest": "29.0.3",
     "bob-the-bundler": "1.7.3",
     "bundlesize": "0.18.1",
     "chalk": "4.1.2",
