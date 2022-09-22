@@ -3019,10 +3019,10 @@ graphql-ws@^5.4.1:
   resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-5.11.1.tgz#f9c8b7c64986d1d921f2a820dc68a393853c94e8"
   integrity sha512-AlOO/Gt0fXuSHXe/Weo6o3rIQVnH5MW7ophzeYzL+vYNlkf0NbWRJ6IIFgtSLcv9JpTlQdxSpB3t0SnM47/BHA==
 
-graphql-yoga@3.0.0-next.0:
-  version "3.0.0-next.0"
-  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-3.0.0-next.0.tgz#76415f01e9c7827bf8495f4b70264f231f327bec"
-  integrity sha512-Oeb9cpahM/6lSO4emx4FA3F2k91xu0qFyDJr2IkwlU2EHnG5yLt1thHwob1XfTdsff4o0a825kQBRC1dFelf3Q==
+graphql-yoga@3.0.0-next.1:
+  version "3.0.0-next.1"
+  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-3.0.0-next.1.tgz#d32395145c9430e494d443216b6ace173aee4145"
+  integrity sha512-mdf/nglB7aLME6DVICZjtJycdmjjYZFnGBt3+kss5IMwJJ/Z2xOGHH87UL385pCGNssWJSeXrI+B2cg26XudWw==
   dependencies:
     "@envelop/core" "^2.5.0"
     "@envelop/parser-cache" "^4.6.0"
@@ -4867,10 +4867,10 @@ supports-hyperlinks@^2.0.0:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
 
-swagger-ui-dist@4.14.0:
-  version "4.14.0"
-  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-4.14.0.tgz#e34d807464eb84578c43902e393084a1a6fbda52"
-  integrity sha512-TBzhheU15s+o54Cgk9qxuYcZMiqSm/SkvKnapoGHOF66kz0Y5aGjpzj5BT/vpBbn6rTPJ9tUYXQxuDWfsjiGMw==
+swagger-ui-dist@4.14.1:
+  version "4.14.1"
+  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-4.14.1.tgz#a08209042f47918d95179cdbb2286d3cfa2aba02"
+  integrity sha512-GjK581G3ZMOw1vLiQyMV+XHXSE4F83/2E48Y8Cs+X+25QHegwPu/83+GDCls3htPZvEOr0IG+oVljhMyuRy1kA==
 
 tar-fs@^2.0.0:
   version "2.1.1"
