@@ -8,9 +8,6 @@
   },
   "docs": {
     "title": "Docs",
-    "type": "page",
-    "theme": {
-      "toc": true
-    }
+    "type": "page"
   }
 }
