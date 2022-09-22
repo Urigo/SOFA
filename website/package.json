@@ -9,8 +9,7 @@
     "prebuild": "npm run build:animation",
     "build": "next build && next-sitemap --config next-sitemap.config.cjs",
     "predev": "npm run build:animation",
-    "dev": "next dev",
-    "next": "next",
+    "dev": "next",
     "start": "next start"
   },
   "dependencies": {
