@@ -1,6 +1,6 @@
 /* eslint sort-keys: error */
 import {
-  ModulesLogo,
+  SofaLogo,
   FooterExtended,
   mdxComponents,
   Header,
@@ -8,22 +8,12 @@ import {
 } from '@theguild/components';
 import { DocsThemeConfig } from 'nextra-theme-docs';
 
-const SITE_NAME = 'GraphQL Modules';
-
-// const defaultSeo: AppSeoProps = {
-//   title: 'GraphQL Modules',
-//   description: 'Enterprise Grade Tooling for your GraphQL Server',
-//   logo: {
-//     url: 'https://www.graphql-modules.com/assets/subheader-logo.png',
-//     width: 50,
-//     height: 54,
-//   },
-// };
+const SITE_NAME = 'GraphQL Sofa';
 
 const config: DocsThemeConfig = {
   components: mdxComponents,
   docsRepositoryBase:
-    'https://github.com/Urigo/graphql-modules/tree/master/website/src/pages',
+    'https://github.com/Urigo/SOFA/tree/master/website/src/pages',
   editLink: {
     text: 'Edit this page on GitHub',
   },
@@ -43,12 +33,10 @@ const config: DocsThemeConfig = {
   ),
   logo: (
     <>
-      <ModulesLogo className="mr-1.5 h-9 w-9" />
+      <SofaLogo className="mr-1.5 h-9 w-9" />
       <div>
         <h1 className="md:text-md text-sm font-medium">{SITE_NAME}</h1>
-        <h2 className="hidden text-xs sm:block">
-          Enterprise Grade Tooling for Your GraphQL Server
-        </h2>
+        <h2 className="hidden text-xs sm:block">Now you can Rest with Sofa</h2>
       </div>
     </>
   ),
@@ -63,7 +51,7 @@ const config: DocsThemeConfig = {
     </>
   ),
   project: {
-    link: 'https://github.com/Urigo/graphql-modules',
+    link: 'https://github.com/Urigo/SOFA',
   },
   search: {
     component: null,
