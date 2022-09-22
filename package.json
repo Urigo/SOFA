@@ -49,8 +49,6 @@
     "itty-router": "^2.6.1",
     "openapi-types": "12.0.2",
     "param-case": "3.0.4",
-    "patch-package": "6.4.7",
-    "postinstall-postinstall": "2.1.0",
     "title-case": "3.0.3",
     "tslib": "2.4.0"
   },
@@ -63,7 +61,7 @@
     "prepare-release": "yarn build && yarn test",
     "release": "yarn prepare-release && bob prepack && cd dist && npm publish",
     "ci:release:canary": "node bump.js && bob prepack && cd dist && npm publish --tag alpha --access public",
-    "postinstall": "husky install && patch-package"
+    "postinstall": "husky install"
   },
   "devDependencies": {
     "@babel/core": "7.19.1",
