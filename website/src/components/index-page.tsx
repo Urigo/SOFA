@@ -4,16 +4,9 @@ import { HeroGradient, InfoList } from '@theguild/components';
 export function IndexPage(): ReactElement {
   return (
     <>
-      <HeroGradient
-        title="Sofa API"
-        description="Now you can Rest with Sofa"
-        link={{
-          href: '/docs',
-          children: 'View Docs',
-          title: 'Now you can Rest with Sofa',
-        }}
-        colors={['#37a9e1', '#e434ab']}
-      />
+      <div className="animation-container">
+        <iframe src="/animation/index.html" />
+      </div>
 
       <InfoList
         items={[

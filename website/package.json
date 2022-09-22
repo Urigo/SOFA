@@ -5,7 +5,10 @@
   "private": true,
   "scripts": {
     "algolia-sync": "node scripts/algolia-ci.mjs",
+    "build:animation": "rm -rf public/animation && cd animation && yarn && npm run build && cp -r ./build ../public/animation",
+    "prebuild": "npm run build:animation",
     "build": "next build && next-sitemap --config next-sitemap.config.cjs ",
+    "predev": "npm run build:animation",
     "dev": "next dev",
     "next": "next",
     "start": "next start"
