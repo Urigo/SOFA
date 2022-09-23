@@ -1,22 +1,11 @@
-import { ReactElement } from 'react';
-import { InfoList, HeroGradient } from '@theguild/components';
-
+import { ReactElement } from 'react'
+import { InfoList } from '@theguild/components'
+import { Hero } from './hero'
 
 export function IndexPage(): ReactElement {
-
-
   return (
     <>
-          <HeroGradient
-        title="Sofa API"
-        description="Now you can Rest with Sofa ;)"
-        link={{
-          href: '/docs',
-          children: 'Get Started',
-          title: 'Get started with The Guild Docs',
-        }}
-        colors={['#37a9e1', '#e434ab']}
-      />
+      <Hero />
       <InfoList
         items={[
           {
@@ -30,12 +19,12 @@ export function IndexPage(): ReactElement {
               'Setup Sofa within a single line of code and start using REST API right away.',
           },
           {
-            title: "Let's Work Together",
+            title: 'Let\'s Work Together',
             description:
               'We want to hear from you, our community of fellow engineers, come to be collaborators.',
           },
         ]}
       />
     </>
-  );
+  )
 }
