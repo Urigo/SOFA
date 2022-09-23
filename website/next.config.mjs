@@ -1,6 +1,9 @@
 import { withGuildDocs } from '@theguild/components/next.config';
 
 export default withGuildDocs({
+  images: {
+    allowFutureImage: true,
+  },
   redirects: () =>
     Object.entries({}).map(([from, to]) => ({
       source: from,
