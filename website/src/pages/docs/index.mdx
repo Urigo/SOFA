@@ -1,6 +1,6 @@
----
-title: Getting Started
----
+import { PackageCmd } from '@theguild/components'
+
+# Getting Started
 
 An open source library you install on your GraphQL server to create a fully RESTful and configurable API gateway.
 
@@ -12,21 +12,13 @@ An open source library you install on your GraphQL server to create a fully REST
 - Fully **generated documentation** that is always up-to-date
 - **GraphQL Subscriptions as Webhooks**
 
-### Installation
+## Installation
 
-Install Sofa using [`yarn`](https://yarnpkg.com/en):
+Install Sofa:
 
-```bash
-yarn add sofa-api
-```
+<PackageCmd packages={['sofa-api']} />
 
-Or [`npm`](https://www.npmjs.com/):
-
-```bash
-npm install sofa-api
-```
-
-### Usage
+## Usage
 
 ```typescript
 import { useSofa } from 'sofa-api';

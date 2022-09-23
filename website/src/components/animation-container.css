@@ -1,0 +1,18 @@
+@media only screen and (max-width: 1024px) {
+  .animation-container > iframe {
+    width: 100vw;
+    height: 760px;
+  }
+}
+@media only screen and (min-width: 1024px) {
+  .animation-container {
+    height: calc(((731 / 1300) * 100vw));
+    min-height: 730px;
+  }
+
+  .animation-container > iframe {
+    width: 100vw;
+    height: calc(((731 / 1300) * 100vw));
+    min-height: 730px;
+  }
+}
