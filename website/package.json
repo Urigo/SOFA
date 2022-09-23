@@ -18,7 +18,7 @@
     "patch-package": "6.4.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wrangler": "2.1.4"
+    "wrangler": "2.1.6"
   },
   "devDependencies": {
     "@theguild/algolia": "0.0.2",
