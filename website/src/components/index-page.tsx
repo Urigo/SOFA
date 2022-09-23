@@ -5,19 +5,14 @@ import { useRouter } from 'next/router';
 
 export function IndexPage(): ReactElement {
   const router = useRouter();
-  useEffect(() => {
-    if (!router.isReady) return;
-
-    // codes using router.query
-  }, [router.isReady]);
-  const { basePath } = router.isReady ? router.query : { basePath: '' };
+  const { basePath } = router;
 
   console.log({ basePath });
 
   return (
     <>
       <div className="animation-container">
-        <iframe src={basePath + '/animation/public/index.html'} />
+        <iframe src={basePath + '/animation/index.html'} />
       </div>
       <InfoList
         items={[
