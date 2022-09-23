@@ -1,22 +1,17 @@
-import React, { Component, createRef } from 'react'
-import lottie from 'lottie-web'
-import animationData from './animation.json'
+import { ComponentProps, ReactElement, useEffect, useRef, useState } from 'react'
+import lottie, { AnimationItem } from 'lottie-web'
 import { Anchor } from '@theguild/components'
+import animationData from './animation.json'
 
-export class Hero extends Component {
-  constructor(props) {
-    super(props)
+export const Hero = (): ReactElement => {
+  const [animation, setAnimation] = useState<AnimationItem>(null as any)
+  const [clicked, setClicked] = useState(false)
+  const container = useRef<HTMLDivElement>(null)
 
-    this.state = {
-      animation: null,
-      clicked: false,
-    }
-    this.container = createRef()
-  }
-
-  componentDidMount() {
-    const animation = lottie.loadAnimation({
-      wrapper: this.container.current,
+  useEffect(() => {
+    if (!container.current) return
+    const animationItem = lottie.loadAnimation({
+      container: container.current,
       renderer: 'svg',
       loop: false,
       autoplay: false,
@@ -24,73 +19,56 @@ export class Hero extends Component {
       rendererSettings: {
         className: 'even:hidden',
         preserveAspectRatio: 'xMidYMid meet',
-        clearCanvas: false,
         progressiveLoad: false, // Boolean, only svg renderer, loads dom elements when needed. Might speed up initialization for large number of elements.
         hideOnTransparent: true,
       },
     })
+    setAnimation(animationItem)
+  }, [container])
 
-    this.setState({ animation })
+  const playToClick = () => {
+    animation.setDirection(1)
+    animation.playSegments([0, 25])
   }
 
-  playToClick() {
-    this.state.animation.setDirection(1)
-    this.state.animation.playSegments([0, 25])
-  }
-
-  playToStart() {
-    if (this.state.clicked) {
-      this.setState({
-        clicked: false,
-      })
-      this.state.animation.setDirection(1)
-      this.state.animation.playSegments([85, 120])
+  const playToStart = () => {
+    if (clicked) {
+      setClicked(false)
+      animation.setDirection(1)
+      animation.playSegments([85, 120])
     } else {
-      this.state.animation.setDirection(-1)
-      this.state.animation.playSegments([25, 0])
+      animation.setDirection(-1)
+      animation.playSegments([25, 0])
     }
   }
 
-  playFromClick() {
-    if (this.state.clicked) {
-      return
+  const playFromClick: ComponentProps<'a'>['onClick'] = (e) => {
+    if (!clicked) {
+      e.preventDefault()
+      animation.setDirection(1)
+      animation.playSegments([25, 85])
+      setClicked(true)
     }
-
-    this.state.animation.setDirection(1)
-    this.state.animation.playSegments([25, 85])
-    this.setState({
-      clicked: true,
-    })
   }
 
-  render() {
-    return (
-      <div className="animation-container relative">
-        <div id="animation" ref={this.container}>
-          <div className="animation-button-container">
-            <a
-              href="/docs"
-              className={this.state.clicked
-                ? 'animation-button graphql'
-                : 'animation-button'}
-              onMouseEnter={() => {
-                this.playToClick()
-              }}
-              onMouseLeave={() => {
-                this.playToStart()
-              }}
-              onClick={(e) => {
-                if (!this.state.clicked) {
-                  e.preventDefault()
-                  this.playFromClick()
-                }
-              }}
-            >
-              {this.state.clicked ? 'See how it works!' : 'Switch to REST'}
-            </a>
-          </div>
+  return (
+    <div className="animation-container relative">
+      <div id="animation" ref={container}>
+        <div className="animation-button-container">
+          <Anchor
+            href="/docs"
+            className={clicked
+              ? 'animation-button graphql'
+              : 'animation-button'}
+            onMouseEnter={playToClick}
+            // @ts-ignore -- TODO: figure out why there is type error in @theguild/components <Anchor /> tag
+            onMouseLeave={playToStart}
+            onClick={playFromClick}
+          >
+            {clicked ? 'See how it works!' : 'Switch to REST'}
+          </Anchor>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
