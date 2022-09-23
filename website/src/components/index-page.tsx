@@ -1,19 +1,22 @@
-import { ReactElement, useEffect } from 'react';
-import { InfoList } from '@theguild/components';
+import { ReactElement } from 'react';
+import { InfoList, HeroGradient } from '@theguild/components';
 
-import { useRouter } from 'next/router';
 
 export function IndexPage(): ReactElement {
-  const router = useRouter();
-  const { basePath } = router;
 
-  console.log({ basePath });
 
   return (
     <>
-      <div className="animation-container">
-        <iframe src={basePath + '/animation/index.html'} />
-      </div>
+          <HeroGradient
+        title="Sofa API"
+        description="Now you can Rest with Sofa ;)"
+        link={{
+          href: '/docs',
+          children: 'Get Started',
+          title: 'Get started with The Guild Docs',
+        }}
+        colors={['#37a9e1', '#e434ab']}
+      />
       <InfoList
         items={[
           {
