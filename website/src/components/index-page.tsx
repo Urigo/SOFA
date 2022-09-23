@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { InfoList } from '@theguild/components';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/dist/client/router';
 
 export function IndexPage(): ReactElement {
   const { basePath } = useRouter();
