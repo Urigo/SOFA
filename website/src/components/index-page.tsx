@@ -8,7 +8,7 @@ export function IndexPage(): ReactElement {
   return (
     <>
       <div className="animation-container">
-        <iframe src={basePath + '/animation/index.html'} />
+        <iframe src={basePath + 'website/animation/public/index.html'} />
       </div>
       <InfoList
         items={[
