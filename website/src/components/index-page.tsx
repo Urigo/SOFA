@@ -1,14 +1,15 @@
 import { ReactElement } from 'react';
 import { InfoList } from '@theguild/components';
-import { useRouter } from 'next/dist/client/router';
+import { useRouter } from 'next/router';
 
 export function IndexPage(): ReactElement {
   const { basePath } = useRouter();
+  console.log({ basePath });
 
   return (
     <>
       <div className="animation-container">
-        <iframe src={basePath + '/public/index.html'} />
+        <iframe src={basePath + '/animation/public/index.html'} />
       </div>
       <InfoList
         items={[
