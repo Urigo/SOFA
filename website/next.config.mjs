@@ -1,10 +1,10 @@
 import { withGuildDocs } from '@theguild/components/next.config';
 
 export default withGuildDocs({
-  images: {
-    unoptimized: true, // doesn't work with `next export`
-    allowFutureImage: true,
-  },
+  basePath:
+    process.env.NEXT_BASE_PATH && process.env.NEXT_BASE_PATH !== ''
+      ? process.env.NEXT_BASE_PATH
+      : undefined,
   redirects: () =>
     Object.entries({}).map(([from, to]) => ({
       source: from,
