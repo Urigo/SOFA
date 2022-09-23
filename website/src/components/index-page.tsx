@@ -1,11 +1,14 @@
 import { ReactElement } from 'react';
 import { InfoList } from '@theguild/components';
+import { useRouter } from 'next/router';
 
 export function IndexPage(): ReactElement {
+  const { basePath } = useRouter();
+
   return (
     <>
       <div className="animation-container">
-        <iframe src="../../animation/index.html" />
+        <iframe src={basePath + '/animation/index.html'} />
       </div>
       <InfoList
         items={[
@@ -20,7 +23,7 @@ export function IndexPage(): ReactElement {
               'Setup Sofa within a single line of code and start using REST API right away.',
           },
           {
-            title: 'Let`s Work Together',
+            title: "Let's Work Together",
             description:
               'We want to hear from you, our community of fellow engineers, come to be collaborators.',
           },
