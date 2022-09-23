@@ -1,9 +1,12 @@
 import { ReactElement } from 'react';
 import { InfoList } from '@theguild/components';
+
 import { useRouter } from 'next/router';
 
 export function IndexPage(): ReactElement {
-  const { basePath } = useRouter();
+  const router = useRouter();
+  const { basePath } = router.query;
+
   console.log({ basePath });
 
   return (
