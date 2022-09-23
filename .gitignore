@@ -6,3 +6,5 @@ npm-debug.log*
 lerna-debug.log
 package-lock.json
 .next
+.idea/
+website/public/sitemap.xml
