@@ -1,11 +1,16 @@
-import { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { InfoList } from '@theguild/components';
 
 import { useRouter } from 'next/router';
 
 export function IndexPage(): ReactElement {
   const router = useRouter();
-  const { basePath } = router.query;
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    // codes using router.query
+  }, [router.isReady]);
+  const { basePath } = router.isReady ? router.query : { basePath: '' };
 
   console.log({ basePath });
 
