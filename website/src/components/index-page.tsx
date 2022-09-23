@@ -1,11 +1,11 @@
 import { ReactElement } from 'react';
-import { HeroGradient, InfoList } from '@theguild/components';
+import { InfoList } from '@theguild/components';
 
 export function IndexPage(): ReactElement {
   return (
     <>
       <div className="animation-container">
-        <iframe src="/animation/index.html" />
+        <iframe src="../../animation/index.html" />
       </div>
       <InfoList
         items={[
