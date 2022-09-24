@@ -1,4 +1,6 @@
-import { createSchema} from 'graphql-yoga'
+import { Response } from '@whatwg-node/fetch';
+import { GraphQLError } from 'graphql';
+import { createSchema } from 'graphql-yoga';
 import { useSofa } from '../src';
 
 test('should work with Query and variables', async () => {
@@ -298,4 +300,75 @@ test('should support search params in url', async () => {
     /* context */ expect.anything(),
     /* info */ expect.anything()
   );
+});
+
+test('should return a first error as json', async () => {
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type Query {
+          foo: String!
+          bar: String!
+        }
+      `,
+      resolvers: {
+        Query: {
+          foo: () => {
+            throw new GraphQLError('permission denied', {
+              extensions: { code: 'PERMISSION_DENIED' },
+            });
+          },
+        },
+      },
+    }),
+  });
+
+  const res = await sofa.fetch('http://localhost:4000/api/foo');
+  expect(res.status).toBe(500);
+  const resBody = await res.json();
+  expect(resBody).toEqual({
+    message: 'permission denied',
+    path: ['foo'],
+    extensions: { code: 'PERMISSION_DENIED' },
+  });
+});
+
+test('should override error response with errorHandler', async () => {
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type Query {
+          foo: String!
+          bar: String!
+        }
+      `,
+      resolvers: {
+        Query: {
+          foo: () => {
+            throw new GraphQLError('permission denied', {
+              extensions: { code: 'PERMISSION_DENIED' },
+            });
+          },
+        },
+      },
+    }),
+    errorHandler(errs) {
+      const body = JSON.stringify({ message: errs[0].message });
+      let status = 500;
+      if (
+        errs[0] instanceof GraphQLError &&
+        errs[0].extensions.code === 'PERMISSION_DENIED'
+      ) {
+        status = 403;
+      }
+      return new Response(body, { status });
+    },
+  });
+
+  const res = await sofa.fetch('http://localhost:4000/api/foo');
+  expect(res.status).toBe(403);
+  const resBody = await res.json();
+  expect(resBody).toEqual({ message: 'permission denied' });
 });
