@@ -5,12 +5,14 @@ By default, Sofa returns a response that includes JSON representation of thrown 
 ```typescript
 api.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
-    errorHandler(res, errors) {
+    errorHandler(errs) {
       logErrors(errors);
-      res.code(500);
-      res.json(formatError(errors[0]));
+      return new Response(formatError(errs[0]), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     },
   })
 );

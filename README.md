@@ -150,7 +150,7 @@ Sofa allows you to cutomize the http method, path and response status. For examp
 ```typescript
 api.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
     routes: {
       'Query.feed': { method: 'POST' },
@@ -341,7 +341,7 @@ app.use(
 writeFileSync('./swagger.json', JSON.stringify(openApi.get(), null, 2));
 ```
 
-OpenAPI (Swagger) with custom tags, summary and description  
+OpenAPI (Swagger) with custom tags, summary and description
 
 ```ts
 const openApi = OpenAPI({

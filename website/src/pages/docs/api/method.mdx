@@ -7,10 +7,10 @@ Sofa allows you to cutomize the http method. For example, in case you need `POST
 ```typescript
 api.use(
   '/api',
-  sofa({
+  useSofa({
     schema,
-    method: {
-      'Query.feed': 'POST',
+    routes: {
+      'Query.feed': { method: 'POST' },
     },
   })
 );
