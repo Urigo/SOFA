@@ -7,21 +7,19 @@
     "algolia-sync": "node scripts/algolia-ci.mjs",
     "build": "next build && next-sitemap --config next-sitemap.config.cjs",
     "dev": "next",
-    "start": "next start",
-    "postinstall": "patch-package"
+    "start": "next start"
   },
   "dependencies": {
     "lottie-web": "5.9.6",
-    "@theguild/components": "4.0.3",
+    "@theguild/components": "4.1.0-alpha-20220927040326-d278929",
     "next": "12.3.1",
     "next-sitemap": "3.1.22",
-    "patch-package": "6.4.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "wrangler": "2.1.7"
   },
   "devDependencies": {
-    "@theguild/algolia": "0.0.2",
+    "@theguild/algolia": "0.1.0-alpha-20220927040523-44e477c",
     "@theguild/tailwind-config": "0.1.0",
     "@types/node": "18.7.18",
     "@types/react": "18.0.21",
