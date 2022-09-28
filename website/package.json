@@ -14,11 +14,11 @@
     "lottie-web": "5.9.6",
     "@theguild/components": "4.0.3",
     "next": "12.3.1",
-    "next-sitemap": "3.1.22",
+    "next-sitemap": "3.1.23",
     "patch-package": "6.4.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wrangler": "2.1.7"
+    "wrangler": "2.1.8"
   },
   "devDependencies": {
     "@theguild/algolia": "0.0.2",
