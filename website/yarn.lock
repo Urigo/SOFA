@@ -3576,10 +3576,10 @@ nanoid@^3.3.3, nanoid@^3.3.4:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
   integrity sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==
 
-next-sitemap@3.1.22:
-  version "3.1.22"
-  resolved "https://registry.yarnpkg.com/next-sitemap/-/next-sitemap-3.1.22.tgz#732b2a75b3c07f0cde4862eca86052d6ff6ee2f7"
-  integrity sha512-aykbwYTNJ2GKSuxYpXgKK7m/a1Qao03ekUlsNLHvO8XuTTVZDAOe2hGcJtr2vQfXnLeZuSpNUs2IP6hCr4xVZA==
+next-sitemap@3.1.23:
+  version "3.1.23"
+  resolved "https://registry.yarnpkg.com/next-sitemap/-/next-sitemap-3.1.23.tgz#df696e0a0f5da643d624ec141ac0680401bd8af4"
+  integrity sha512-szQ5uvxn4/7P01U/rvzEccOcYk0Nm+kI3BGzHheREV+HDcj+IilrhXCuNqv4dBWy49eqsgCmjHuEDINx3/teMQ==
   dependencies:
     "@corex/deepmerge" "^4.0.29"
     minimist "^1.2.6"
@@ -5043,10 +5043,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-wrangler@2.1.7:
-  version "2.1.7"
-  resolved "https://registry.yarnpkg.com/wrangler/-/wrangler-2.1.7.tgz#7a62fd1acbc3def176e51094bc7331a79789a708"
-  integrity sha512-uHyFx9sRf/VLemB09/SzOqlHajin/tf4vh74/vMnwgmpMA6FnCXdXVsTWulCnowzQIWdO9E/aoG7GdEqRLr3Iw==
+wrangler@2.1.8:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/wrangler/-/wrangler-2.1.8.tgz#578cee225a923155cabeab82746d0e09a18df92a"
+  integrity sha512-9QJ/X+xz5uLFUPaE4ENuJY8smt88b05kXSuauXB4DhfF79ndY4tjlgiS2+EVjPv1hB/xkB1KFBSoUMTrMDH3qw==
   dependencies:
     "@cloudflare/kv-asset-handler" "^0.2.0"
     "@esbuild-plugins/node-globals-polyfill" "^0.1.1"
