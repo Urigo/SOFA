@@ -1,29 +1,12 @@
 /* eslint sort-keys: error */
-import {
-  SofaLogo,
-  FooterExtended,
-  mdxComponents,
-  Header,
-  Navbar,
-} from '@theguild/components';
-import { DocsThemeConfig } from 'nextra-theme-docs';
+import { SofaLogo, defineConfig } from '@theguild/components';
 
 const SITE_NAME = 'GraphQL Sofa';
 
-const config: DocsThemeConfig = {
-  components: mdxComponents,
+export default defineConfig({
+  titleSuffix: ` – ${SITE_NAME}`,
   docsRepositoryBase:
     'https://github.com/Urigo/SOFA/tree/master/website/src/pages',
-  editLink: {
-    text: 'Edit this page on GitHub',
-  },
-  feedback: {
-    content: 'Question? Give us feedback →',
-    labels: 'kind/docs',
-  },
-  footer: {
-    component: <FooterExtended />,
-  },
   head: (
     <>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -40,26 +23,4 @@ const config: DocsThemeConfig = {
       </div>
     </>
   ),
-  navbar: (props) => (
-    <>
-      <Header
-        accentColor="#1cc8ee"
-        themeSwitch
-        searchBarProps={{ version: 'v2' }}
-      />
-      <Navbar {...props} />
-    </>
-  ),
-  project: {
-    link: 'https://github.com/Urigo/SOFA',
-  },
-  search: {
-    component: null,
-  },
-  sidebar: {
-    defaultMenuCollapsed: true,
-  },
-  titleSuffix: ` – ${SITE_NAME}`,
-};
-
-export default config;
+});
