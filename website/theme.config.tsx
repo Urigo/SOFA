@@ -6,7 +6,7 @@ const SITE_NAME = 'GraphQL Sofa';
 export default defineConfig({
   titleSuffix: ` – ${SITE_NAME}`,
   docsRepositoryBase:
-    'https://github.com/Urigo/SOFA/tree/master/website/src/pages',
+    'https://github.com/Urigo/SOFA/tree/master/website',
   head: (
     <>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
