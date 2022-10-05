@@ -5,7 +5,7 @@ import { buildOperationNodeForField } from '@graphql-tools/utils';
 
 const schema = buildSchema(/* GraphQL */ `
   type Post {
-    comments(filter: String!): [String!]!
+    comments(filter: String!, date: Date): [String!]!
     author: Author
     postId: Int
   }
@@ -21,8 +21,10 @@ const schema = buildSchema(/* GraphQL */ `
     feed: [Post]
   }
 
+  scalar Date
+
   type Mutation {
-    addPost(comments: [String!]!): Post
+    addPost(comments: [String!]!, date: Date): Post
   }
 `);
 
@@ -43,10 +45,12 @@ test('handle query', async () => {
     },
     schema,
     useRequestBody: false,
-    customScalars: {},
+    customScalars: {
+      Date: { type: 'string', format: 'date' },
+    },
   });
   expect(result.operationId).toEqual('feed_query');
-  expect(result.parameters?.length).toEqual(1);
+  expect(result.parameters?.length).toEqual(2);
   expect(result.parameters?.[0]).toEqual({
     in: 'query',
     name: 'feed_comments_filter',
@@ -55,10 +59,20 @@ test('handle query', async () => {
       type: 'string',
     },
   });
+  expect(result.parameters?.[1]).toEqual({
+    in: 'query',
+    name: 'feed_comments_date',
+    required: false,
+    schema: {
+      type: 'string',
+      format: 'date',
+    },
+  });
 
   expect((result.responses[200] as any).description).toMatch('Feed of posts');
 
-  const response = (result.responses[200] as any).content['application/json'].schema;
+  const response = (result.responses[200] as any).content['application/json']
+    .schema;
   expect(response).toEqual({
     type: 'array',
     items: { $ref: '#/components/schemas/Post' },
@@ -82,7 +96,9 @@ test('handle mutation', async () => {
     },
     schema,
     useRequestBody: true,
-    customScalars: {},
+    customScalars: {
+      Date: { type: 'string', format: 'date' },
+    },
   });
 
   // id
@@ -92,7 +108,7 @@ test('handle mutation', async () => {
   expect(result.parameters).not.toBeDefined();
 
   // request body
-  const def =( result.requestBody as any).content['application/json'].schema;
+  const def = (result.requestBody as any).content['application/json'].schema;
 
   expect(result.requestBody).toBeDefined();
   expect(def.type).toEqual('object');
@@ -103,8 +119,11 @@ test('handle mutation', async () => {
       type: 'string',
     },
   });
+  expect(def.properties!.date).toEqual({
+    type: 'string',
+    format: 'date',
+  });
 });
-
 
 test('handle tags and descriptions', async () => {
   const operation = buildOperationNodeForField({
