@@ -372,3 +372,69 @@ test('should override error response with errorHandler', async () => {
   const resBody = await res.json();
   expect(resBody).toEqual({ message: 'permission denied' });
 });
+
+it('should pass field descriptions to onRoute', () => {
+  const spy = jest.fn();
+  useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type Query {
+          """
+          this is query
+          """
+          foo: String
+        }
+        type Mutation {
+          """
+          this is mutation
+          """
+          bar(arg1: Int): String
+        }
+      `,
+    }),
+    onRoute: spy,
+  });
+
+  expect(spy).toBeCalledTimes(2);
+  expect(spy.mock.calls[0][0].description).toEqual('this is query');
+  expect(spy.mock.calls[1][0].description).toEqual('this is mutation');
+});
+
+test('should overwrite field descriptions', () => {
+  const spy = jest.fn();
+  useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type Query {
+          """
+          this is query
+          """
+          foo: String
+        }
+        type Mutation {
+          """
+          this is mutation
+          """
+          bar(arg1: Int): String
+        }
+      `,
+    }),
+    onRoute: spy,
+    routes: {
+      'Query.foo': { description: 'this is overwrited query description' },
+      'Mutation.bar': {
+        description: 'this is overwrited mutation description',
+      },
+    },
+  });
+
+  expect(spy).toBeCalledTimes(2);
+  expect(spy.mock.calls[0][0].description).toEqual(
+    'this is overwrited query description'
+  );
+  expect(spy.mock.calls[1][0].description).toEqual(
+    'this is overwrited mutation description'
+  );
+});

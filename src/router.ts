@@ -101,14 +101,14 @@ export function createRouter(sofa: Sofa) {
         const sofaServerContext = {
           ...serverContext,
           request,
-        }
+        };
         const contextValue = await sofa.contextFactory(sofaServerContext);
         const result = await subscriptionManager.update(
           {
             id,
             variables,
           },
-          contextValue,
+          contextValue
         );
         return new Response(JSON.stringify(result), {
           status: 200,
@@ -202,7 +202,7 @@ function createQueryRoute({
     path: route.path,
     method: route.method.toUpperCase() as Method,
     tags: routeConfig?.tags ?? [],
-    description: routeConfig?.description ?? '',
+    description: routeConfig?.description ?? field.description ?? '',
   };
 }
 
@@ -218,6 +218,7 @@ function createMutationRoute({
   logger.debug(`[Router] Creating ${fieldName} mutation`);
 
   const mutationType = sofa.schema.getMutationType()!;
+  const field = mutationType.getFields()[fieldName];
   const operationNode = buildOperationNodeForField({
     kind: 'mutation' as OperationTypeNode,
     schema: sofa.schema,
@@ -250,7 +251,7 @@ function createMutationRoute({
     path,
     method,
     tags: routeConfig?.tags || [],
-    description: routeConfig?.description || '',
+    description: routeConfig?.description ?? field.description ?? '',
   };
 }
 
