@@ -5092,10 +5092,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-wrangler@2.1.9:
-  version "2.1.9"
-  resolved "https://registry.yarnpkg.com/wrangler/-/wrangler-2.1.9.tgz#295c4184c493004fab37c35c1fa364e9f4f8d4a1"
-  integrity sha512-ryrkpUEqgJZIiGgo+VCUYtl0B+shEbyp3FZzT5+GYnyfpLtQutAZlS/s5iOC0qjZ7TcRzWS1PSb9fE9nDSvCKg==
+wrangler@2.1.11:
+  version "2.1.11"
+  resolved "https://registry.yarnpkg.com/wrangler/-/wrangler-2.1.11.tgz#d40ef1255bb6d8aa64a9d3922ef449671682cc17"
+  integrity sha512-zXydDzU+KKOwYDD9IX+XdSZMFEPWTghzTN/CiZc+pxHGIjTuQBtbk97trY3i9YKeih/QOSlo+H7Clfoq+6rZLw==
   dependencies:
     "@cloudflare/kv-asset-handler" "^0.2.0"
     "@esbuild-plugins/node-globals-polyfill" "^0.1.1"
