@@ -1,4 +1,4 @@
-name: Sync labels
+name: master
 on:
   push:
     branches:
