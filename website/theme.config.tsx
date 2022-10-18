@@ -1,5 +1,6 @@
 /* eslint sort-keys: error */
-import { SofaLogo, defineConfig } from '@theguild/components';
+import { defineConfig, Giscus, SofaLogo, useTheme } from '@theguild/components';
+import { useRouter } from 'next/router';
 
 const SITE_NAME = 'GraphQL Sofa';
 
@@ -23,4 +24,26 @@ export default defineConfig({
       </div>
     </>
   ),
+  main: {
+    extraContent() {
+      const { resolvedTheme } = useTheme();
+      const { route } = useRouter();
+
+      if (route === '/') {
+        return null;
+      }
+      return (
+        <Giscus
+          // ensure giscus is reloaded when client side route is changed
+          key={route}
+          repo="Urigo/SOFA"
+          repoId="MDEwOlJlcG9zaXRvcnkxNjA1NDIzMDU="
+          category="Docs Discussions"
+          categoryId="DIC_kwDOCZGuYc4CSDSU"
+          mapping="pathname"
+          theme={resolvedTheme}
+        />
+      );
+    },
+  },
 });
