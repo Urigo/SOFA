@@ -40,7 +40,7 @@ export function buildPathFromOperation({
 
   return {
     tags,
-    description ,
+    description,
     summary,
     operationId: info.name,
     ...(useRequestBody
@@ -48,7 +48,9 @@ export function buildPathFromOperation({
           requestBody: {
             content: {
               'application/json': {
-                schema: resolveRequestBody(info.operation.variableDefinitions),
+                schema: resolveRequestBody(info.operation.variableDefinitions, {
+                  customScalars,
+                }),
               },
             },
           },
@@ -56,7 +58,8 @@ export function buildPathFromOperation({
       : {
           parameters: resolveParameters(
             url,
-            info.operation.variableDefinitions
+            info.operation.variableDefinitions,
+            { customScalars }
           ),
         }),
     responses: {
@@ -78,7 +81,8 @@ export function buildPathFromOperation({
 
 function resolveParameters(
   url: string,
-  variables: ReadonlyArray<VariableDefinitionNode> | undefined
+  variables: ReadonlyArray<VariableDefinitionNode> | undefined,
+  opts: { customScalars: Record<string, any> }
 ) {
   if (!variables) {
     return [];
@@ -89,13 +93,14 @@ function resolveParameters(
       in: isInPath(url, variable.variable.name.value) ? 'path' : 'query',
       name: variable.variable.name.value,
       required: variable.type.kind === Kind.NON_NULL_TYPE,
-      schema: resolveParamSchema(variable.type),
+      schema: resolveParamSchema(variable.type, opts),
     };
   });
 }
 
 function resolveRequestBody(
-  variables: ReadonlyArray<VariableDefinitionNode> | undefined
+  variables: ReadonlyArray<VariableDefinitionNode> | undefined,
+  opts: { customScalars: Record<string, any> }
 ) {
   if (!variables) {
     return {};
@@ -110,7 +115,8 @@ function resolveRequestBody(
     }
 
     properties[variable.variable.name.value] = resolveParamSchema(
-      variable.type
+      variable.type,
+      opts
     );
   });
 
@@ -124,22 +130,26 @@ function resolveRequestBody(
 // array -> [type]
 // type -> $ref
 // scalar -> swagger primitive
-function resolveParamSchema(type: TypeNode): any {
+function resolveParamSchema(
+  type: TypeNode,
+  opts: { customScalars: Record<string, any> }
+): any {
   if (type.kind === Kind.NON_NULL_TYPE) {
-    return resolveParamSchema(type.type);
+    return resolveParamSchema(type.type, opts);
   }
 
   if (type.kind === Kind.LIST_TYPE) {
     return {
       type: 'array',
-      items: resolveParamSchema(type.type),
+      items: resolveParamSchema(type.type, opts),
     };
   }
 
   const primitive = mapToPrimitive(type.name.value);
 
   return (
-    primitive || {
+    primitive ||
+    opts.customScalars[type.name.value] || {
       $ref: mapToRef(type.name.value),
     }
   );
