@@ -243,7 +243,7 @@ function createMutationRoute({
     document: operation,
     path,
     method,
-    tags: routeConfig?.tags ||  [],
+    tags: routeConfig?.tags || [],
     description: routeConfig?.description || '',
   };
 }
@@ -303,8 +303,9 @@ function useHandler(config: {
 
     if (result.errors) {
       const defaultErrorHandler: ErrorHandler = (errors) => {
-        return new Response(errors[0], {
+        return new Response(JSON.stringify(errors[0]), {
           status: 500,
+          headers: { 'Content-Type': 'application/json' },
         });
       };
       const errorHandler: ErrorHandler =
