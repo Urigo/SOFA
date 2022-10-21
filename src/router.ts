@@ -9,7 +9,7 @@ import { Request as IttyRequest, RouteHandler, Router } from 'itty-router';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast';
 import type { Sofa, Route } from './sofa';
-import type { RouteInfo, Method } from './types';
+import type { RouteInfo, Method, DefaultSofaServerContext } from './types';
 import { convertName } from './common';
 import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
@@ -61,14 +61,16 @@ export function createRouter(sofa: Sofa) {
       const { subscription, variables, url }: StartSubscriptionEvent =
         await request.json();
       try {
-        const contextValue = await sofa.contextFactory(serverContext);
         const result = await subscriptionManager.start(
           {
             subscription,
             variables,
             url,
           },
-          contextValue
+          {
+            ...serverContext,
+            request,
+          }
         );
         return new Response(JSON.stringify(result), {
           status: 200,
@@ -96,13 +98,17 @@ export function createRouter(sofa: Sofa) {
       const body = await request.json();
       const variables: any = body.variables;
       try {
-        const contextValue = await sofa.contextFactory(serverContext);
+        const sofaServerContext = {
+          ...serverContext,
+          request,
+        }
+        const contextValue = await sofa.contextFactory(sofaServerContext);
         const result = await subscriptionManager.update(
           {
             id,
             variables,
           },
-          contextValue
+          contextValue,
         );
         return new Response(JSON.stringify(result), {
           status: 200,
@@ -292,7 +298,11 @@ function useHandler(config: {
       };
     }, {});
 
-    const contextValue = await sofa.contextFactory(serverContext);
+    const sofaServerContext: DefaultSofaServerContext = {
+      ...serverContext,
+      request,
+    };
+    const contextValue = await sofa.contextFactory(sofaServerContext);
     const result = await sofa.execute({
       schema: sofa.schema,
       document: operation,
