@@ -76,7 +76,9 @@ export function resolveFieldType(
   if (isScalarType(type)) {
     return (
       mapToPrimitive(type.name) ||
-      opts.customScalars[type.name] || {
+      opts.customScalars[type.name] || 
+      type.extensions?.jsonSchema
+      || {
         type: 'object',
       }
     );

@@ -6,8 +6,13 @@ import {
 
 import { buildSchemaObjectFromType } from '../../src/open-api/types';
 
+import { GraphQLEmailAddress, GraphQLPositiveInt } from 'graphql-scalars';
+
+import { createSchema } from 'graphql-yoga';
+
 test('handle ObjectType', async () => {
-  const schema = buildSchema(/* GraphQL */ `
+  const schema = createSchema({
+    typeDefs: /* GraphQL */ `
     """
     Address Object
     """
@@ -20,7 +25,7 @@ test('handle ObjectType', async () => {
     }
 
     type Profile {
-      email: String!
+      email: EmailAddress!
       address: [Address]
     }
 
@@ -32,19 +37,26 @@ test('handle ObjectType', async () => {
     type User {
       role: UserRole!
       name: String!
-      age: Int!
+      age: PositiveInt!
       profile: Profile
       birthday: Date!
     }
 
     input UserInput {
       name: String!
-      age: Int!
+      age: PositiveInt!
       profile: Profile
     }
 
     scalar Date
-  `);
+    scalar EmailAddress
+    scalar PositiveInt
+  `,
+  resolvers: {
+    EmailAddress: GraphQLEmailAddress,
+    PositiveInt: GraphQLPositiveInt,
+  }
+  })
 
   const userType = schema.getType('User') as GraphQLObjectType;
   const profileType = schema.getType('Profile') as GraphQLObjectType;
@@ -70,7 +82,8 @@ test('handle ObjectType', async () => {
       },
       age: {
         type: 'integer',
-        format: 'int32',
+        minimum: 1,
+        title: "PositiveInt"
       },
       birthday: {
         type: 'string',
@@ -88,6 +101,7 @@ test('handle ObjectType', async () => {
     properties: {
       email: {
         type: 'string',
+        format: 'email',
       },
       address: {
         type: 'array',
@@ -121,7 +135,8 @@ test('handle ObjectType', async () => {
       },
       age: {
         type: 'integer',
-        format: 'int32',
+        minimum: 1,
+        title: "PositiveInt"
       },
       profile: {
         $ref: '#/components/schemas/Profile',
