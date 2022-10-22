@@ -302,7 +302,7 @@ test('should support search params in url', async () => {
   );
 });
 
-test('should return a first error as json', async () => {
+test('should return errors as json', async () => {
   const sofa = useSofa({
     basePath: '/api',
     schema: createSchema({
@@ -372,6 +372,45 @@ test('should override error response with errorHandler', async () => {
   const resBody = await res.json();
   expect(resBody).toEqual({ message: 'permission denied' });
 });
+
+test('should respect http error extensions', async () => {
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type Query {
+          foo: String!
+          bar: String!
+        }
+      `,
+      resolvers: {
+        Query: {
+          foo: () => {
+            throw new GraphQLError('permission denied', {
+              extensions: {
+                code: 'PERMISSION_DENIED',
+                http: { status: 403, headers: { 'x-foo': 'bar' } },
+              },
+            });
+          },
+        },
+      },
+    }),
+  });
+
+  const res = await sofa.fetch('http://localhost:4000/api/foo');
+  expect(res.status).toBe(403);
+  expect(res.headers.get('x-foo')).toBe('bar');
+  const resBody = await res.json();
+  expect(resBody).toEqual({
+    message: 'permission denied',
+    path: ['foo'],
+    extensions: {
+      code: 'PERMISSION_DENIED',
+      http: { status: 403, headers: { 'x-foo': 'bar' } },
+    },
+  });
+})
 
 it('should pass field descriptions to onRoute', () => {
   const spy = jest.fn();

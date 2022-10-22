@@ -19,6 +19,16 @@ import { DefaultServerAdapterContext } from '@whatwg-node/server';
 
 export type ErrorHandler = (errors: ReadonlyArray<any>) => Response;
 
+declare module 'graphql' {
+  interface GraphQLHTTPErrorExtensions {
+    status?: number
+    headers?: Record<string, string>
+  }
+  interface GraphQLErrorExtensions {
+    http?: GraphQLHTTPErrorExtensions
+  }
+}
+
 type SofaRequest = IttyRequest & Request;
 
 export function createRouter(sofa: Sofa) {
@@ -314,10 +324,40 @@ function useHandler(config: {
 
     if (result.errors) {
       const defaultErrorHandler: ErrorHandler = (errors) => {
-        return new Response(JSON.stringify(errors[0]), {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        });
+        let status: number | undefined
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json; charset=utf-8',
+        }
+
+        for (const error of errors) {
+          if (typeof error === 'object' && error != null && error.extensions?.http) {
+            if (
+              error.extensions.http.status &&
+              (!status || error.extensions.http.status > status)
+            ) {
+              status = error.extensions.http.status
+            }
+            if (error.extensions.http.headers) {
+              Object.assign(headers, error.extensions.http.headers)
+            }
+          }
+        }
+
+        if (!status) {
+          status = 500
+        }
+        
+        if (errors.length === 1) {
+          return new Response(JSON.stringify(errors[0]), {
+            status,
+            headers,
+          })
+        }
+
+        return new Response(JSON.stringify({ errors }), {
+          status,
+          headers,
+        })
       };
       const errorHandler: ErrorHandler =
         sofa.errorHandler || defaultErrorHandler;
