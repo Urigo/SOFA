@@ -410,7 +410,7 @@ test('should respect http error extensions', async () => {
       http: { status: 403, headers: { 'x-foo': 'bar' } },
     },
   });
-})
+});
 
 it('should pass field descriptions to onRoute', () => {
   const spy = jest.fn();
@@ -438,6 +438,51 @@ it('should pass field descriptions to onRoute', () => {
   expect(spy).toBeCalledTimes(2);
   expect(spy.mock.calls[0][0].description).toEqual('this is query');
   expect(spy.mock.calls[1][0].description).toEqual('this is mutation');
+});
+
+test('primitive true boolean in requests should be handled as true', async () => {
+  const spyMutation = jest.fn();
+  const spyQuery = jest.fn();
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type Query {
+          bar(arg2: Boolean): String
+        }
+        type Mutation {
+          foo(arg1: Boolean): String
+        }
+      `,
+      resolvers: {
+        Mutation: {
+          foo: spyMutation,
+        },
+        Query: {
+          bar: spyQuery,
+        },
+      },
+    }),
+  });
+
+  await sofa.fetch('http://localhost:4000/api/foo', {
+    method: 'POST',
+    body: JSON.stringify({ arg1: true }),
+  });
+  expect(spyMutation).toBeCalledWith(
+    /* source */ undefined,
+    /* args */ { arg1: true },
+    /* context */ expect.anything(),
+    /* info */ expect.anything()
+  );
+
+  await sofa.fetch('http://localhost:4000/api/bar?arg2=true');
+  expect(spyQuery).toBeCalledWith(
+    /* source */ undefined,
+    /* args */ { arg2: true },
+    /* context */ expect.anything(),
+    /* info */ expect.anything()
+  );
 });
 
 test('should overwrite field descriptions', () => {

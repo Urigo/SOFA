@@ -45,8 +45,7 @@ function resolveVariable({
     if (isScalarType(namedType)) {
       // GraphQLBoolean.serialize expects a boolean or a number only
       if (isEqualType(GraphQLBoolean, namedType)) {
-        // we don't support TRUE
-        value = value === 'true';
+        value = (value === 'true' || value === true);
       }
 
       return namedType.serialize(value);
