@@ -303,10 +303,10 @@
     "@napi-rs/simple-git-win32-arm64-msvc" "0.1.8"
     "@napi-rs/simple-git-win32-x64-msvc" "0.1.8"
 
-"@next/bundle-analyzer@13.0.5":
-  version "13.0.5"
-  resolved "https://registry.yarnpkg.com/@next/bundle-analyzer/-/bundle-analyzer-13.0.5.tgz#d1ccd1b1c1f50bb19f606711e2fe2095a78fe432"
-  integrity sha512-45q05yO6ZqS5NHHaxnU/PsVdMw5XfT6d7CptFaIr/9O2nECDjhM56G5JQx+346fkI76l1embxkLBzoQByTYGKQ==
+"@next/bundle-analyzer@13.0.6":
+  version "13.0.6"
+  resolved "https://registry.yarnpkg.com/@next/bundle-analyzer/-/bundle-analyzer-13.0.6.tgz#93ab6201c1fd4202f29db79cccfab3f990e2768e"
+  integrity sha512-DRubgAxddPYog5GlmS3RkNOaRsSNQNNo+icc/i+grzPmJtYvPFsKuy7qCwyt0zSuW9aZfVOZGek1KQJ3c+5R4w==
   dependencies:
     webpack-bundle-analyzer "4.7.0"
 
@@ -597,10 +597,10 @@
     lodash "^4.17.21"
     remove-markdown "0.5.0"
 
-"@theguild/components@4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@theguild/components/-/components-4.4.0.tgz#480bf37061d12a7f1ef7029e6e06b4ecf931ecce"
-  integrity sha512-luXwcYbZBaidIEletioD7jMfptiAP4iv5h8JHF4J3OqpwjQLgU1C9XsVOIKDsc0gozmz7awfbiwuWdDGRQY33w==
+"@theguild/components@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@theguild/components/-/components-4.4.2.tgz#fb1cf19b028e8a6598663fe832dfc6377d27dd1e"
+  integrity sha512-UQXkJ63CBIRvxz8XDj39wpy7JU3ztxfof9KXoUGelFOV520GT+h9b//dM5+fawbHAL5ucm6KMsz+hoGOwvV8PQ==
   dependencies:
     "@algolia/autocomplete-js" "1.7.3"
     "@algolia/autocomplete-plugin-algolia-insights" "1.7.3"
@@ -608,11 +608,11 @@
     "@algolia/autocomplete-theme-classic" "1.7.3"
     "@giscus/react" "2.2.4"
     "@headlessui/react" "^1.7.3"
-    "@next/bundle-analyzer" "13.0.5"
+    "@next/bundle-analyzer" "13.0.6"
     "@radix-ui/react-navigation-menu" "1.1.1"
     algoliasearch "4.14.2"
     clsx "1.2.1"
-    focus-trap-react "10.0.1"
+    focus-trap-react "10.0.2"
     mermaid "9.2.2"
     next-videos "1.5.0"
     nextra "2.0.0-beta.43"
@@ -1958,15 +1958,15 @@ flexsearch@^0.7.21:
   resolved "https://registry.yarnpkg.com/flexsearch/-/flexsearch-0.7.21.tgz#0f5ede3f2aae67ddc351efbe3b24b69d29e9d48b"
   integrity sha512-W7cHV7Hrwjid6lWmy0IhsWDFQboWSng25U3VVywpHOTJnnAZNPScog67G+cVpeX9f7yDD21ih0WDrMMT+JoaYg==
 
-focus-trap-react@10.0.1:
-  version "10.0.1"
-  resolved "https://registry.yarnpkg.com/focus-trap-react/-/focus-trap-react-10.0.1.tgz#5a50333f9753355765fcd7b83c6d2a59c5716c65"
-  integrity sha512-Av+O4JCT4/WnY25jnaOu1rysqhaD9aAhqAxxcrJbgKciZToIFmPng/WOrLJ1yHe6ntNmx1g0WhdeDfNCL1dmfA==
+focus-trap-react@10.0.2:
+  version "10.0.2"
+  resolved "https://registry.yarnpkg.com/focus-trap-react/-/focus-trap-react-10.0.2.tgz#eed4ce5b508bf3a0ce2ce63151c5c0f34a8f8529"
+  integrity sha512-MnN2cmdgpY7NY74ePOio4kbO5A3ILhrg1g5OGbgIQjcWEv1hhcbh6e98K0a+df88hNbE+4i9r8ji9aQnHou6GA==
   dependencies:
-    focus-trap "^7.1.0"
+    focus-trap "^7.2.0"
     tabbable "^6.0.1"
 
-focus-trap@^7.1.0:
+focus-trap@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-7.2.0.tgz#25af61b5635d3c18cd2fd176087db7b60be72c6b"
   integrity sha512-v4wY6HDDYvzkBy4735kW5BUEuw6Yz9ABqMYLuTNbzAFPcBOGiGHwwcNVMvUz4G0kgSYh13wa/7TG3XwTeT4O/A==
