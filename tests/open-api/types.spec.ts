@@ -39,7 +39,14 @@ test('handle ObjectType', async () => {
       name: String!
       age: PositiveInt!
       profile: Profile
+      """
+      User's birthday
+      """
       birthday: Date!
+      """
+      User's registration date
+      """
+      registrationDate: Date!
     }
 
     input UserInput {
@@ -71,7 +78,7 @@ test('handle ObjectType', async () => {
 
   expect(user).toEqual({
     type: 'object',
-    required: ['role', 'name', 'age', 'birthday'],
+    required: ['role', 'name', 'age', 'birthday', 'registrationDate'],
     properties: {
       role: {
         enum: ['ADMIN', 'NORMAL'],
@@ -88,6 +95,12 @@ test('handle ObjectType', async () => {
       birthday: {
         type: 'string',
         format: 'date',
+        description: "User's birthday",
+      },
+      registrationDate: {
+        type: 'string',
+        format: 'date',
+        description: "User's registration date",
       },
       profile: {
         $ref: '#/components/schemas/Profile',
