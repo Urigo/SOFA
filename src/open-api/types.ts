@@ -74,14 +74,12 @@ export function resolveFieldType(
   }
 
   if (isScalarType(type)) {
-    return (
-      mapToPrimitive(type.name) ||
-      opts.customScalars[type.name] || 
-      type.extensions?.jsonSchema
-      || {
+    const resolved = mapToPrimitive(type.name) ||
+      opts.customScalars[type.name] ||
+      type.extensions?.jsonSchema || {
         type: 'object',
-      }
-    );
+      };
+    return { ...resolved };
   }
 
   if (isEnumType(type)) {
