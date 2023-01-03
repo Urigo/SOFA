@@ -1,4 +1,4 @@
-import { DefaultServerAdapterContext } from '@whatwg-node/server';
+import { DefaultServerAdapterContext } from '@whatwg-node/router';
 import { DocumentNode } from 'graphql';
 
 export type ContextValue = Record<string, any>;

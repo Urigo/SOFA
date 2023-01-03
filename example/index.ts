@@ -1,6 +1,5 @@
 import { createServer } from 'http';
-import { createServerAdapter } from '@whatwg-node/server';
-import { Router } from 'itty-router';
+import { createRouter } from '@whatwg-node/router';
 import { createYoga, createSchema } from 'graphql-yoga';
 import chalk from 'chalk';
 import { typeDefs } from './types';
@@ -32,7 +31,7 @@ const openApi = OpenAPI({
   },
 });
 
-const app = createServerAdapter(Router());
+const app = createRouter();
 
 app.all(
   '*',

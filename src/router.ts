@@ -5,7 +5,6 @@ import {
   Kind,
   OperationTypeNode,
 } from 'graphql';
-import { Request as IttyRequest, RouteHandler, Router } from 'itty-router';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast';
 import type { Sofa, Route } from './sofa';
@@ -14,8 +13,7 @@ import { convertName } from './common';
 import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
 import { logger } from './logger';
-import { Response } from '@whatwg-node/fetch';
-import { DefaultServerAdapterContext } from '@whatwg-node/server';
+import { Response, createRouter as createRouterInstance, RouterRequest, Router, RouteMethodKey, RouterHandler } from '@whatwg-node/router';
 
 export type ErrorHandler = (errors: ReadonlyArray<any>) => Response;
 
@@ -29,12 +27,10 @@ declare module 'graphql' {
   }
 }
 
-type SofaRequest = IttyRequest & Request;
-
 export function createRouter(sofa: Sofa) {
   logger.debug('[Sofa] Creating router');
 
-  const router = Router<SofaRequest>({
+  const router = createRouterInstance<DefaultSofaServerContext>({
     base: sofa.basePath,
   });
 
@@ -65,8 +61,8 @@ export function createRouter(sofa: Sofa) {
   router.post(
     '/webhook',
     async (
-      request: SofaRequest,
-      serverContext: DefaultServerAdapterContext
+      request: RouterRequest,
+      serverContext: DefaultSofaServerContext
     ) => {
       const { subscription, variables, url }: StartSubscriptionEvent =
         await request.json();
@@ -101,8 +97,8 @@ export function createRouter(sofa: Sofa) {
   router.post(
     '/webhook/:id',
     async (
-      request: SofaRequest,
-      serverContext: DefaultServerAdapterContext
+      request: RouterRequest,
+      serverContext: DefaultSofaServerContext
     ) => {
       const id = request.params?.id!;
       const body = await request.json();
@@ -164,7 +160,7 @@ function createQueryRoute({
   fieldName,
 }: {
   sofa: Sofa;
-  router: Router<SofaRequest>;
+  router: Router<DefaultSofaServerContext>;
   fieldName: string;
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} query`);
@@ -198,7 +194,9 @@ function createQueryRoute({
     responseStatus: routeConfig?.responseStatus ?? 200,
   };
 
-  router[route.method](
+  const routerMethod = route.method.toLowerCase() as RouteMethodKey;
+
+  router[routerMethod](
     route.path,
     useHandler({ info, route, fieldName, sofa, operation })
   );
@@ -222,7 +220,7 @@ function createMutationRoute({
   fieldName,
 }: {
   sofa: Sofa;
-  router: Router<SofaRequest>;
+  router: Router<DefaultSofaServerContext>;
   fieldName: string;
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} mutation`);
@@ -252,7 +250,9 @@ function createMutationRoute({
   };
   const { method, path } = route;
 
-  router[method](path, useHandler({ info, route, fieldName, sofa, operation }));
+  const routerKey = method.toLowerCase() as RouteMethodKey;
+
+  router[routerKey](path, useHandler({ info, route, fieldName, sofa, operation }));
 
   logger.debug(`[Router] ${fieldName} mutation available at ${method} ${path}`);
 
@@ -271,13 +271,13 @@ function useHandler(config: {
   route: Route;
   operation: DocumentNode;
   fieldName: string;
-}): RouteHandler<Request> {
+}): RouterHandler<DefaultSofaServerContext> {
   const { sofa, operation, fieldName } = config;
   const info = config.info!;
 
   return async (
-    request: SofaRequest,
-    serverContext: DefaultServerAdapterContext
+    request: RouterRequest,
+    serverContext: DefaultSofaServerContext
   ) => {
     let body = {};
     if (request.body != null) {
