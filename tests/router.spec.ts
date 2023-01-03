@@ -1,4 +1,4 @@
-import { Response } from '@whatwg-node/fetch';
+import { Response } from '@whatwg-node/router';
 import { GraphQLError } from 'graphql';
 import { createSchema } from 'graphql-yoga';
 import { useSofa } from '../src';

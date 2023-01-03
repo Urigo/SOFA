@@ -10,9 +10,13 @@
       "description": "Development server"
     }
   ],
+  "tags": [],
   "paths": {
     "/me": {
       "get": {
+        "tags": [],
+        "description": "Resolves current user",
+        "summary": "Resolves current user",
         "operationId": "me_query",
         "parameters": [],
         "responses": {
@@ -31,6 +35,9 @@
     },
     "/user/{id}": {
       "get": {
+        "tags": [],
+        "description": "",
+        "summary": "",
         "operationId": "user_query",
         "parameters": [
           {
@@ -58,6 +65,9 @@
     },
     "/users": {
       "get": {
+        "tags": [],
+        "description": "",
+        "summary": "",
         "operationId": "users_query",
         "parameters": [],
         "responses": {
@@ -79,6 +89,9 @@
     },
     "/users-limit": {
       "get": {
+        "tags": [],
+        "description": "",
+        "summary": "",
         "operationId": "usersLimit_query",
         "parameters": [
           {
@@ -110,6 +123,9 @@
     },
     "/users-sort": {
       "get": {
+        "tags": [],
+        "description": "",
+        "summary": "",
         "operationId": "usersSort_query",
         "parameters": [
           {
@@ -140,6 +156,9 @@
     },
     "/book/{id}": {
       "get": {
+        "tags": [],
+        "description": "",
+        "summary": "",
         "operationId": "book_query",
         "parameters": [
           {
@@ -167,6 +186,9 @@
     },
     "/books": {
       "get": {
+        "tags": [],
+        "description": "",
+        "summary": "",
         "operationId": "books_query",
         "parameters": [],
         "responses": {
@@ -188,6 +210,9 @@
     },
     "/never": {
       "get": {
+        "tags": [],
+        "description": "",
+        "summary": "",
         "operationId": "never_query",
         "parameters": [],
         "responses": {
@@ -206,6 +231,9 @@
     },
     "/feed": {
       "get": {
+        "tags": [],
+        "description": "",
+        "summary": "",
         "operationId": "feed_query",
         "parameters": [
           {
@@ -236,6 +264,9 @@
     },
     "/add-book": {
       "post": {
+        "tags": [],
+        "description": "",
+        "summary": "",
         "operationId": "addBook_mutation",
         "requestBody": {
           "content": {

@@ -1,5 +1,5 @@
 import { createServer } from 'http';
-import { createRouter } from '@whatwg-node/router';
+import { createRouter, Response } from '@whatwg-node/router';
 import { createYoga, createSchema } from 'graphql-yoga';
 import chalk from 'chalk';
 import { typeDefs } from './types';
@@ -8,7 +8,6 @@ import { resolvers } from './resolvers';
 // Sofa
 
 import { useSofa, OpenAPI } from '../src';
-import { Response } from '@whatwg-node/fetch';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 
@@ -113,7 +112,8 @@ server.listen(port, () => {
   }
 
   console.log(`
-    ${chalk.bold('GraphQL:')}        ${printUrl('/graphql')}
+    ${chalk.bold('Swagger UI:')}     ${printUrl('/')}
+    ${chalk.bold('GraphiQL:')}        ${printUrl('/graphql')}
 
     ${chalk.bold('Queries:')}
       me:           ${printUrl('/me')}
