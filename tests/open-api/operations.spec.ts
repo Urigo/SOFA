@@ -8,6 +8,12 @@ const schema = buildSchema(/* GraphQL */ `
     comments(filter: String!, date: Date): [String!]!
     author: Author
     postId: Int
+    type: PostType
+  }
+
+  enum PostType {
+    BLOG
+    QUESTION
   }
 
   type Author {
@@ -18,13 +24,13 @@ const schema = buildSchema(/* GraphQL */ `
     """
     Feed of posts
     """
-    feed: [Post]
+    feed(type: PostType): [Post] 
   }
 
   scalar Date
 
   type Mutation {
-    addPost(comments: [String!]!, date: Date): Post
+    addPost(comments: [String!]!, date: Date, type: PostType): Post
   }
 `);
 
@@ -50,8 +56,17 @@ test('handle query', async () => {
     },
   });
   expect(result.operationId).toEqual('feed_query');
-  expect(result.parameters?.length).toEqual(2);
+  expect(result.parameters?.length).toEqual(3);
   expect(result.parameters?.[0]).toEqual({
+    in: 'query',
+    name: 'type',
+    required: false,
+    schema: {
+      type: 'string',
+      enum: ['BLOG', 'QUESTION'],
+    },
+  });
+  expect(result.parameters?.[1]).toEqual({
     in: 'query',
     name: 'feed_comments_filter',
     required: true,
@@ -59,7 +74,7 @@ test('handle query', async () => {
       type: 'string',
     },
   });
-  expect(result.parameters?.[1]).toEqual({
+  expect(result.parameters?.[2]).toEqual({
     in: 'query',
     name: 'feed_comments_date',
     required: false,
@@ -122,6 +137,10 @@ test('handle mutation', async () => {
   expect(def.properties!.date).toEqual({
     type: 'string',
     format: 'date',
+  });
+  expect(def.properties!.type).toEqual({
+    type: 'string',
+    enum: ['BLOG', 'QUESTION'],
   });
 });
 

@@ -8,7 +8,8 @@ import {
   FieldNode,
   parse,
   printType,
-  Kind,
+  Kind, 
+  isEnumType,
 } from 'graphql';
 
 import { getOperationInfo } from '../ast';
@@ -16,6 +17,7 @@ import { mapToPrimitive, mapToRef } from './utils';
 import { resolveFieldType } from './types';
 import { titleCase } from 'title-case';
 import { OpenAPIV3 } from 'openapi-types';
+import { assertEnumType } from "graphql/type/definition";
 
 export function buildPathFromOperation({
   url,
@@ -35,6 +37,7 @@ export function buildPathFromOperation({
   customScalars: Record<string, any>;
 }): OpenAPIV3.OperationObject {
   const info = getOperationInfo(operation)!;
+  const enumTypes = resolveEnumTypes(schema)
 
   const summary = resolveSummary(schema, info.operation);
 
@@ -49,7 +52,7 @@ export function buildPathFromOperation({
             content: {
               'application/json': {
                 schema: resolveRequestBody(info.operation.variableDefinitions, {
-                  customScalars,
+                  customScalars, enumTypes
                 }),
               },
             },
@@ -59,7 +62,7 @@ export function buildPathFromOperation({
           parameters: resolveParameters(
             url,
             info.operation.variableDefinitions,
-            { customScalars }
+            { customScalars, enumTypes }
           ),
         }),
     responses: {
@@ -70,7 +73,7 @@ export function buildPathFromOperation({
             schema: resolveResponse({
               schema,
               operation: info.operation,
-              customScalars,
+              opts: { customScalars, enumTypes },
             }),
           },
         },
@@ -79,10 +82,24 @@ export function buildPathFromOperation({
   };
 }
 
+function resolveEnumTypes(schema: GraphQLSchema): Record<string, any> {
+  const enumTypes = Object.values(schema.getTypeMap()).filter(isEnumType).map(assertEnumType)
+  return Object.fromEntries(
+      enumTypes.map(
+          type => ([type.name,
+                {
+                  type: 'string',
+                  enum: type.getValues().map(value => value.name),
+                },
+              ]
+          )
+      ))
+}
+
 function resolveParameters(
   url: string,
   variables: ReadonlyArray<VariableDefinitionNode> | undefined,
-  opts: { customScalars: Record<string, any> }
+  opts: { customScalars: Record<string, any>, enumTypes: Record<string, any>}
 ) {
   if (!variables) {
     return [];
@@ -100,7 +117,7 @@ function resolveParameters(
 
 function resolveRequestBody(
   variables: ReadonlyArray<VariableDefinitionNode> | undefined,
-  opts: { customScalars: Record<string, any> }
+  opts: { customScalars: Record<string, any>, enumTypes: Record<string, any>}
 ) {
   if (!variables) {
     return {};
@@ -132,7 +149,7 @@ function resolveRequestBody(
 // scalar -> swagger primitive
 function resolveParamSchema(
   type: TypeNode,
-  opts: { customScalars: Record<string, any> }
+  opts: { customScalars: Record<string, any>, enumTypes: Record<string, any>}
 ): any {
   if (type.kind === Kind.NON_NULL_TYPE) {
     return resolveParamSchema(type.type, opts);
@@ -149,20 +166,20 @@ function resolveParamSchema(
 
   return (
     primitive ||
-    opts.customScalars[type.name.value] || {
-      $ref: mapToRef(type.name.value),
-    }
+    opts.customScalars[type.name.value] ||
+    opts.enumTypes[type.name.value] ||
+    {$ref: mapToRef(type.name.value)}
   );
 }
 
 function resolveResponse({
   schema,
   operation,
-  customScalars,
+  opts,
 }: {
   schema: GraphQLSchema;
   operation: OperationDefinitionNode;
-  customScalars: Record<string, any>;
+  opts: { customScalars: Record<string, any>, enumTypes: Record<string, any>};
 }) {
   const operationType = operation.operation;
   const rootField = operation.selectionSet.selections[0];
@@ -172,14 +189,14 @@ function resolveResponse({
       const queryType = schema.getQueryType()!;
       const field = queryType.getFields()[rootField.name.value];
 
-      return resolveFieldType(field.type, { customScalars });
+      return resolveFieldType(field.type, opts);
     }
 
     if (operationType === 'mutation') {
       const mutationType = schema.getMutationType()!;
       const field = mutationType.getFields()[rootField.name.value];
 
-      return resolveFieldType(field.type, { customScalars });
+      return resolveFieldType(field.type, opts);
     }
   }
 }
