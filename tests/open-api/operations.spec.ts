@@ -24,13 +24,25 @@ const schema = buildSchema(/* GraphQL */ `
     """
     Feed of posts
     """
-    feed(type: PostType): [Post] 
+    feed(
+      """
+      The post type
+      """
+      type: PostType
+    ): [Post]
   }
 
   scalar Date
 
   type Mutation {
-    addPost(comments: [String!]!, date: Date, type: PostType): Post
+    addPost(
+      comments: [String!]!
+      date: Date
+      """
+      The post type
+      """
+      type: PostType
+    ): Post
   }
 `);
 
@@ -65,6 +77,7 @@ test('handle query', async () => {
       type: 'string',
       enum: ['BLOG', 'QUESTION'],
     },
+    description: 'The post type',
   });
   expect(result.parameters?.[1]).toEqual({
     in: 'query',
@@ -141,6 +154,7 @@ test('handle mutation', async () => {
   expect(def.properties!.type).toEqual({
     type: 'string',
     enum: ['BLOG', 'QUESTION'],
+    description: 'The post type',
   });
 });
 
