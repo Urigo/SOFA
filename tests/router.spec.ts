@@ -522,3 +522,48 @@ test('should overwrite field descriptions', () => {
     'this is overwrited mutation description'
   );
 });
+
+test('should work with Query and nested models', async () => {
+  const testUser = {
+    id: 'test-id',
+    name: 'Test User',
+    org: {
+      id: 'test-org',
+    },
+  };
+  const spy = jest.fn(() => testUser);
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type Org {
+          id: ID
+          name: String
+        }
+        type User {
+          id: ID
+          name: String
+          org: Org
+        }
+        type Query {
+          user(id: ID!): User
+          users: [User]
+          org(id: ID!): Org
+          orgs: [Org]
+          orgByName(name: String!): Org
+        }
+      `,
+      resolvers: {
+        Query: {
+          user: spy,
+        },
+      },
+    }),
+  });
+
+  const res = await sofa.fetch('http://localhost:4000/api/user/test-id');
+  expect(res.status).toBe(200);
+  const resBody = await res.json();
+  expect(resBody).toEqual(testUser);
+  expect((spy.mock.calls[0] as any[])[1]).toEqual({ id: 'test-id' });
+});
