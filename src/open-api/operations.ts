@@ -17,7 +17,6 @@ import { mapToPrimitive, mapToRef } from './utils';
 import { resolveFieldType } from './types';
 import { titleCase } from 'title-case';
 import { OpenAPIV3 } from 'openapi-types';
-import { assertEnumType } from 'graphql/type/definition';
 
 export function buildPathFromOperation({
   url,
@@ -90,7 +89,6 @@ export function buildPathFromOperation({
 function resolveEnumTypes(schema: GraphQLSchema): Record<string, any> {
   const enumTypes = Object.values(schema.getTypeMap())
     .filter(isEnumType)
-    .map(assertEnumType);
   return Object.fromEntries(
     enumTypes.map((type) => [
       type.name,
