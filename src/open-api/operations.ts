@@ -39,6 +39,13 @@ export function buildPathFromOperation({
   const enumTypes = resolveEnumTypes(schema);
 
   const summary = resolveDescription(schema, info.operation);
+  const variables = info.operation.variableDefinitions;
+  const pathParams = variables?.filter((variable: any) =>
+    isInPath(url, variable.variable.name.value)
+  );
+  const bodyParams = variables?.filter(
+    (variable: any) => !isInPath(url, variable.variable.name.value)
+  );
 
   return {
     tags,
@@ -47,11 +54,18 @@ export function buildPathFromOperation({
     operationId: info.name,
     ...(useRequestBody
       ? {
+          parameters: resolveParameters(
+            url,
+            pathParams,
+            schema,
+            info.operation,
+            { customScalars, enumTypes }
+          ),
           requestBody: {
             content: {
               'application/json': {
                 schema: resolveRequestBody(
-                  info.operation.variableDefinitions,
+                  bodyParams,
                   schema,
                   info.operation,
                   { customScalars, enumTypes }
@@ -63,7 +77,7 @@ export function buildPathFromOperation({
       : {
           parameters: resolveParameters(
             url,
-            info.operation.variableDefinitions,
+            variables,
             schema,
             info.operation,
             { customScalars, enumTypes }

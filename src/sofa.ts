@@ -140,7 +140,7 @@ function extractsModels(schema: GraphQLSchema): string[] {
           isNonNullType(arg.type)
         );
 
-        modelMap[namedType.name].list = sameName && allOptionalArguments;
+        modelMap[namedType.name].list ||= sameName && allOptionalArguments;
       } else if (
         isObjectType(field.type) ||
         (isNonNullType(field.type) && isObjectType(field.type.ofType))
@@ -153,7 +153,7 @@ function extractsModels(schema: GraphQLSchema): string[] {
         const hasIdArgument =
           field.args.length === 1 && field.args[0].name === 'id';
 
-        modelMap[namedType.name].single = sameName && hasIdArgument;
+        modelMap[namedType.name].single ||= sameName && hasIdArgument;
       }
     }
   }
