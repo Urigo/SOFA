@@ -39,7 +39,7 @@
     "url": "https://github.com/Urigo"
   },
   "peerDependencies": {
-    "graphql": "^0.13.2 || ^14.0.0 || ^15.0.0 || ^16.0.0"
+    "graphql": "^15.0.0 || ^16.0.0"
   },
   "dependencies": {
     "@graphql-tools/utils": "9.1.4",
