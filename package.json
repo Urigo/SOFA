@@ -49,7 +49,7 @@
     "openapi-types": "12.1.0",
     "param-case": "3.0.4",
     "title-case": "3.0.3",
-    "tslib": "2.4.1"
+    "tslib": "2.5.0"
   },
   "scripts": {
     "start": "ts-node --project tsconfig.example.json example/index.ts",
