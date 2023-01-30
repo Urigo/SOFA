@@ -5,7 +5,7 @@ import {
   Kind,
   OperationTypeNode,
 } from 'graphql';
-import { buildOperationNodeForField } from '@graphql-tools/utils';
+import { buildOperationNodeForField, createGraphQLError } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast';
 import type { Sofa, Route } from './sofa';
 import type { RouteInfo, Method, DefaultSofaServerContext } from './types';
@@ -33,6 +33,42 @@ declare module 'graphql' {
     http?: GraphQLHTTPErrorExtensions;
   }
 }
+
+
+const defaultErrorHandler: ErrorHandler = (errors) => {
+  let status: number | undefined;
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json; charset=utf-8',
+  };
+
+  for (const error of errors) {
+    if (
+      typeof error === 'object' &&
+      error != null &&
+      error.extensions?.http
+    ) {
+      if (
+        error.extensions.http.status &&
+        (!status || error.extensions.http.status > status)
+      ) {
+        status = error.extensions.http.status;
+      }
+      if (error.extensions.http.headers) {
+        Object.assign(headers, error.extensions.http.headers);
+      }
+      delete error.extensions.http;
+    }
+  }
+
+  if (!status) {
+    status = 500;
+  }
+
+  return new Response(JSON.stringify({ errors }), {
+    status,
+    headers,
+  });
+};
 
 export function createRouter(sofa: Sofa) {
   logger.debug('[Sofa] Creating router');
@@ -278,6 +314,8 @@ function useHandler(config: {
 }): RouterHandler<DefaultSofaServerContext> {
   const { sofa, operation, fieldName } = config;
   const info = config.info!;
+  const errorHandler: ErrorHandler =
+    sofa.errorHandler || defaultErrorHandler;
 
   return async (
     request: RouterRequest,
@@ -291,8 +329,12 @@ function useHandler(config: {
           try {
             body = JSON.parse(strBody);
           } catch (error) {
-            return new Response(JSON.stringify(error), {
-              status: 400,
+            throw createGraphQLError('POST body sent invalid JSON.', {
+              extensions: {
+                http: {
+                  status: 400,
+                }
+              }
             });
           }
         }
@@ -322,10 +364,14 @@ function useHandler(config: {
             [name]: value,
           };
         }, {});
-      } catch (error) {
-        return new Response(JSON.stringify(error), {
-          status: 400,
-        });
+      } catch (error: any) {
+        throw createGraphQLError(error.message || error.toString?.() || error, {
+          extensions: {
+            http: {
+              status: 400,
+            }
+          }
+        })
       }
 
       const sofaServerContext: DefaultSofaServerContext = {
@@ -342,48 +388,6 @@ function useHandler(config: {
       });
 
       if (result.errors) {
-        const defaultErrorHandler: ErrorHandler = (errors) => {
-          let status: number | undefined;
-          const headers: Record<string, string> = {
-            'Content-Type': 'application/json; charset=utf-8',
-          };
-
-          for (const error of errors) {
-            if (
-              typeof error === 'object' &&
-              error != null &&
-              error.extensions?.http
-            ) {
-              if (
-                error.extensions.http.status &&
-                (!status || error.extensions.http.status > status)
-              ) {
-                status = error.extensions.http.status;
-              }
-              if (error.extensions.http.headers) {
-                Object.assign(headers, error.extensions.http.headers);
-              }
-            }
-          }
-
-          if (!status) {
-            status = 500;
-          }
-
-          if (errors.length === 1) {
-            return new Response(JSON.stringify(errors[0]), {
-              status,
-              headers,
-            });
-          }
-
-          return new Response(JSON.stringify({ errors }), {
-            status,
-            headers,
-          });
-        };
-        const errorHandler: ErrorHandler =
-          sofa.errorHandler || defaultErrorHandler;
         return errorHandler(result.errors);
       }
 
@@ -393,11 +397,8 @@ function useHandler(config: {
           'Content-Type': 'application/json',
         },
       });
-    } catch (error) {
-      logger.error('[Router]:', error);
-      return new Response('internal server error', {
-        status: 500,
-      });
+    } catch (error: any) {
+      return errorHandler([error]);
     }
   };
 }

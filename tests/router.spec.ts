@@ -328,9 +328,13 @@ test('should return errors as json', async () => {
   expect(res.status).toBe(500);
   const resBody = await res.json();
   expect(resBody).toEqual({
-    message: 'permission denied',
-    path: ['foo'],
-    extensions: { code: 'PERMISSION_DENIED' },
+    errors: [
+      {
+        message: 'permission denied',
+        path: ['foo'],
+        extensions: { code: 'PERMISSION_DENIED' },
+      }
+    ],
   });
 });
 
@@ -403,12 +407,15 @@ test('should respect http error extensions', async () => {
   expect(res.headers.get('x-foo')).toBe('bar');
   const resBody = await res.json();
   expect(resBody).toEqual({
-    message: 'permission denied',
-    path: ['foo'],
-    extensions: {
-      code: 'PERMISSION_DENIED',
-      http: { status: 403, headers: { 'x-foo': 'bar' } },
-    },
+    errors: [
+      {
+        message: 'permission denied',
+        path: ['foo'],
+        extensions: {
+          code: 'PERMISSION_DENIED',
+        },
+      }
+    ],
   });
 });
 
@@ -568,7 +575,7 @@ test('should work with Query and nested models', async () => {
   expect((spy.mock.calls[0] as any[])[1]).toEqual({ id: 'test-id' });
 });
 
-test('should catch json parsing errors on query params and return internal server error', async () => {
+test('should catch json parsing errors on query params and return Bad Request/400 error', async () => {
   const spy = jest.fn();
   const sofa = useSofa({
     basePath: '/api',
@@ -595,11 +602,15 @@ test('should catch json parsing errors on query params and return internal serve
   expect(res.status).toBe(400);
   const resBody = await res.json();
   expect(resBody).toEqual({
-    message: 'Int cannot represent non-integer value: "notanumber"',
+    errors: [
+      {
+        message: 'Int cannot represent non-integer value: "notanumber"',
+      }
+    ]
   });
 });
 
-test('should catch json parsing errors on request body and return internal server error', async () => {
+test('should catch json parsing errors on request body and return Bad Request/400 error', async () => {
   const spy = jest.fn();
 
   const sofa = useSofa({
@@ -633,6 +644,10 @@ test('should catch json parsing errors on request body and return internal serve
   expect(res.status).toBe(400);
   const resBody = await res.json();
   expect(resBody).toEqual({
-    message: 'Int cannot represent non-integer value: "notanumber"',
+    errors: [
+      {
+        message: 'Int cannot represent non-integer value: "notanumber"',
+      }
+    ]
   });
 });
