@@ -592,7 +592,7 @@ test('should catch json parsing errors on query params and return internal serve
   });
 
   const res = await sofa.fetch('http://localhost:4000/api/foo?arg1=notanumber');
-  expect(res.status).toBe(500);
+  expect(res.status).toBe(400);
 });
 
 test('should catch json parsing errors on request body and return internal server error', async () => {
@@ -626,5 +626,5 @@ test('should catch json parsing errors on request body and return internal serve
       body: JSON.stringify({ count: 'notanumber' }),
     }
   );
-  expect(res.status).toBe(500);
+  expect(res.status).toBe(400);
 });
