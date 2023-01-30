@@ -567,3 +567,72 @@ test('should work with Query and nested models', async () => {
   expect(resBody).toEqual(testUser);
   expect((spy.mock.calls[0] as any[])[1]).toEqual({ id: 'test-id' });
 });
+
+test('should catch json parsing errors on query params and return internal server error', async () => {
+  const spy = jest.fn();
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type Query {
+          """
+          this is query
+          """
+          foo(arg1: Int): String
+        }
+        type Mutation {
+          """
+          this is mutation
+          """
+          bar(arg1: Int): String
+        }
+      `,
+    }),
+    onRoute: spy,
+  });
+
+  const res = await sofa.fetch('http://localhost:4000/api/foo?arg1=notanumber');
+  expect(res.status).toBe(400);
+  const resBody = await res.json();
+  expect(resBody).toEqual({
+    message: 'Int cannot represent non-integer value: "notanumber"',
+  });
+});
+
+test('should catch json parsing errors on request body and return internal server error', async () => {
+  const spy = jest.fn();
+
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type Query {
+          """
+          this is query
+          """
+          foo(arg1: Int): String
+        }
+        type Mutation {
+          """
+          this is mutation
+          """
+          bar(arg1: Int): String
+        }
+      `,
+    }),
+    onRoute: spy,
+  });
+
+  const res = await sofa.fetch(
+    'http://localhost:4000/api/bar?arg1=notanumber',
+    {
+      method: 'POST',
+      body: JSON.stringify({ count: 'notanumber' }),
+    }
+  );
+  expect(res.status).toBe(400);
+  const resBody = await res.json();
+  expect(resBody).toEqual({
+    message: 'Int cannot represent non-integer value: "notanumber"',
+  });
+});

@@ -13,17 +13,24 @@ import { convertName } from './common';
 import { parseVariable } from './parse';
 import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
 import { logger } from './logger';
-import { Response, createRouter as createRouterInstance, RouterRequest, Router, RouteMethodKey, RouterHandler } from '@whatwg-node/router';
+import {
+  Response,
+  createRouter as createRouterInstance,
+  RouterRequest,
+  Router,
+  RouteMethodKey,
+  RouterHandler,
+} from '@whatwg-node/router';
 
 export type ErrorHandler = (errors: ReadonlyArray<any>) => Response;
 
 declare module 'graphql' {
   interface GraphQLHTTPErrorExtensions {
-    status?: number
-    headers?: Record<string, string>
+    status?: number;
+    headers?: Record<string, string>;
   }
   interface GraphQLErrorExtensions {
-    http?: GraphQLHTTPErrorExtensions
+    http?: GraphQLHTTPErrorExtensions;
   }
 }
 
@@ -60,10 +67,7 @@ export function createRouter(sofa: Sofa) {
 
   router.post(
     '/webhook',
-    async (
-      request: RouterRequest,
-      serverContext: DefaultSofaServerContext
-    ) => {
+    async (request: RouterRequest, serverContext: DefaultSofaServerContext) => {
       const { subscription, variables, url }: StartSubscriptionEvent =
         await request.json();
       try {
@@ -96,10 +100,7 @@ export function createRouter(sofa: Sofa) {
 
   router.post(
     '/webhook/:id',
-    async (
-      request: RouterRequest,
-      serverContext: DefaultSofaServerContext
-    ) => {
+    async (request: RouterRequest, serverContext: DefaultSofaServerContext) => {
       const id = request.params?.id!;
       const body = await request.json();
       const variables: any = body.variables;
@@ -252,7 +253,10 @@ function createMutationRoute({
 
   const routerKey = method.toLowerCase() as RouteMethodKey;
 
-  router[routerKey](path, useHandler({ info, route, fieldName, sofa, operation }));
+  router[routerKey](
+    path,
+    useHandler({ info, route, fieldName, sofa, operation })
+  );
 
   logger.debug(`[Router] ${fieldName} mutation available at ${method} ${path}`);
 
@@ -279,97 +283,122 @@ function useHandler(config: {
     request: RouterRequest,
     serverContext: DefaultSofaServerContext
   ) => {
-    let body = {};
-    if (request.body != null) {
-      const strBody = await request.text();
-      if (strBody) {
-        body = JSON.parse(strBody);
-      }
-    }
-    const variableValues = info.variables.reduce((variables, variable) => {
-      const name = variable.variable.name.value;
-      const value = parseVariable({
-        value: pickParam({
-          url: request.url,
-          body,
-          params: request.params || {},
-          name,
-        }),
-        variable,
-        schema: sofa.schema,
-      });
-
-      if (typeof value === 'undefined') {
-        return variables;
-      }
-
-      return {
-        ...variables,
-        [name]: value,
-      };
-    }, {});
-
-    const sofaServerContext: DefaultSofaServerContext = {
-      ...serverContext,
-      request,
-    };
-    const contextValue = await sofa.contextFactory(sofaServerContext);
-    const result = await sofa.execute({
-      schema: sofa.schema,
-      document: operation,
-      contextValue,
-      variableValues,
-      operationName: info.operation.name && info.operation.name.value,
-    });
-
-    if (result.errors) {
-      const defaultErrorHandler: ErrorHandler = (errors) => {
-        let status: number | undefined
-        const headers: Record<string, string> = {
-          'Content-Type': 'application/json; charset=utf-8',
-        }
-
-        for (const error of errors) {
-          if (typeof error === 'object' && error != null && error.extensions?.http) {
-            if (
-              error.extensions.http.status &&
-              (!status || error.extensions.http.status > status)
-            ) {
-              status = error.extensions.http.status
-            }
-            if (error.extensions.http.headers) {
-              Object.assign(headers, error.extensions.http.headers)
-            }
+    try {
+      let body = {};
+      if (request.body != null) {
+        const strBody = await request.text();
+        if (strBody) {
+          try {
+            body = JSON.parse(strBody);
+          } catch (error) {
+            return new Response(JSON.stringify(error), {
+              status: 400,
+            });
           }
         }
+      }
 
-        if (!status) {
-          status = 500
-        }
-        
-        if (errors.length === 1) {
-          return new Response(JSON.stringify(errors[0]), {
+      let variableValues = {};
+      try {
+        variableValues = info.variables.reduce((variables, variable) => {
+          const name = variable.variable.name.value;
+          const value = parseVariable({
+            value: pickParam({
+              url: request.url,
+              body,
+              params: request.params || {},
+              name,
+            }),
+            variable,
+            schema: sofa.schema,
+          });
+
+          if (typeof value === 'undefined') {
+            return variables;
+          }
+
+          return {
+            ...variables,
+            [name]: value,
+          };
+        }, {});
+      } catch (error) {
+        return new Response(JSON.stringify(error), {
+          status: 400,
+        });
+      }
+
+      const sofaServerContext: DefaultSofaServerContext = {
+        ...serverContext,
+        request,
+      };
+      const contextValue = await sofa.contextFactory(sofaServerContext);
+      const result = await sofa.execute({
+        schema: sofa.schema,
+        document: operation,
+        contextValue,
+        variableValues,
+        operationName: info.operation.name && info.operation.name.value,
+      });
+
+      if (result.errors) {
+        const defaultErrorHandler: ErrorHandler = (errors) => {
+          let status: number | undefined;
+          const headers: Record<string, string> = {
+            'Content-Type': 'application/json; charset=utf-8',
+          };
+
+          for (const error of errors) {
+            if (
+              typeof error === 'object' &&
+              error != null &&
+              error.extensions?.http
+            ) {
+              if (
+                error.extensions.http.status &&
+                (!status || error.extensions.http.status > status)
+              ) {
+                status = error.extensions.http.status;
+              }
+              if (error.extensions.http.headers) {
+                Object.assign(headers, error.extensions.http.headers);
+              }
+            }
+          }
+
+          if (!status) {
+            status = 500;
+          }
+
+          if (errors.length === 1) {
+            return new Response(JSON.stringify(errors[0]), {
+              status,
+              headers,
+            });
+          }
+
+          return new Response(JSON.stringify({ errors }), {
             status,
             headers,
-          })
-        }
+          });
+        };
+        const errorHandler: ErrorHandler =
+          sofa.errorHandler || defaultErrorHandler;
+        return errorHandler(result.errors);
+      }
 
-        return new Response(JSON.stringify({ errors }), {
-          status,
-          headers,
-        })
-      };
-      const errorHandler: ErrorHandler =
-        sofa.errorHandler || defaultErrorHandler;
-      return errorHandler(result.errors);
+      return new Response(JSON.stringify(result.data?.[fieldName]), {
+        status: config.route.responseStatus,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (error) {
+      logger.error('[Router]:', error);
+      return new Response('internal server error', {
+        status: 500,
+      });
     }
-
-    return new Response(JSON.stringify(result.data?.[fieldName]), {
-      status: config.route.responseStatus,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
   };
 }
 
