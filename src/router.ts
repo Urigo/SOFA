@@ -279,97 +279,104 @@ function useHandler(config: {
     request: RouterRequest,
     serverContext: DefaultSofaServerContext
   ) => {
-    let body = {};
-    if (request.body != null) {
-      const strBody = await request.text();
-      if (strBody) {
-        body = JSON.parse(strBody);
+    try {
+      let body = {};
+      if (request.body != null) {
+        const strBody = await request.text();
+        if (strBody) {
+          body = JSON.parse(strBody);
+        }
       }
-    }
-    const variableValues = info.variables.reduce((variables, variable) => {
-      const name = variable.variable.name.value;
-      const value = parseVariable({
-        value: pickParam({
-          url: request.url,
-          body,
-          params: request.params || {},
-          name,
-        }),
-        variable,
+      const variableValues = info.variables.reduce((variables, variable) => {
+        const name = variable.variable.name.value;
+        const value = parseVariable({
+          value: pickParam({
+            url: request.url,
+            body,
+            params: request.params || {},
+            name,
+          }),
+          variable,
+          schema: sofa.schema,
+        });
+
+        if (typeof value === 'undefined') {
+          return variables;
+        }
+
+        return {
+          ...variables,
+          [name]: value,
+        };
+      }, {});
+
+      const sofaServerContext: DefaultSofaServerContext = {
+        ...serverContext,
+        request,
+      };
+      const contextValue = await sofa.contextFactory(sofaServerContext);
+      const result = await sofa.execute({
         schema: sofa.schema,
+        document: operation,
+        contextValue,
+        variableValues,
+        operationName: info.operation.name && info.operation.name.value,
       });
 
-      if (typeof value === 'undefined') {
-        return variables;
-      }
+      if (result.errors) {
+        const defaultErrorHandler: ErrorHandler = (errors) => {
+          let status: number | undefined
+          const headers: Record<string, string> = {
+            'Content-Type': 'application/json; charset=utf-8',
+          }
 
-      return {
-        ...variables,
-        [name]: value,
-      };
-    }, {});
-
-    const sofaServerContext: DefaultSofaServerContext = {
-      ...serverContext,
-      request,
-    };
-    const contextValue = await sofa.contextFactory(sofaServerContext);
-    const result = await sofa.execute({
-      schema: sofa.schema,
-      document: operation,
-      contextValue,
-      variableValues,
-      operationName: info.operation.name && info.operation.name.value,
-    });
-
-    if (result.errors) {
-      const defaultErrorHandler: ErrorHandler = (errors) => {
-        let status: number | undefined
-        const headers: Record<string, string> = {
-          'Content-Type': 'application/json; charset=utf-8',
-        }
-
-        for (const error of errors) {
-          if (typeof error === 'object' && error != null && error.extensions?.http) {
-            if (
-              error.extensions.http.status &&
-              (!status || error.extensions.http.status > status)
-            ) {
-              status = error.extensions.http.status
-            }
-            if (error.extensions.http.headers) {
-              Object.assign(headers, error.extensions.http.headers)
+          for (const error of errors) {
+            if (typeof error === 'object' && error != null && error.extensions?.http) {
+              if (
+                  error.extensions.http.status &&
+                  (!status || error.extensions.http.status > status)
+              ) {
+                status = error.extensions.http.status
+              }
+              if (error.extensions.http.headers) {
+                Object.assign(headers, error.extensions.http.headers)
+              }
             }
           }
-        }
 
-        if (!status) {
-          status = 500
-        }
-        
-        if (errors.length === 1) {
-          return new Response(JSON.stringify(errors[0]), {
+          if (!status) {
+            status = 500
+          }
+
+          if (errors.length === 1) {
+            return new Response(JSON.stringify(errors[0]), {
+              status,
+              headers,
+            })
+          }
+
+          return new Response(JSON.stringify({ errors }), {
             status,
             headers,
           })
-        }
+        };
+        const errorHandler: ErrorHandler =
+            sofa.errorHandler || defaultErrorHandler;
+        return errorHandler(result.errors);
+      }
 
-        return new Response(JSON.stringify({ errors }), {
-          status,
-          headers,
-        })
-      };
-      const errorHandler: ErrorHandler =
-        sofa.errorHandler || defaultErrorHandler;
-      return errorHandler(result.errors);
+      return new Response(JSON.stringify(result.data?.[fieldName]), {
+        status: config.route.responseStatus,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (error) {
+      logger.error("[Router]:", error)
+      return new Response("internal server error", {
+        status: 500,
+      });
     }
-
-    return new Response(JSON.stringify(result.data?.[fieldName]), {
-      status: config.route.responseStatus,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
   };
 }
 

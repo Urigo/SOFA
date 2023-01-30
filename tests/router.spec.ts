@@ -567,3 +567,36 @@ test('should work with Query and nested models', async () => {
   expect(resBody).toEqual(testUser);
   expect((spy.mock.calls[0] as any[])[1]).toEqual({ id: 'test-id' });
 });
+
+test('should catch json parsing errors and return internal server error', async () => {
+  const users = [
+    {
+      id: 'user:foo',
+      name: 'Foo',
+    },
+  ];
+  const spy = jest.fn(() => users);
+
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type User {
+          id: ID
+          name: String
+        }
+        type Query {
+          users(count: Int!): [User]
+        }
+      `,
+      resolvers: {
+        Query: {
+          users: spy,
+        },
+      },
+    }),
+  });
+
+  const res = await sofa.fetch('http://localhost:4000/api/users?count=notanumber');
+  expect(res.status).toBe(500);
+});
