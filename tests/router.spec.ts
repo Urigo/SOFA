@@ -568,35 +568,63 @@ test('should work with Query and nested models', async () => {
   expect((spy.mock.calls[0] as any[])[1]).toEqual({ id: 'test-id' });
 });
 
-test('should catch json parsing errors and return internal server error', async () => {
-  const users = [
-    {
-      id: 'user:foo',
-      name: 'Foo',
-    },
-  ];
-  const spy = jest.fn(() => users);
+test('should catch json parsing errors on query params and return internal server error', async () => {
+  const spy = jest.fn();
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type Query {
+          """
+          this is query
+          """
+          foo(arg1: Int): String
+        }
+        type Mutation {
+          """
+          this is mutation
+          """
+          bar(arg1: Int): String
+        }
+      `,
+    }),
+    onRoute: spy,
+  });
+
+  const res = await sofa.fetch('http://localhost:4000/api/foo?arg1=notanumber');
+  expect(res.status).toBe(500);
+});
+
+test('should catch json parsing errors on request body and return internal server error', async () => {
+  const spy = jest.fn();
 
   const sofa = useSofa({
     basePath: '/api',
     schema: createSchema({
       typeDefs: /* GraphQL */ `
-        type User {
-          id: ID
-          name: String
-        }
         type Query {
-          users(count: Int!): [User]
+          """
+          this is query
+          """
+          foo(arg1: Int): String
+        }
+        type Mutation {
+          """
+          this is mutation
+          """
+          bar(arg1: Int): String
         }
       `,
-      resolvers: {
-        Query: {
-          users: spy,
-        },
-      },
     }),
+    onRoute: spy,
   });
 
-  const res = await sofa.fetch('http://localhost:4000/api/users?count=notanumber');
+  const res = await sofa.fetch(
+    'http://localhost:4000/api/bar?arg1=notanumber',
+    {
+      method: 'POST',
+      body: JSON.stringify({ count: 'notanumber' }),
+    }
+  );
   expect(res.status).toBe(500);
 });
