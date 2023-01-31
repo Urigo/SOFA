@@ -83,8 +83,8 @@ export function OpenAPI({
       const basePath = config?.basePath || '';
       const path =
         basePath +
-        info.path.replace(
-          /\:[a-z0-9]+\w/i,
+        info.path.replaceAll(
+          new RegExp(/:\w+/i, 'g'),
           (param) => `{${param.replace(':', '')}}`
         );
 
