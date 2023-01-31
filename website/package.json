@@ -11,8 +11,8 @@
   "dependencies": {
     "lottie-web": "5.10.2",
     "@theguild/components": "4.5.2",
-    "next": "13.1.5",
-    "next-sitemap": "3.1.47",
+    "next": "13.1.6",
+    "next-sitemap": "3.1.48",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
