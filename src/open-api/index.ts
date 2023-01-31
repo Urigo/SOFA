@@ -9,6 +9,7 @@ import { buildSchemaObjectFromType } from './types';
 import { buildPathFromOperation } from './operations';
 import { RouteInfo } from '../types';
 import { OpenAPIV3 } from 'openapi-types';
+import { normalizePathParamForOpenAPI } from './utils';
 
 export function OpenAPI({
   schema,
@@ -83,10 +84,7 @@ export function OpenAPI({
       const basePath = config?.basePath || '';
       const path =
         basePath +
-        info.path.replaceAll(
-          new RegExp(/:\w+/i, 'g'),
-          (param) => `{${param.replace(':', '')}}`
-        );
+        normalizePathParamForOpenAPI(info.path);
 
       if (!swagger.paths[path]) {
         swagger.paths[path] = {};

@@ -27,3 +27,15 @@ export function mapToPrimitive(type: string) {
 export function mapToRef(type: string) {
   return `#/components/schemas/${type}`;
 }
+
+export function normalizePathParamForOpenAPI(path: string) {
+  const pathParts = path.split('/');
+  const normalizedPathParts = pathParts.map((part) => {
+    if (part.startsWith(':')) {
+      return `{${part.slice(1)}}`;
+    }
+
+    return part;
+  });
+  return normalizedPathParts.join('/');
+}
