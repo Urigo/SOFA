@@ -1026,14 +1026,22 @@
   dependencies:
     tslib "^2.4.0"
 
-"@graphql-tools/utils@9.1.4", "@graphql-tools/utils@^9.0.1":
+"@graphql-tools/utils@9.1.4":
   version "9.1.4"
   resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-9.1.4.tgz#2c9e0aefc9655dd73247667befe3c850ec014f3f"
   integrity sha512-hgIeLt95h9nQgQuzbbdhuZmh+8WV7RZ/6GbTj6t3IU4Zd2zs9yYJ2jgW/krO587GMOY8zCwrjNOMzD40u3l7Vg==
   dependencies:
     tslib "^2.4.0"
 
-"@graphql-typed-document-node/core@3.1.1":
+"@graphql-tools/utils@9.2.0", "@graphql-tools/utils@^9.0.1":
+  version "9.2.0"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-9.2.0.tgz#d74d0376231c0e8bf897a715fafaf53d0f6bf06c"
+  integrity sha512-s3lEG1iYkyYEnKCWrIFECX3XH2wmZvbg6Ir3udCvIDynq+ydaO7JQXobclpPtwSJtjlS353haF//6V7mnBQ4bg==
+  dependencies:
+    "@graphql-typed-document-node/core" "^3.1.1"
+    tslib "^2.4.0"
+
+"@graphql-typed-document-node/core@3.1.1", "@graphql-typed-document-node/core@^3.1.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.1.1.tgz#076d78ce99822258cf813ecc1e7fa460fa74d052"
   integrity sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==
@@ -2850,10 +2858,10 @@ graphql-scalars@1.20.1:
   dependencies:
     tslib "~2.4.0"
 
-graphql-yoga@3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-3.4.1.tgz#5e12efeb5f17a46fc0a084499deb0ae7a5090a90"
-  integrity sha512-iiXIvqOmyTccHpzyQ3xabksgjh0U19e4wiWal/QyCqpC6HQXjIWZZkGHyquxlIkwa/j8i7iPnC2gmbvzIp5cvA==
+graphql-yoga@3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-3.5.1.tgz#46eed5ca162f153cf37a5074d22214505c241be4"
+  integrity sha512-DVn/r4L9XJs5XeVJY9BqOHXk6P2Z1iNB9vXfChcEGNpfxJCbY6pKBstGdlDY+93U0lq5aLVspeOTvBWXAN90/w==
   dependencies:
     "@envelop/core" "3.0.4"
     "@envelop/parser-cache" "^5.0.4"
