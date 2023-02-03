@@ -1,4 +1,3 @@
-import { DefaultServerAdapterContext } from '@whatwg-node/router';
 import { DocumentNode } from 'graphql';
 
 export type ContextValue = Record<string, any>;
@@ -18,6 +17,6 @@ export type OnRoute = (info: RouteInfo) => void;
 
 export type ContextFn = (serverContext: DefaultSofaServerContext) => Promise<ContextValue> | ContextValue;
 
-export type DefaultSofaServerContext = DefaultServerAdapterContext & {
+export type DefaultSofaServerContext = {
   request: Request;
 }

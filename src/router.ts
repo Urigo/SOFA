@@ -73,7 +73,7 @@ const defaultErrorHandler: ErrorHandler = (errors) => {
 export function createRouter(sofa: Sofa) {
   logger.debug('[Sofa] Creating router');
 
-  const router = createRouterInstance<DefaultSofaServerContext>({
+  const router = createRouterInstance({
     base: sofa.basePath,
   });
 
@@ -103,20 +103,20 @@ export function createRouter(sofa: Sofa) {
 
   router.post(
     '/webhook',
-    async (request: RouterRequest, serverContext: DefaultSofaServerContext) => {
+    async (request: RouterRequest, serverContext: {}) => {
       const { subscription, variables, url }: StartSubscriptionEvent =
         await request.json();
       try {
+        const sofaContext: DefaultSofaServerContext = Object.assign(serverContext, {
+          request,
+        })
         const result = await subscriptionManager.start(
           {
             subscription,
             variables,
             url,
           },
-          {
-            ...serverContext,
-            request,
-          }
+          sofaContext
         );
         return new Response(JSON.stringify(result), {
           status: 200,
@@ -136,16 +136,15 @@ export function createRouter(sofa: Sofa) {
 
   router.post(
     '/webhook/:id',
-    async (request: RouterRequest, serverContext: DefaultSofaServerContext) => {
+    async (request: RouterRequest, serverContext: {}) => {
       const id = request.params?.id!;
       const body = await request.json();
       const variables: any = body.variables;
       try {
-        const sofaServerContext = {
-          ...serverContext,
+        const sofaContext = Object.assign(serverContext, {
           request,
-        };
-        const contextValue = await sofa.contextFactory(sofaServerContext);
+        });
+        const contextValue = await sofa.contextFactory(sofaContext);
         const result = await subscriptionManager.update(
           {
             id,
@@ -197,7 +196,7 @@ function createQueryRoute({
   fieldName,
 }: {
   sofa: Sofa;
-  router: Router<DefaultSofaServerContext>;
+  router: Router<{}>;
   fieldName: string;
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} query`);
@@ -257,7 +256,7 @@ function createMutationRoute({
   fieldName,
 }: {
   sofa: Sofa;
-  router: Router<DefaultSofaServerContext>;
+  router: Router<{}>;
   fieldName: string;
 }): RouteInfo {
   logger.debug(`[Router] Creating ${fieldName} mutation`);
@@ -311,7 +310,7 @@ function useHandler(config: {
   route: Route;
   operation: DocumentNode;
   fieldName: string;
-}): RouterHandler<DefaultSofaServerContext> {
+}): RouterHandler<{}> {
   const { sofa, operation, fieldName } = config;
   const info = config.info!;
   const errorHandler: ErrorHandler =
@@ -319,7 +318,7 @@ function useHandler(config: {
 
   return async (
     request: RouterRequest,
-    serverContext: DefaultSofaServerContext
+    serverContext: {},
   ) => {
     try {
       let body = {};
@@ -374,11 +373,10 @@ function useHandler(config: {
         })
       }
 
-      const sofaServerContext: DefaultSofaServerContext = {
-        ...serverContext,
+      const sofaContext: DefaultSofaServerContext = Object.assign(serverContext, {
         request,
-      };
-      const contextValue = await sofa.contextFactory(sofaServerContext);
+      });
+      const contextValue = await sofa.contextFactory(sofaContext);
       const result = await sofa.execute({
         schema: sofa.schema,
         document: operation,
