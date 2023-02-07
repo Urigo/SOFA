@@ -704,10 +704,10 @@
   resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.31.tgz#31b7ca6407128a3d2bbc27fe2d21b345397f6197"
   integrity sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==
 
-"@types/node@18.11.19":
-  version "18.11.19"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.19.tgz#35e26df9ec441ab99d73e99e9aca82935eea216d"
-  integrity sha512-YUgMWAQBWLObABqrvx8qKO1enAvBUdjZOAWQ5grBAkp5LQv45jBvYKZ3oFS9iKRCQyFjqw6iuEa1vmFqtxYLZw==
+"@types/node@18.13.0":
+  version "18.13.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.13.0.tgz#0400d1e6ce87e9d3032c19eb6c58205b0d3f7850"
+  integrity sha512-gC3TazRzGoOnoKAhUx+Q0t8S9Tzs74z7m0ipwGpSqQrleP14hKxP4/JUeEQcD3W1/aIpnWl8pHowI7WokuZpXg==
 
 "@types/prop-types@*":
   version "15.7.5"
@@ -2930,10 +2930,10 @@ next-seo@^5.5.0:
   resolved "https://registry.yarnpkg.com/next-seo/-/next-seo-5.14.1.tgz#d07322edc37634fbd9beca51fb04177910d8031c"
   integrity sha512-NiJeQbxYP3z+EMp52q8k3Q+OfX2+Yv2WehERDj98r2wjXxL+woKpRBdsSVYolTD0Hm8IWs42SzaISE93RoQdOw==
 
-next-sitemap@3.1.49:
-  version "3.1.49"
-  resolved "https://registry.yarnpkg.com/next-sitemap/-/next-sitemap-3.1.49.tgz#ed661fc800ead8a32728783c710ca28ef1a2d76d"
-  integrity sha512-bxBq+MQdi580PKn/8ert4X0RL8Kp9scvyiq6TmIpkCQC3bd4DResTyxHY2AuCGKz83ut2udHwKMZu3ztj3aq3w==
+next-sitemap@3.1.50:
+  version "3.1.50"
+  resolved "https://registry.yarnpkg.com/next-sitemap/-/next-sitemap-3.1.50.tgz#b8d8aaeaa9344884d012a5ed9662ef3ef9e3766b"
+  integrity sha512-BnxAbjOK1zVcYvpZ4sYfhPXcL3ajLh/AIJLR39YKrhFxrD92KkiAGuVaKhfpoQLUf+ldsGBkGpdml2N5Qdd1KA==
   dependencies:
     "@corex/deepmerge" "^4.0.29"
     minimist "^1.2.7"
