@@ -82,7 +82,7 @@
     "husky": "8.0.3",
     "jest": "29.4.2",
     "lint-staged": "13.1.1",
-    "prettier": "2.8.3",
+    "prettier": "2.8.4",
     "swagger-ui-dist": "4.15.5",
     "ts-jest": "29.0.5",
     "ts-node": "10.9.1",
