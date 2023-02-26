@@ -1,5 +1,45 @@
 [
   {
+    "objectID": "sofa-",
+    "headings": [],
+    "toc": [],
+    "content": "d41d8cd98f00b204e9800998ecf8427e",
+    "url": "https://www.the-guild.dev/graphql/sofa-api/",
+    "domain": "https://www.the-guild.dev/graphql/sofa-api",
+    "hierarchy": [],
+    "source": "SOFA",
+    "title": "Home",
+    "type": "Documentation"
+  },
+  {
+    "objectID": "sofa-docs-",
+    "headings": [
+      "Installation",
+      "Usage"
+    ],
+    "toc": [
+      {
+        "children": [],
+        "title": "Installation",
+        "anchor": "installation"
+      },
+      {
+        "children": [],
+        "title": "Usage",
+        "anchor": "usage"
+      }
+    ],
+    "content": "43e2f924fb8ab2dcac581fd51b1ffed2",
+    "url": "https://www.the-guild.dev/graphql/sofa-api/docs/",
+    "domain": "https://www.the-guild.dev/graphql/sofa-api",
+    "hierarchy": [
+      "Docs"
+    ],
+    "source": "SOFA",
+    "title": "Introduction",
+    "type": "Documentation"
+  },
+  {
     "objectID": "sofa-docs-api-context",
     "headings": [
       "Using a Function",
@@ -17,9 +57,9 @@
         "anchor": "using-an-object"
       }
     ],
-    "content": "23f855bda2c38c5cb2cda9fe35c964e1",
+    "content": "f2435e96e83c634973721f550f946775",
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/api/context",
-    "domain": "https://www.the-guild.dev/graphql/sofa-api/",
+    "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
       "Docs",
       "API"
@@ -32,9 +72,9 @@
     "objectID": "sofa-docs-api-error-handler",
     "headings": [],
     "toc": [],
-    "content": "c3e610093f7788e7f15430715ce23c15",
+    "content": "5eaf1c95c4a150f6da8f6d3351e1a5af",
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/api/error-handler",
-    "domain": "https://www.the-guild.dev/graphql/sofa-api/",
+    "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
       "Docs",
       "API"
@@ -47,9 +87,9 @@
     "objectID": "sofa-docs-api-execute",
     "headings": [],
     "toc": [],
-    "content": "254bec2c5b8c4a103521194a4b7c49e3",
+    "content": "56d870f20d4d8f5d24d3f2bde0f98147",
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/api/execute",
-    "domain": "https://www.the-guild.dev/graphql/sofa-api/",
+    "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
       "Docs",
       "API"
@@ -62,9 +102,9 @@
     "objectID": "sofa-docs-api-ignore",
     "headings": [],
     "toc": [],
-    "content": "299e78205993229af2092aa6966f6b91",
+    "content": "8b6120fbc6ceadc97e761cdf377e364f",
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/api/ignore",
-    "domain": "https://www.the-guild.dev/graphql/sofa-api/",
+    "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
       "Docs",
       "API"
@@ -77,9 +117,9 @@
     "objectID": "sofa-docs-api-method",
     "headings": [],
     "toc": [],
-    "content": "fb0defaa75be0575c6e0dc015b5fa9b0",
+    "content": "d50402bf01abe36861ad5e170451a617",
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/api/method",
-    "domain": "https://www.the-guild.dev/graphql/sofa-api/",
+    "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
       "Docs",
       "API"
@@ -92,9 +132,9 @@
     "objectID": "sofa-docs-api-models",
     "headings": [],
     "toc": [],
-    "content": "46db1cec37afcfc9b7dda3079bc15c77",
+    "content": "ab260aa8f5c2f6632d99021e779e9db5",
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/api/models",
-    "domain": "https://www.the-guild.dev/graphql/sofa-api/",
+    "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
       "Docs",
       "API"
@@ -107,9 +147,9 @@
     "objectID": "sofa-docs-essentials-mutations",
     "headings": [],
     "toc": [],
-    "content": "812c0fd439798f9521059c475ffbb44a",
+    "content": "b3a373363eeba4bc68505015e1e429a4",
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/essentials/mutations",
-    "domain": "https://www.the-guild.dev/graphql/sofa-api/",
+    "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
       "Docs",
       "Essentials"
@@ -122,9 +162,9 @@
     "objectID": "sofa-docs-essentials-queries",
     "headings": [],
     "toc": [],
-    "content": "8d97a76ffb252a956d1e67106e8befd5",
+    "content": "5d54cf56df8b3664cdc7a01610c2a929",
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/essentials/queries",
-    "domain": "https://www.the-guild.dev/graphql/sofa-api/",
+    "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
       "Docs",
       "Essentials"
@@ -163,9 +203,9 @@
         "anchor": "example"
       }
     ],
-    "content": "cd7b30d679b0435d4752437257b17fde",
+    "content": "969e983a64418bd774d4f16a342d4583",
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/essentials/subscriptions",
-    "domain": "https://www.the-guild.dev/graphql/sofa-api/",
+    "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
       "Docs",
       "Essentials"
@@ -175,58 +215,18 @@
     "type": "Documentation"
   },
   {
-    "objectID": "sofa-docs-index",
-    "headings": [
-      "Installation",
-      "Usage"
-    ],
-    "toc": [
-      {
-        "children": [],
-        "title": "Installation",
-        "anchor": "installation"
-      },
-      {
-        "children": [],
-        "title": "Usage",
-        "anchor": "usage"
-      }
-    ],
-    "content": "b0f18e39a95fbb26909bc419ffe584db",
-    "url": "https://www.the-guild.dev/graphql/sofa-api/docs/index",
-    "domain": "https://www.the-guild.dev/graphql/sofa-api/",
-    "hierarchy": [
-      "Docs"
-    ],
-    "source": "SOFA",
-    "title": "Introduction",
-    "type": "Documentation"
-  },
-  {
     "objectID": "sofa-docs-recipes-open-api",
     "headings": [],
     "toc": [],
-    "content": "b1df02069030eb93b40eec58ec04e21c",
+    "content": "ee7bfb9ca12941979a8efb36b1d16655",
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/recipes/open-api",
-    "domain": "https://www.the-guild.dev/graphql/sofa-api/",
+    "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
       "Docs",
       "Recipes"
     ],
     "source": "SOFA",
     "title": "OpenAPI (Swagger)",
-    "type": "Documentation"
-  },
-  {
-    "objectID": "sofa-index",
-    "headings": [],
-    "toc": [],
-    "content": "d41d8cd98f00b204e9800998ecf8427e",
-    "url": "https://www.the-guild.dev/graphql/sofa-api//index",
-    "domain": "https://www.the-guild.dev/graphql/sofa-api/",
-    "hierarchy": [],
-    "source": "SOFA",
-    "title": "Home",
     "type": "Documentation"
   }
 ]
