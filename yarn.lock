@@ -1540,10 +1540,10 @@
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-3.0.1.tgz#5f8f2bca0a5863cb69bc0b0acd88c96cb1d4ae10"
   integrity sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==
 
-"@types/node@*", "@types/node@18.14.1":
-  version "18.14.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.14.1.tgz#90dad8476f1e42797c49d6f8b69aaf9f876fc69f"
-  integrity sha512-QH+37Qds3E0eDlReeboBxfHbX9omAcBCXEzswCu6jySP642jiM3cYSIkU/REqwhCUqXdonHFuBfJDiAJxMNhaQ==
+"@types/node@*", "@types/node@18.14.2":
+  version "18.14.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.14.2.tgz#c076ed1d7b6095078ad3cf21dfeea951842778b1"
+  integrity sha512-1uEQxww3DaghA0RxqHx0O0ppVlo43pJhepY51OxuQIKHpjbnYLA7vcdwioNPzIqmC2u3I/dmylcqjlh0e7AyUA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -4669,10 +4669,10 @@ supports-color@^8.0.0:
   dependencies:
     has-flag "^4.0.0"
 
-swagger-ui-dist@4.16.0:
-  version "4.16.0"
-  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-4.16.0.tgz#eb14bf538db5d9616929cc722e08ee7acdbe0c3a"
-  integrity sha512-PpoejNHzaw9lvI/RgQHesUDrZ3s+dbV2XpnuaxHU8TekEQYIOZ7WLCsCvMpMmgjXUZEg5ElTy67Ts1dp4A6eGQ==
+swagger-ui-dist@4.17.0:
+  version "4.17.0"
+  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-4.17.0.tgz#224ee3998591d06b28100c8ec10950565f7b153e"
+  integrity sha512-31zNkTaOItkhyoKQMs1HIRZ+0kwBPcmp1R0TcVsAmZpT8QGWFI6k9wfTfllQ1t2oE8IoHVUwL5V0VTAKUosvNg==
 
 tar-fs@^2.0.0:
   version "2.1.1"
