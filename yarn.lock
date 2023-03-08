@@ -4674,10 +4674,10 @@ supports-color@^8.0.0:
   dependencies:
     has-flag "^4.0.0"
 
-swagger-ui-dist@4.17.1:
-  version "4.17.1"
-  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-4.17.1.tgz#ce47872e1eb7bd49528f50d5bdf9012e2f0b1fa7"
-  integrity sha512-Q3iFZgpraiHWphd6eX7IfI+aAITLWoP1TSIRo+0vuixRxQNqwdknab/Ktu9rs8oY3XY08FtrXkK0qt54eSuUXg==
+swagger-ui-dist@4.18.0:
+  version "4.18.0"
+  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-4.18.0.tgz#e5435ad0bfb983629476d2959604cafa633673d5"
+  integrity sha512-PZeF7r+JsAXC8tEGatOARSEeC0n3ChGqTDcbZUzrV+mGnlW2ZEystlpiEyMWfAY4FAT+uxibfMuRahEvnoG3CQ==
 
 tar-fs@^2.0.0:
   version "2.1.1"
