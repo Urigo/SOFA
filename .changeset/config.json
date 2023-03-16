@@ -3,7 +3,6 @@
   "changelog": ["@changesets/changelog-github", { "repo": "Urigo/SOFA" }],
   "commit": false,
   "access": "public",
-  "ignore": ["website"],
   "baseBranch": "master",
   "updateInternalDependencies": "patch",
   "snapshot": {
