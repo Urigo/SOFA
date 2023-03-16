@@ -1,19 +1,30 @@
 # Change log
 
+## 0.16.4
+
+### Patch Changes
+
+- [#1292](https://github.com/Urigo/SOFA/pull/1292) [`f4a68c1`](https://github.com/Urigo/SOFA/commit/f4a68c17d95cb02ad9aacac91a664a701bd38387) Thanks [@TuvalSimha](https://github.com/TuvalSimha)! - dependencies updates:
+  - Added dependency [`@changesets/changelog-github@0.4.8` ↗︎](https://www.npmjs.com/package/@changesets/changelog-github/v/0.4.8) (to `dependencies`)
+  - Added dependency [`@changesets/cli@2.26.0` ↗︎](https://www.npmjs.com/package/@changesets/cli/v/2.26.0) (to `dependencies`)
+
 ### vNEXT
 
 ### v0.12.0
+
 - Allow to override mapping of custom scalar to OpenAPI (#1159) - Thanks @izumin5210
 - Stop using AST Node to retrieve Enum values in OpenAPI (#1158) - Thanks @izumin5210
 - Feature/openapi tags description (#1114) - Thanks @NorbertRuff
 - Fix payload parsing for subscriptions (#1148) - Thanks @csuriano23
 
 ## BREAKING CHANGES
+
 - `createSofaRouter` is no longer exported, use `useSofa` directly
 - `useSofa` now supports more server frameworks. It uses `itty-router` and `@whatwg-node/server` so it supports almost all JS environments;
-[See more](https://github.com/ardatan/whatwg-node/tree/master/packages/server#integrations)
-Documentation on SOFA's docs will be updated soon.
+  [See more](https://github.com/ardatan/whatwg-node/tree/master/packages/server#integrations)
+  Documentation on SOFA's docs will be updated soon.
 - `OpenAPI` no longer has `.save` method. Use `.get` to get the schema;
+
 ```diff
 const openApi = OpenAPI({
   schema,
@@ -34,7 +45,9 @@ const openApi = OpenAPI({
 ```
 
 ### v0.10.2
+
 In this release express is removed as dependency. New `basePath` option is required to resolve sofa routes properly
+
 ```js
 app.use(
   '/api',
@@ -46,6 +59,7 @@ app.use(
 ```
 
 Added new server framework agnostic api
+
 ```js
 const invokeSofa = createSofaRouter({
   basePath: '/api',
@@ -63,12 +77,15 @@ const response = await invokeSofa({
 ```
 
 ### v0.8.2
+
 - Replace winston with custom logger ([#534](https://github.com/Urigo/SOFA/pull/534)) - Thanks @TrySound !
 
 ### v0.8.1
+
 - Bump @graphql-tools/utils to fix [ardatan/graphql-tools#1928](https://github.com/ardatan/graphql-tools/pull/1928)
 
 ### v0.8.0
+
 - Update dependencies
 
 ### v0.7.0
