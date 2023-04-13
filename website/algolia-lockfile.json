@@ -33,7 +33,7 @@
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/",
     "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
-      "Docs"
+      "docs"
     ],
     "source": "SOFA",
     "title": "Introduction",
@@ -61,8 +61,8 @@
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/api/context",
     "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
-      "Docs",
-      "API"
+      "docs",
+      "api"
     ],
     "source": "SOFA",
     "title": "Using Context",
@@ -76,8 +76,8 @@
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/api/error-handler",
     "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
-      "Docs",
-      "API"
+      "docs",
+      "api"
     ],
     "source": "SOFA",
     "title": "Error Handling",
@@ -91,8 +91,8 @@
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/api/execute",
     "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
-      "Docs",
-      "API"
+      "docs",
+      "api"
     ],
     "source": "SOFA",
     "title": "Custom Execute Phase",
@@ -106,8 +106,8 @@
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/api/ignore",
     "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
-      "Docs",
-      "API"
+      "docs",
+      "api"
     ],
     "source": "SOFA",
     "title": "Using Objects Instead of IDs",
@@ -121,8 +121,8 @@
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/api/method",
     "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
-      "Docs",
-      "API"
+      "docs",
+      "api"
     ],
     "source": "SOFA",
     "title": "Customize Endpoint's HTTP Method",
@@ -136,8 +136,8 @@
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/api/models",
     "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
-      "Docs",
-      "API"
+      "docs",
+      "api"
     ],
     "source": "SOFA",
     "title": "Nested Data and Models",
@@ -151,8 +151,8 @@
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/essentials/mutations",
     "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
-      "Docs",
-      "Essentials"
+      "docs",
+      "essentials"
     ],
     "source": "SOFA",
     "title": "Mutations",
@@ -166,8 +166,8 @@
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/essentials/queries",
     "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
-      "Docs",
-      "Essentials"
+      "docs",
+      "essentials"
     ],
     "source": "SOFA",
     "title": "Queries",
@@ -207,8 +207,8 @@
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/essentials/subscriptions",
     "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
-      "Docs",
-      "Essentials"
+      "docs",
+      "essentials"
     ],
     "source": "SOFA",
     "title": "Subscriptions",
@@ -222,8 +222,8 @@
     "url": "https://www.the-guild.dev/graphql/sofa-api/docs/recipes/open-api",
     "domain": "https://www.the-guild.dev/graphql/sofa-api",
     "hierarchy": [
-      "Docs",
-      "Recipes"
+      "docs",
+      "recipes"
     ],
     "source": "SOFA",
     "title": "OpenAPI (Swagger)",
