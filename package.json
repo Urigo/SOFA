@@ -44,7 +44,7 @@
   "dependencies": {
     "@graphql-tools/utils": "^9.2.0",
     "@whatwg-node/fetch": "^0.8.0",
-    "@whatwg-node/router": "^0.3.0",
+    "fets": "^0.1.4",
     "ansi-colors": "^4.1.3",
     "openapi-types": "^12.1.0",
     "param-case": "^3.0.4",

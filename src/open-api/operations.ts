@@ -136,7 +136,7 @@ function resolveParameters(
   });
 }
 
-function resolveRequestBody(
+export function resolveRequestBody(
   variables: ReadonlyArray<VariableDefinitionNode> | undefined,
   schema: GraphQLSchema,
   operation: OperationDefinitionNode,
@@ -170,7 +170,7 @@ function resolveRequestBody(
 // array -> [type]
 // type -> $ref
 // scalar -> swagger primitive
-function resolveParamSchema(
+export function resolveParamSchema(
   type: TypeNode,
   opts: { customScalars: Record<string, any>; enumTypes: Record<string, any> }
 ): any {
@@ -194,7 +194,7 @@ function resolveParamSchema(
   );
 }
 
-function resolveResponse({
+export function resolveResponse({
   schema,
   operation,
   opts,
@@ -223,8 +223,8 @@ function resolveResponse({
   }
 }
 
-function isInPath(url: string, param: string): boolean {
-  return url.indexOf(`{${param}}`) !== -1;
+export function isInPath(url: string, param: string): boolean {
+  return url.includes(`:${param}`);
 }
 
 function getOperationFieldNode(
@@ -257,7 +257,7 @@ function resolveDescription(
   return fieldNode?.description?.value || '';
 }
 
-function resolveVariableDescription(
+export function resolveVariableDescription(
   schema: GraphQLSchema,
   operation: OperationDefinitionNode,
   variable: VariableDefinitionNode
