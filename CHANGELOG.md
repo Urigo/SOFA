@@ -1,5 +1,11 @@
 # Change log
 
+## 0.17.1
+
+### Patch Changes
+
+- [`61e0494`](https://github.com/Urigo/SOFA/commit/61e0494f85caf5adf498d132092d213d500457b0) Thanks [@ardatan](https://github.com/ardatan)! - Add missing options for OAS
+
 ## 0.17.0
 
 ### Minor Changes
