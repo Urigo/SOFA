@@ -224,7 +224,7 @@ export function resolveResponse({
 }
 
 export function isInPath(url: string, param: string): boolean {
-  return url.includes(`:${param}`);
+  return url.includes(`:${param}`) || url.includes(`{${param}}`);
 }
 
 function getOperationFieldNode(
