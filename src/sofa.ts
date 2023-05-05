@@ -15,6 +15,7 @@ import { convertName } from './common';
 import { logger } from './logger';
 import { ErrorHandler } from './router';
 import { HTTPMethod, StatusCode } from 'fets/typings/typed-fetch';
+import { SwaggerUIOpts } from 'fets/typings/plugins/openapi';
 
 // user passes:
 // - schema
@@ -55,9 +56,13 @@ export interface SofaConfig {
   context?: ContextFn | ContextValue;
   customScalars?: Record<string, any>;
   enumTypes?: Record<string, any>;
+  // OAS Related Settings
   title?: string;
-  version?: string;
   description?: string;
+  version?: string;
+  oasEndpoint?: string | false;
+  swaggerUIEndpoint?: string | false;
+  swaggerUIOpts?: SwaggerUIOpts;
 }
 
 export interface Sofa {
@@ -73,9 +78,13 @@ export interface Sofa {
   contextFactory: ContextFn;
   customScalars: Record<string, any>
   enumTypes: Record<string, any>
+  // OAS Related Settings
   title?: string;
-  version?: string;
   description?: string;
+  version?: string;
+  oasEndpoint?: string | false;
+  swaggerUIEndpoint?: string | false;
+  swaggerUIOpts?: SwaggerUIOpts;
 }
 
 export function createSofa(config: SofaConfig): Sofa {
