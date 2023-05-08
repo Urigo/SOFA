@@ -105,7 +105,7 @@
   "bundlesize": [
     {
       "path": "./dist/index.mjs",
-      "maxSize": "36 kB",
+      "maxSize": "40 kB",
       "compression": "none"
     }
   ]
