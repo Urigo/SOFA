@@ -10,14 +10,14 @@
   },
   "dependencies": {
     "lottie-web": "5.11.0",
-    "@theguild/components": "4.5.10",
+    "@theguild/components": "4.5.11",
     "next": "13.4.0",
     "next-sitemap": "4.0.9",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@theguild/algolia": "1.1.6",
+    "@theguild/algolia": "1.1.7",
     "@theguild/tailwind-config": "0.2.1",
     "@types/node": "18.16.4",
     "@types/react": "18.2.5",
