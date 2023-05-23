@@ -42,9 +42,9 @@
     "graphql": "^15.0.0 || ^16.0.0"
   },
   "dependencies": {
-    "@graphql-tools/utils": "^9.2.0",
-    "@whatwg-node/fetch": "^0.8.0",
-    "fets": "^0.1.4",
+    "@graphql-tools/utils": "^10.0.0",
+    "@whatwg-node/fetch": "^0.9.0",
+    "fets": "^0.2.0",
     "ansi-colors": "^4.1.3",
     "openapi-types": "^12.1.0",
     "param-case": "^3.0.4",

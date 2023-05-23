@@ -1262,7 +1262,15 @@
     tslib "^2.4.0"
     value-or-promise "^1.0.12"
 
-"@graphql-tools/utils@^9.2.0", "@graphql-tools/utils@^9.2.1":
+"@graphql-tools/utils@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-10.0.0.tgz#bfd3c78fb8c3d056d1f93956c83aaf1ab4a7dba6"
+  integrity sha512-ndBPc6zgR+eGU/jHLpuojrs61kYN3Z89JyMLwK3GCRkPv4EQn9EOr1UWqF1JO0iM+/jAVHY0mvfUxyrFFN9DUQ==
+  dependencies:
+    "@graphql-typed-document-node/core" "^3.1.1"
+    tslib "^2.4.0"
+
+"@graphql-tools/utils@^9.2.1":
   version "9.2.1"
   resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-9.2.1.tgz#1b3df0ef166cfa3eae706e3518b17d5922721c57"
   integrity sha512-WUw506Ql6xzmOORlriNrD6Ugx+HjVgYxt9KCXD9mHAak+eaXSwuGGPyE60hy9xaDEoXKBsG7SkG69ybitaVl6A==
@@ -1912,12 +1920,11 @@
   resolved "https://registry.yarnpkg.com/@vercel/ncc/-/ncc-0.31.1.tgz#9346c7e59326f5eeac75c0286e47df94c2d6d8f7"
   integrity sha512-g0FAxwdViI6UzsiVz5HssIHqjcPa1EHL6h+2dcJD893SoCJaGdqqgUF09xnMW6goWnnhbLvgiKlgJWrJa+7qYA==
 
-"@whatwg-node/cookie-store@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@whatwg-node/cookie-store/-/cookie-store-0.0.1.tgz#1893f861706f35c5d0475d85f3793f9f568e4fd6"
-  integrity sha512-uoti8QU5xd+X+9PULOGpPpOqPDdwkz+ukMc4kyQG1GwXeKVGktr4FSllr6dBotjOjNVPSBPpmj5V6zrUdDcLaw==
+"@whatwg-node/cookie-store@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/cookie-store/-/cookie-store-0.1.0.tgz#7f8d68e0d4b203d1c7dbb3e29a888bcff3fe36d0"
+  integrity sha512-Tw6r2flAHYeio6ivBrERhOzkgZGXJSP7tlJIeFQhkjaBiRBz9W1Gc8zs73aq7DKC3ZAGSOdl8jlF+LztSq98cg==
   dependencies:
-    "@whatwg-node/events" "^0.0.3"
     tslib "^2.3.1"
 
 "@whatwg-node/events@0.0.2":
@@ -1930,7 +1937,12 @@
   resolved "https://registry.yarnpkg.com/@whatwg-node/events/-/events-0.0.3.tgz#13a65dd4f5893f55280f766e29ae48074927acad"
   integrity sha512-IqnKIDWfXBJkvy/k6tzskWTc2NK3LcqHlb+KHGCrjOCH4jfQckRX0NAiIcC/vIqQkzLYw2r2CTSwAxcrtcD6lA==
 
-"@whatwg-node/fetch@^0.8.0", "@whatwg-node/fetch@^0.8.2", "@whatwg-node/fetch@^0.8.3", "@whatwg-node/fetch@^0.8.4":
+"@whatwg-node/events@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/events/-/events-0.1.0.tgz#1e7b4e4fd0d149b247ec0132b1030fe522282295"
+  integrity sha512-PnnAP/o6QkgAdjcExKugzl5ZUqPVcv9lvgGz/to3Xe5Du/P5Zw6MzB8P8mI/B4mplYOYsr6AkXkb4plG0ydCow==
+
+"@whatwg-node/fetch@^0.8.3", "@whatwg-node/fetch@^0.8.4":
   version "0.8.8"
   resolved "https://registry.yarnpkg.com/@whatwg-node/fetch/-/fetch-0.8.8.tgz#48c6ad0c6b7951a73e812f09dd22d75e9fa18cae"
   integrity sha512-CdcjGC2vdKhc13KKxgsc6/616BQ7ooDIgPeTuAiE8qfCnS0mGzcfCOoZXypQSz73nxI+GWc7ZReIAVhxoE1KCg==
@@ -1940,6 +1952,14 @@
     busboy "^1.6.0"
     urlpattern-polyfill "^8.0.0"
     web-streams-polyfill "^3.2.1"
+
+"@whatwg-node/fetch@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/fetch/-/fetch-0.9.0.tgz#59492e13e33112afe561ec7f0b497db62284fa1c"
+  integrity sha512-zEyXaoz5w6BpKYKyZLTwBA41fqGuscOvSoPHytADRo1FY/s/fmjwiKq4QGmB88DlNuQ8e57s6AgWqIYyAT0Zmg==
+  dependencies:
+    "@whatwg-node/node-fetch" "^0.4.0"
+    urlpattern-polyfill "^8.0.0"
 
 "@whatwg-node/node-fetch@^0.3.6":
   version "0.3.6"
@@ -1952,12 +1972,31 @@
     fast-url-parser "^1.1.3"
     tslib "^2.3.1"
 
-"@whatwg-node/server@^0.7.3", "@whatwg-node/server@^0.7.4":
+"@whatwg-node/node-fetch@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/node-fetch/-/node-fetch-0.4.0.tgz#f874334d20889b1d7733a74cbe091183f8235297"
+  integrity sha512-aFfJNTMwkWrkl8I9nTkslVjPlkL+zb/Z71ng+71UbYYm1gPHfltHHXBiM99aZgUCaqyvaR5XzzwyCL6m0ikqsA==
+  dependencies:
+    "@whatwg-node/events" "^0.1.0"
+    busboy "^1.6.0"
+    fast-querystring "^1.1.1"
+    fast-url-parser "^1.1.3"
+    tslib "^2.3.1"
+
+"@whatwg-node/server@^0.7.3":
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/@whatwg-node/server/-/server-0.7.5.tgz#5945275861b465f080480c324d802b763e6cfa27"
   integrity sha512-xTDJdPqr/wULxW3mGXQXD92SRXUm6jwQxqIvyHG17dykRTd21HuCaS2ggBn5lSAM/sYjjrT+OYv3fXbtS4+Mjw==
   dependencies:
     "@whatwg-node/fetch" "^0.8.3"
+    tslib "^2.3.1"
+
+"@whatwg-node/server@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/server/-/server-0.8.0.tgz#2fd40353a5c811e37fd5a83f4b343cc38d014ac2"
+  integrity sha512-ZEAZuzBQP40PYJ5iBbmMy46CqzF97QctLPQtFVlXnpVZwo7mMeWNf2u+1sZPM7rEgxCK2MgIUeeuKR2C2XaoMg==
+  dependencies:
+    "@whatwg-node/fetch" "^0.9.0"
     tslib "^2.3.1"
 
 acorn-walk@^8.1.1:
@@ -3267,15 +3306,15 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-fets@^0.1.4:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/fets/-/fets-0.1.5.tgz#da509e868d2b51fee534f7c7100586e5802eee54"
-  integrity sha512-mL/ya591WOgCP1yBBPbp8E37nynj8QQF6iQCUVl0aHDL80BZ9SOL4BcKBy0dnKdC+clnnAkMm05KB9hsj4m4jQ==
+fets@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/fets/-/fets-0.2.0.tgz#4a1601dfc43a53e141aa10740d27dd3f95ee1ddb"
+  integrity sha512-e4uBzNl1IVjfc+7H6F0eM5RGpUV6KpREmGI7GYcXuUj80Whk2Exu+n3m9vk94skdlzAmltBqDfwh6Ch5Ds0dLg==
   dependencies:
     "@ardatan/fast-json-stringify" "^0.0.6"
-    "@whatwg-node/cookie-store" "^0.0.1"
-    "@whatwg-node/fetch" "^0.8.2"
-    "@whatwg-node/server" "^0.7.4"
+    "@whatwg-node/cookie-store" "^0.1.0"
+    "@whatwg-node/fetch" "^0.9.0"
+    "@whatwg-node/server" "^0.8.0"
     ajv "^8.12.0"
     ajv-formats "^2.1.1"
     hotscript "^1.0.11"

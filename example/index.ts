@@ -18,9 +18,13 @@ const app = useSofa({
   basePath: '',
   schema,
   ignore: ['User.favoriteBook'],
-  title: 'Example API',
-  description: 'Example API Description',
-  version: '3.0.0',
+  openAPI: {
+    info: {
+      title: 'Example API',
+      description: 'Example API Description',
+      version: '3.0.0',
+    }
+  }
 })
 
 app.route({
