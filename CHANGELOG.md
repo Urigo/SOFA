@@ -1,5 +1,17 @@
 # Change log
 
+## 0.18.0
+
+### Minor Changes
+
+- [`f6afa0e`](https://github.com/Urigo/SOFA/commit/f6afa0ef9866852dda2938c3c477a42df6764e81) Thanks [@ardatan](https://github.com/ardatan)! - Breaking changes:
+
+  - Drop Node 14 support and require Node >16
+
+  - OpenAPI options are now under `openAPI`
+
+  - SwaggerUI options are now under `swaggerUI`
+
 ## 0.17.1
 
 ### Patch Changes
