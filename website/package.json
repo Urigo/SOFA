@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "lottie-web": "5.11.0",
-    "@theguild/components": "4.5.11",
+    "@theguild/components": "4.5.12",
     "next": "13.4.1",
     "next-sitemap": "4.0.9",
     "react": "18.2.0",
