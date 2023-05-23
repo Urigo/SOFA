@@ -12,9 +12,17 @@ app.use(
   '/api',
   useSofa({
     schema,
-    basePath: '/api',
-    title: 'Example API',
-    version: '3.0.0',
+    basePath: '/',
+    openAPI: {
+      info: {
+        title: 'Example API',
+        version: '3.0.0',
+      }
+      endpoint: '/openapi.json',
+    },
+    swaggerUI: {
+      path: '/docs',
+    }
   })
 );
 ```
