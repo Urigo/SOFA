@@ -2,7 +2,7 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "module": "esnext",
-    "target": "es2016",
+    "target": "es2021",
     "lib": ["esnext"],
     "moduleResolution": "node",
     "sourceMap": true,
