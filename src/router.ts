@@ -247,6 +247,7 @@ function createQueryRoute({
   };
 
   router.route({
+    operationId: fieldName,
     path: route.path,
     method: route.method,
     schemas: getRouteSchemas({
