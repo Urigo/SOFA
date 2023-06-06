@@ -34,6 +34,8 @@ export interface RouteConfig {
 export interface Route {
   method: HTTPMethod;
   path: string;
+  tags?: string[];
+  description?: string;
   responseStatus: StatusCode;
 }
 

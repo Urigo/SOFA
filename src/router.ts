@@ -240,10 +240,12 @@ function createQueryRoute({
 
   const graphqlPath = `${queryType.name}.${fieldName}`;
   const routeConfig = sofa.routes?.[graphqlPath];
-  const route = {
+  const route = <Route> {
     method: routeConfig?.method ?? 'GET',
     path: routeConfig?.path ?? getPath(fieldName, isSingle && hasIdArgument),
     responseStatus: routeConfig?.responseStatus ?? 200,
+    tags: routeConfig?.tags ?? [],
+    description: routeConfig?.description ?? field.description ?? '',
   };
 
   router.route({
@@ -256,7 +258,9 @@ function createQueryRoute({
       info,
       sofa,
       responseStatus: route.responseStatus,
+
     }),
+    tags: route.tags,
     handler: useHandler({ info, route, fieldName, sofa, operation }),
   })
 
@@ -268,8 +272,7 @@ function createQueryRoute({
     document: operation,
     path: route.path,
     method: route.method.toUpperCase() as HTTPMethod,
-    tags: routeConfig?.tags ?? [],
-    description: routeConfig?.description ?? field.description ?? '',
+
   };
 }
 
@@ -369,11 +372,15 @@ function createMutationRoute({
   const method = routeConfig?.method ?? 'POST';
   const path = routeConfig?.path ?? getPath(fieldName);
   const responseStatus = routeConfig?.responseStatus ?? 200;
-
+  const tags = routeConfig?.tags ?? [];
+  const description = routeConfig?.description ?? field.description ?? '';
   const route: Route = {
     method,
     path,
     responseStatus,
+    tags,
+    description,
+
   }
 
   router.route({
@@ -386,6 +393,8 @@ function createMutationRoute({
       responseStatus,
       sofa,
     }),
+    tags: route.tags,
+    description: route.description,
     handler: useHandler({ info, route, fieldName, sofa, operation }),
   })
 
