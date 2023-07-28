@@ -192,7 +192,7 @@ test('handle query params in POST requests', async () => {
   });
 
   const result = buildPathFromOperation({
-    url: '/api/posts/{id}/comments',
+    url: '/api/posts/:id/comments',
     operation: {
       kind: Kind.DOCUMENT,
       definitions: [operation],

@@ -17,6 +17,7 @@ import { mapToPrimitive, mapToRef } from './utils';
 import { resolveFieldType } from './types';
 import { titleCase } from 'title-case';
 import { OpenAPIV3 } from 'openapi-types';
+import { listPathParams } from '../common';
 
 export function buildPathFromOperation({
   url,
@@ -64,12 +65,10 @@ export function buildPathFromOperation({
           requestBody: {
             content: {
               'application/json': {
-                schema: resolveRequestBody(
-                  bodyParams,
-                  schema,
-                  info.operation,
-                  { customScalars, enumTypes }
-                ),
+                schema: resolveRequestBody(bodyParams, schema, info.operation, {
+                  customScalars,
+                  enumTypes,
+                }),
               },
             },
           },
@@ -101,8 +100,7 @@ export function buildPathFromOperation({
 }
 
 function resolveEnumTypes(schema: GraphQLSchema): Record<string, any> {
-  const enumTypes = Object.values(schema.getTypeMap())
-    .filter(isEnumType)
+  const enumTypes = Object.values(schema.getTypeMap()).filter(isEnumType);
   return Object.fromEntries(
     enumTypes.map((type) => [
       type.name,
@@ -140,7 +138,8 @@ export function resolveRequestBody(
   variables: ReadonlyArray<VariableDefinitionNode> | undefined,
   schema: GraphQLSchema,
   operation: OperationDefinitionNode,
-  opts: { customScalars: Record<string, any>; enumTypes: Record<string, any> }
+  opts: { customScalars: Record<string, any>; enumTypes: Record<string, any> },
+  path?: string
 ) {
   if (!variables) {
     return {};
@@ -149,7 +148,13 @@ export function resolveRequestBody(
   const properties: Record<string, any> = {};
   const required: string[] = [];
 
+  const pathVariablesNames = path ? listPathParams(path) : [];
+
   variables.forEach((variable) => {
+    if (pathVariablesNames.includes(variable.variable.name.value)) {
+      return;
+    }
+
     if (variable.type.kind === Kind.NON_NULL_TYPE) {
       required.push(variable.variable.name.value);
     }
@@ -223,8 +228,18 @@ export function resolveResponse({
   }
 }
 
-export function isInPath(url: string, param: string): boolean {
-  return url.includes(`:${param}`) || url.includes(`{${param}}`);
+/**
+ * Checks the given path string for the given variable name.
+ * The path is split into an array of path parameters.
+ * Only the path parameters are checked for the given variable name.
+ * Other parts of the path are ignored.
+ * @param {string} path The URL path to check.
+ * @param {string} param The variable name to check for.
+ * @returns {boolean} True if the variable name is found in the path, false otherwise.
+ */
+export function isInPath(path: string, param: string): boolean {
+  const pathParams = listPathParams(path);
+  return pathParams.includes(param);
 }
 
 function getOperationFieldNode(
