@@ -1,7 +1,6 @@
 ---
 description: "Learn how to use mutations in Sofa, which transform into POST requests and require body-parser.json() middleware or URL parameters. #GraphQL"
 ---
-import { PackageCmd } from '@theguild/components'
 
 # Mutations
 
@@ -55,7 +54,9 @@ curl --header "Content-Type: application/json" \
 
 How to enable `body-parser`:
 
-<PackageCmd packages={['body-parser']} />
+```sh npm2yarn
+npm i body-parser
+```
 
 Then you can simply initialise it like this:
 ```js
