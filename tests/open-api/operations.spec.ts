@@ -5,9 +5,15 @@ import { buildOperationNodeForField } from '@graphql-tools/utils';
 
 const schema = buildSchema(/* GraphQL */ `
   type Post {
-    comments(filter: String!): [String!]!
+    comments(filter: String!, date: Date): [String!]!
     author: Author
     postId: Int
+    type: PostType
+  }
+
+  enum PostType {
+    BLOG
+    QUESTION
   }
 
   type Author {
@@ -18,11 +24,27 @@ const schema = buildSchema(/* GraphQL */ `
     """
     Feed of posts
     """
-    feed: [Post]
+    feed(
+      """
+      The post type
+      """
+      type: PostType
+    ): [Post]
   }
 
+  scalar Date
+
   type Mutation {
-    addPost(comments: [String!]!): Post
+    addPost(
+      comments: [String!]!
+      date: Date
+      """
+      The post type
+      """
+      type: PostType
+    ): Post
+
+    addPostComments(id: ID!, comments: [String!]): Post
   }
 `);
 
@@ -43,11 +65,23 @@ test('handle query', async () => {
     },
     schema,
     useRequestBody: false,
-    customScalars: {},
+    customScalars: {
+      Date: { type: 'string', format: 'date' },
+    },
   });
   expect(result.operationId).toEqual('feed_query');
-  expect(result.parameters?.length).toEqual(1);
+  expect(result.parameters?.length).toEqual(3);
   expect(result.parameters?.[0]).toEqual({
+    in: 'query',
+    name: 'type',
+    required: false,
+    schema: {
+      type: 'string',
+      enum: ['BLOG', 'QUESTION'],
+    },
+    description: 'The post type',
+  });
+  expect(result.parameters?.[1]).toEqual({
     in: 'query',
     name: 'feed_comments_filter',
     required: true,
@@ -55,10 +89,20 @@ test('handle query', async () => {
       type: 'string',
     },
   });
+  expect(result.parameters?.[2]).toEqual({
+    in: 'query',
+    name: 'feed_comments_date',
+    required: false,
+    schema: {
+      type: 'string',
+      format: 'date',
+    },
+  });
 
   expect((result.responses[200] as any).description).toMatch('Feed of posts');
 
-  const response = (result.responses[200] as any).content['application/json'].schema;
+  const response = (result.responses[200] as any).content['application/json']
+    .schema;
   expect(response).toEqual({
     type: 'array',
     items: { $ref: '#/components/schemas/Post' },
@@ -82,17 +126,19 @@ test('handle mutation', async () => {
     },
     schema,
     useRequestBody: true,
-    customScalars: {},
+    customScalars: {
+      Date: { type: 'string', format: 'date' },
+    },
   });
 
   // id
   expect(result.operationId).toEqual('addPost_mutation');
 
   // params
-  expect(result.parameters).not.toBeDefined();
+  expect(result.parameters?.length).toEqual(0);
 
   // request body
-  const def =( result.requestBody as any).content['application/json'].schema;
+  const def = (result.requestBody as any).content['application/json'].schema;
 
   expect(result.requestBody).toBeDefined();
   expect(def.type).toEqual('object');
@@ -103,8 +149,16 @@ test('handle mutation', async () => {
       type: 'string',
     },
   });
+  expect(def.properties!.date).toEqual({
+    type: 'string',
+    format: 'date',
+  });
+  expect(def.properties!.type).toEqual({
+    type: 'string',
+    enum: ['BLOG', 'QUESTION'],
+    description: 'The post type',
+  });
 });
-
 
 test('handle tags and descriptions', async () => {
   const operation = buildOperationNodeForField({
@@ -126,4 +180,55 @@ test('handle tags and descriptions', async () => {
   });
   expect(result.description).toMatch('Feed for test posts');
   expect(result.tags).toContain('Feed' && 'Posts' && 'Test');
+});
+
+test('handle query params in POST requests', async () => {
+  const operation = buildOperationNodeForField({
+    schema,
+    kind: 'mutation' as OperationTypeNode,
+    field: 'addPostComments',
+    models: [],
+    ignore: [],
+  });
+
+  const result = buildPathFromOperation({
+    url: '/api/posts/{id}/comments',
+    operation: {
+      kind: Kind.DOCUMENT,
+      definitions: [operation],
+    },
+    schema,
+    useRequestBody: true,
+    customScalars: {
+      Date: { type: 'string', format: 'date' },
+    },
+  });
+
+  // id
+  expect(result.operationId).toEqual('addPostComments_mutation');
+
+  // params
+  expect(result.parameters?.length).toEqual(1);
+  expect(result.parameters?.[0]).toEqual({
+    in: 'path',
+    name: 'id',
+    required: true,
+    schema: {
+      type: 'string',
+    },
+  });
+
+  // request body
+  const def = (result.requestBody as any).content['application/json'].schema;
+
+  expect(result.requestBody).toBeDefined();
+  expect(def.id).not.toBeDefined();
+  expect(def.type).toEqual('object');
+  expect(def.required).toEqual(['addPostComments_comments_filter']);
+  expect(def.properties!.comments).toEqual({
+    type: 'array',
+    items: {
+      type: 'string',
+    },
+  });
 });

@@ -1,19 +1,46 @@
 # Change log
 
+## 0.18.0
+
+### Minor Changes
+
+- [`f6afa0e`](https://github.com/Urigo/SOFA/commit/f6afa0ef9866852dda2938c3c477a42df6764e81) Thanks [@ardatan](https://github.com/ardatan)! - Breaking changes:
+
+  - Drop Node 14 support and require Node >16
+
+  - OpenAPI options are now under `openAPI`
+
+  - SwaggerUI options are now under `swaggerUI`
+
+## 0.17.1
+
+### Patch Changes
+
+- [`61e0494`](https://github.com/Urigo/SOFA/commit/61e0494f85caf5adf498d132092d213d500457b0) Thanks [@ardatan](https://github.com/ardatan)! - Add missing options for OAS
+
+## 0.17.0
+
+### Minor Changes
+
+- [`a32e2d6`](https://github.com/Urigo/SOFA/commit/a32e2d635c43468b5c70cbdc73143ead10bf5bc3) Thanks [@ardatan](https://github.com/ardatan)! - BREAKING: Now OpenAPI module has been deprecated, SOFA now automatically generates \`openapi.json\` and Swagger UI on \`/docs\` on the fly
+
 ### vNEXT
 
 ### v0.12.0
+
 - Allow to override mapping of custom scalar to OpenAPI (#1159) - Thanks @izumin5210
 - Stop using AST Node to retrieve Enum values in OpenAPI (#1158) - Thanks @izumin5210
 - Feature/openapi tags description (#1114) - Thanks @NorbertRuff
 - Fix payload parsing for subscriptions (#1148) - Thanks @csuriano23
 
 ## BREAKING CHANGES
+
 - `createSofaRouter` is no longer exported, use `useSofa` directly
 - `useSofa` now supports more server frameworks. It uses `itty-router` and `@whatwg-node/server` so it supports almost all JS environments;
-[See more](https://github.com/ardatan/whatwg-node/tree/master/packages/server#integrations)
-Documentation on SOFA's docs will be updated soon.
+  [See more](https://github.com/ardatan/whatwg-node/tree/master/packages/server#integrations)
+  Documentation on SOFA's docs will be updated soon.
 - `OpenAPI` no longer has `.save` method. Use `.get` to get the schema;
+
 ```diff
 const openApi = OpenAPI({
   schema,
@@ -34,7 +61,9 @@ const openApi = OpenAPI({
 ```
 
 ### v0.10.2
+
 In this release express is removed as dependency. New `basePath` option is required to resolve sofa routes properly
+
 ```js
 app.use(
   '/api',
@@ -46,6 +75,7 @@ app.use(
 ```
 
 Added new server framework agnostic api
+
 ```js
 const invokeSofa = createSofaRouter({
   basePath: '/api',
@@ -63,12 +93,15 @@ const response = await invokeSofa({
 ```
 
 ### v0.8.2
+
 - Replace winston with custom logger ([#534](https://github.com/Urigo/SOFA/pull/534)) - Thanks @TrySound !
 
 ### v0.8.1
+
 - Bump @graphql-tools/utils to fix [ardatan/graphql-tools#1928](https://github.com/ardatan/graphql-tools/pull/1928)
 
 ### v0.8.0
+
 - Update dependencies
 
 ### v0.7.0

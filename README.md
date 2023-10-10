@@ -1,3 +1,5 @@
+[![GraphQL Conf 2023](/GraphQLConf-2023-Banner.png)](https://graphql.org/conf/)
+
 [![sofa](https://user-images.githubusercontent.com/25294569/63839869-bfac8300-c988-11e9-978e-6b6c16c350de.gif)](https://www.sofa-api.com)
 
 [![npm version](https://badge.fury.io/js/sofa-api.svg)](https://npmjs.com/package/sofa-api)
@@ -350,52 +352,52 @@ const openApi = OpenAPI({
     title: 'Example API',
     version: '3.0.0',
   },
-    tags: [
-        {
-            name: 'Book',
-            description: 'Book related operations',
-        },
-        {
-            name: 'Author',
-            description: 'Author related operations',
-        },
-    ],
+  tags: [
+    {
+      name: 'Book',
+      description: 'Book related operations',
+    },
+    {
+      name: 'Author',
+      description: 'Author related operations',
+    },
+  ],
 });
 ```
 
 ```ts
 @Resolver(Book)
 export class BookResolver {
-    @Query(() => Book, { description: 'Get book by id' }) // custom summary tag
-    getBookById(@Arg('id', () => Int) id: number) {
-        return 'book';
-    }
+  @Query(() => Book, { description: 'Get book by id' }) // custom summary tag
+  getBookById(@Arg('id', () => Int) id: number) {
+    return 'book';
+  }
 }
 ```
 
 ```ts
 const routes: SofaConfig['routes'] = {
-    'Query.getBookById': {
-        method: 'POST',
-        path: '/book/:id',
-        tags: ['Book'],
-        description: 'This is a custom detailed description for getBookById',
-    },
-}
+  'Query.getBookById': {
+    method: 'POST',
+    path: '/book/:id',
+    tags: ['Book'],
+    description: 'This is a custom detailed description for getBookById',
+  },
+};
 
 const createSofaMiddleware = (
-    schema: GraphQLSchema,
-    openApi: ReturnType<typeof OpenAPI>,
-    basePath = ''
+  schema: GraphQLSchema,
+  openApi: ReturnType<typeof OpenAPI>,
+  basePath = ''
 ): ReturnType<typeof useSofa> => {
-    return useSofa({
-        routes,
-        basePath,
-        schema,
-        onRoute(info) {
-            openApi.addRoute(info, { basePath });
-        },
-    });
+  return useSofa({
+    routes,
+    basePath,
+    schema,
+    onRoute(info) {
+      openApi.addRoute(info, { basePath });
+    },
+  });
 };
 // writes every recorder route
 openApi.save('./swagger.yml');

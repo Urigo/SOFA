@@ -7,9 +7,9 @@ const levels: Level[] = ['error', 'warn', 'info', 'debug'];
 const toLevel = (string: void | string) =>
   levels.includes(string as Level) ? (string as Level) : null;
 
-const currentLevel: Level = process.env.SOFA_DEBUG
+const currentLevel: Level = globalThis.process?.env?.SOFA_DEBUG
   ? 'debug'
-  : toLevel(process.env.SOFA_LOGGER_LEVEL) ?? 'info';
+  : toLevel(globalThis.process?.env?.SOFA_LOGGER_LEVEL) ?? 'info';
 
 const log = (level: Level, color: any, args: any[]) => {
   if (levels.indexOf(level) <= levels.indexOf(currentLevel)) {

@@ -73,7 +73,7 @@ export class SubscriptionManager {
 
   public async start(
     event: StartSubscriptionEvent,
-    contextValue: ContextValue
+    contextValue: ContextValue,
   ) {
     const id = crypto.randomUUID();
     const name = event.subscription;
@@ -119,7 +119,7 @@ export class SubscriptionManager {
 
   public async update(
     event: UpdateSubscriptionEvent,
-    contextValue: ContextValue
+    contextValue: ContextValue,
   ) {
     const { variables, id } = event;
 
@@ -139,7 +139,7 @@ export class SubscriptionManager {
         subscription,
         variables,
       },
-      contextValue
+      contextValue,
     );
   }
 
