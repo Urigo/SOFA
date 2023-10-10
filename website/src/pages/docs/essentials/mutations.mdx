@@ -1,5 +1,3 @@
-import { PackageCmd } from '@theguild/components'
-
 # Mutations
 
 Mutations are transformed into POST requests.
@@ -52,7 +50,9 @@ curl --header "Content-Type: application/json" \
 
 How to enable `body-parser`:
 
-<PackageCmd packages={['body-parser']} />
+```sh npm2yarn
+npm i body-parser
+```
 
 Then you can simply initialise it like this:
 ```js
