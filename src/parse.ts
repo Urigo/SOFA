@@ -1,14 +1,14 @@
 import {
-  VariableDefinitionNode,
-  GraphQLSchema,
-  TypeNode,
+  type VariableDefinitionNode,
+  type GraphQLSchema,
+  type TypeNode,
   isScalarType,
   isEqualType,
   GraphQLBoolean,
   isInputObjectType,
   Kind,
 } from 'graphql';
-import { isNil } from './common';
+import { isNil } from './common.js';
 
 export function parseVariable({
   value,

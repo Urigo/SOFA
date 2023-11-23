@@ -46,8 +46,8 @@ const yoga = createYoga({
 });
 
 app.route({
-  path: '/graphql',
-  handler: yoga,
+  path: yoga.graphqlEndpoint,
+  handler: yoga as any,
 })
 
 const port = 4000;

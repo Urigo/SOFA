@@ -8,24 +8,24 @@ import {
   isInputObjectType,
 } from 'graphql';
 import { buildOperationNodeForField, createGraphQLError } from '@graphql-tools/utils';
-import { getOperationInfo, OperationInfo } from './ast';
-import type { Sofa, Route } from './sofa';
-import type { RouteInfo, DefaultSofaServerContext } from './types';
+import { getOperationInfo, OperationInfo } from './ast.js';
+import type { Sofa, Route } from './sofa.js';
+import type { RouteInfo, DefaultSofaServerContext } from './types.js';
 import { convertName } from './common';
-import { parseVariable } from './parse';
-import { StartSubscriptionEvent, SubscriptionManager } from './subscriptions';
-import { logger } from './logger';
+import { parseVariable } from './parse.js';
+import { type StartSubscriptionEvent, SubscriptionManager } from './subscriptions.js';
+import { logger } from './logger.js';
 import {
   Response,
   createRouter as createRouterInstance,
-  RouterRequest,
-  Router,
-  RouteHandler,
-  RouteSchemas,
+  type RouterRequest,
+  type Router,
+  type RouteHandler,
+  type RouteSchemas,
 } from 'fets';
-import { HTTPMethod, StatusCode } from 'fets/typings/typed-fetch';
-import { isInPath, resolveParamSchema, resolveRequestBody, resolveResponse, resolveVariableDescription } from './open-api/operations';
-import { buildSchemaObjectFromType } from './open-api/types';
+import type { HTTPMethod, StatusCode } from 'fets/typings/typed-fetch';
+import { isInPath, resolveParamSchema, resolveRequestBody, resolveResponse, resolveVariableDescription } from './open-api/operations.js';
+import { buildSchemaObjectFromType } from './open-api/types.js';
 
 export type ErrorHandler = (errors: ReadonlyArray<any>) => Response;
 
@@ -39,7 +39,6 @@ declare module 'graphql' {
     http?: GraphQLHTTPErrorExtensions;
   }
 }
-
 
 const defaultErrorHandler: ErrorHandler = (errors) => {
   let status: StatusCode | undefined;
@@ -110,6 +109,7 @@ export function createRouter(sofa: Sofa) {
     base: sofa.basePath,
     openAPI: sofa.openAPI,
     swaggerUI: sofa.swaggerUI,
+    landingPage: false,
   });
 
   const queryType = sofa.schema.getQueryType();
@@ -150,7 +150,7 @@ export function createRouter(sofa: Sofa) {
       } catch (error) {
         return Response.json(error, {
           status: 500,
-          statusText: 'Subscription failed',
+          statusText: 'Subscription failed' as any,
         });
       }
     }
@@ -179,7 +179,7 @@ export function createRouter(sofa: Sofa) {
       } catch (error) {
         return Response.json(error, {
           status: 500,
-          statusText: 'Subscription failed to update',
+          statusText: 'Subscription failed to update' as any,
         });
       }
     }
@@ -196,7 +196,7 @@ export function createRouter(sofa: Sofa) {
       } catch (error) {
         return Response.json(error, {
           status: 500,
-          statusText: 'Subscription failed to stop',
+          statusText: 'Subscription failed to stop' as any,
         });
       }
     }
@@ -468,9 +468,9 @@ function useHandler(config: {
         })
       }
 
-      const sofaContext: DefaultSofaServerContext = Object.assign(serverContext, {
+      const sofaContext = Object.assign(serverContext, {
         request,
-      });
+      }) as DefaultSofaServerContext;
       const contextValue = await sofa.contextFactory(sofaContext);
       const result = await sofa.execute({
         schema: sofa.schema,

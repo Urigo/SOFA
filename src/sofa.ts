@@ -10,12 +10,12 @@ import {
   execute,
 } from 'graphql';
 
-import { Ignore, ContextFn, ContextValue } from './types';
-import { convertName } from './common';
-import { logger } from './logger';
-import { ErrorHandler } from './router';
-import { HTTPMethod, StatusCode } from 'fets/typings/typed-fetch';
-import { RouterOpenAPIOptions, RouterSwaggerUIOptions } from 'fets';
+import type { Ignore, ContextFn, ContextValue } from './types.js';
+import { convertName } from './common.js';
+import { logger } from './logger.js';
+import type { ErrorHandler } from './router.js';
+import type { HTTPMethod, StatusCode } from 'fets/typings/typed-fetch';
+import type { RouterOpenAPIOptions, RouterSwaggerUIOptions } from 'fets';
 
 // user passes:
 // - schema
