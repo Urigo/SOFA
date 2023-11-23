@@ -1,5 +1,5 @@
-import { HTTPMethod } from 'fets/typings/typed-fetch';
-import { DocumentNode } from 'graphql';
+import type { HTTPMethod } from 'fets/typings/typed-fetch';
+import type { DocumentNode } from 'graphql';
 
 export type ContextValue = Record<string, any>;
 

@@ -1,6 +1,4 @@
 {
   "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "module": "commonjs"
-  }
+  "include": ["example/index.ts"]
 }

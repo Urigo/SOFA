@@ -4,9 +4,9 @@
     "module": "esnext",
     "target": "es2021",
     "lib": ["esnext"],
+    "rootDir": ".",
     "moduleResolution": "node",
-    "sourceMap": true,
-    "inlineSources": true,
+    "sourceMap": false,
     "declaration": true,
     "strict": true,
     "noUnusedLocals": true,
@@ -16,5 +16,6 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
