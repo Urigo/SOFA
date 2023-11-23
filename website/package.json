@@ -4,14 +4,14 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "next build && next-sitemap --config next-sitemap.config.cjs && next export",
+    "build": "next build && next-sitemap --config next-sitemap.config.cjs && next build",
     "dev": "next",
     "start": "next start"
   },
   "dependencies": {
     "lottie-web": "^5.11.0",
     "@theguild/components": "^6.0.1",
-    "next": "^13.5.4",
+    "next": "^14.0.0",
     "next-sitemap": "^4.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
