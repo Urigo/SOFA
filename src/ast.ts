@@ -1,8 +1,8 @@
 import {
   getOperationAST,
-  DocumentNode,
-  OperationDefinitionNode,
-  VariableDefinitionNode,
+  type DocumentNode,
+  type OperationDefinitionNode,
+  type VariableDefinitionNode,
 } from 'graphql';
 
 export type OperationInfo =

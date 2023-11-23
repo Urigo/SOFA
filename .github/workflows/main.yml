@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node_version: [16, 18]
+        node_version: [18, 20, 21]
     steps:
       - uses: actions/checkout@master
       - name: Use Node.js ${{ matrix.node_version }}
@@ -25,8 +25,6 @@ jobs:
         run: yarn build
       - name: Test
         run: yarn test
-      - name: Bundle Size
-        run: yarn bundlesize
       - name: Publish Canary
         env: # Or as an environment variable
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}

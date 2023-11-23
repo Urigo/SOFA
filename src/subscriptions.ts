@@ -1,17 +1,17 @@
 import {
-  DocumentNode,
-  VariableDefinitionNode,
-  ExecutionResult,
+  type DocumentNode,
+ type VariableDefinitionNode,
+  type ExecutionResult,
   Kind,
-  OperationTypeNode,
+  type OperationTypeNode,
 } from 'graphql';
 import { fetch, crypto } from '@whatwg-node/fetch';
 import { buildOperationNodeForField } from '@graphql-tools/utils';
-import type { ContextValue } from './types';
-import type { Sofa } from './sofa';
-import { getOperationInfo } from './ast';
-import { parseVariable } from './parse';
-import { logger } from './logger';
+import type { ContextValue } from './types.js';
+import type { Sofa } from './sofa.js';
+import { getOperationInfo } from './ast.js';
+import { parseVariable } from './parse.js';
+import { logger } from './logger.js';
 
 function isAsyncIterable(obj: any): obj is AsyncIterable<any> {
   return typeof obj[Symbol.asyncIterator] === 'function';
