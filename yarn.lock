@@ -5164,12 +5164,10 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
-title-case@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.npmjs.org/title-case/-/title-case-3.0.3.tgz"
-  integrity sha512-e1zGYRvbffpcHIrnuqT0Dh+gEJtDaxDSoG4JAIpq4oDFyooziLBIiYQv0GBT4FUAnUop5uZ1hiIAj7oAF6sOCA==
-  dependencies:
-    tslib "^2.0.3"
+title-case@^4.0.0:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/title-case/-/title-case-4.1.2.tgz#76d4c0a50b1a49d17c30542a8700aa2d3251297f"
+  integrity sha512-K9Mmf3WWSF0DCAMLk6so4EFyxhh9puTZSnfkpFnp+EGLewLQTYOeYKDXE4PCFU5dUmrqXwSVzZXbpJ6gFIm9Ow==
 
 tmp@^0.0.33:
   version "0.0.33"
