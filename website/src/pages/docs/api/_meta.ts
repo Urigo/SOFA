@@ -1,4 +1,4 @@
-{
+export default {
   "models": "Nested Data and Models",
   "context": "Using Context",
   "ignore": "Using Objects Instead of IDs",
