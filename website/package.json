@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "next build && next-sitemap --config next-sitemap.config.cjs && next export",
+    "build": "next build && next-sitemap --config next-sitemap.config.cjs && next build",
     "dev": "next",
     "start": "next start"
   },
