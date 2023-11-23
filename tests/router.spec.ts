@@ -575,6 +575,37 @@ test('should work with Query and nested models', async () => {
   expect((spy.mock.calls[0] as any[])[1]).toEqual({ id: 'test-id' });
 });
 
+test('should respect tags and descriptions', () => {
+  const schema = createSchema({
+    typeDefs: /* GraphQL */ `
+      type Query {
+        """
+        this is query
+        """
+        foo: String
+      }
+      type Mutation {
+        """
+        this is mutation
+        """
+        bar(arg1: Int): String
+      }
+    `,
+  });
+
+  const sofa = useSofa({
+    basePath: '/api',
+    schema,
+    routes: {
+      'Query.foo': { tags: ['foo'], description: 'this is query' },
+      'Mutation.bar': { tags: ['bar'], description: 'this is mutation' },
+    },
+  });
+
+  expect(sofa.openAPIDocument.paths?.['/foo']?.get?.tags).toEqual(['foo']);
+  expect(sofa.openAPIDocument.paths?.['/bar']?.post?.tags).toEqual(['bar']);
+})
+
 // test('should catch json parsing errors on query params and return Bad Request/400 error', async () => {
 //   const spy = jest.fn();
 //   const sofa = useSofa({
