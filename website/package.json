@@ -17,13 +17,13 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@theguild/algolia": "1.1.9",
+    "@theguild/algolia": "2.0.0",
     "@theguild/tailwind-config": "0.3.0",
     "@types/node": "20.8.4",
     "@types/react": "18.2.28",
     "typescript": "5.3.2"
   },
   "resolutions": {
-    "hast-util-to-estree": "^2.3.3"
+    "hast-util-to-estree": "^3.0.0"
   }
 }

@@ -36,6 +36,56 @@ test('should work with Query and variables', async () => {
   expect((spy.mock.calls[0] as any[])[1]).toEqual({ id: 'test-id' });
 });
 
+test('should work with input objects in URL params via GET', async () => {
+  const testUser = {
+    id: 'test-id',
+    name: 'Test User',
+  };
+  const spy = jest.fn(() => [testUser]);
+  const sofa = useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type User {
+          id: ID
+          name: String
+        }
+
+        input UserFilterNestedInput {
+          id: ID!
+        }
+
+        input UserFilterInput {
+          nested: UserFilterNestedInput!
+        }
+
+        type Query {
+          users(where: UserFilterInput!): [User!]!
+        }
+      `,
+      resolvers: {
+        Query: {
+          users: spy,
+        },
+      },
+    }),
+  });
+
+  const res = await sofa.fetch(
+    'http://localhost:4000/api/users?where={"nested":{"id":"test-id"}}'
+  );
+  expect(res.status).toBe(200);
+  const resBody = await res.json();
+  expect(resBody).toEqual([testUser]);
+  expect((spy.mock.calls[0] as any[])[1]).toEqual({
+    where: {
+      nested: {
+        id: testUser.id,
+      },
+    },
+  });
+});
+
 test('should work with Mutation', async () => {
   const pizza = { dough: 'dough', toppings: ['topping'] };
   const spy = jest.fn(() => ({ __typename: 'Pizza', ...pizza }));
@@ -333,7 +383,7 @@ test('should return errors as json', async () => {
         message: 'permission denied',
         path: ['foo'],
         extensions: { code: 'PERMISSION_DENIED' },
-      }
+      },
     ],
   });
 });
@@ -414,7 +464,7 @@ test('should respect http error extensions', async () => {
         extensions: {
           code: 'PERMISSION_DENIED',
         },
-      }
+      },
     ],
   });
 });
@@ -514,19 +564,19 @@ test('primitive true boolean in requests should be handled as true', async () =>
 //     }),
 //     onRoute: spy,
 //     routes: {
-//       'Query.foo': { description: 'this is overwrited query description' },
+//       'Query.foo': { description: 'this is overwritten query description' },
 //       'Mutation.bar': {
-//         description: 'this is overwrited mutation description',
+//         description: 'this is overwritten mutation description',
 //       },
 //     },
 //   });
 
 //   expect(spy).toBeCalledTimes(2);
 //   expect(spy.mock.calls[0][0].description).toEqual(
-//     'this is overwrited query description'
+//     'this is overwritten query description'
 //   );
 //   expect(spy.mock.calls[1][0].description).toEqual(
-//     'this is overwrited mutation description'
+//     'this is overwritten mutation description'
 //   );
 // });
 
