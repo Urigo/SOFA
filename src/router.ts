@@ -26,6 +26,7 @@ import {
 import type { HTTPMethod, StatusCode } from 'fets/typings/typed-fetch';
 import { isInPath, resolveParamSchema, resolveRequestBody, resolveResponse, resolveVariableDescription } from './open-api/operations.js';
 import { buildSchemaObjectFromType } from './open-api/types.js';
+import { parse as qsParse } from 'qs';
 
 export type ErrorHandler = (errors: ReadonlyArray<any>) => Response;
 
@@ -521,12 +522,6 @@ function pickParam({
   if (name in params) {
     return params[name];
   }
-  const searchParams = new URLSearchParams(url.split('?')[1]);
-  if (searchParams.has(name)) {
-    const values = searchParams.getAll(name);
-    return values.length === 1 ? values[0] : values;
-  }
-  if (body && body.hasOwnProperty(name)) {
-    return body[name];
-  }
+  const searchParams = qsParse(url.split('?')[1]);
+  return searchParams[name] || body[name];
 }
