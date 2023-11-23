@@ -20,6 +20,18 @@ const schema = buildSchema(/* GraphQL */ `
     authorId: Int
   }
 
+  type Image {
+    url: String
+  }
+
+  type Gallery {
+    id: ID
+    name: String
+    images: [Image!]!
+  }
+
+  union Inspiration = Post | Gallery
+
   type Query {
     """
     Feed of posts
@@ -30,6 +42,11 @@ const schema = buildSchema(/* GraphQL */ `
       """
       type: PostType
     ): [Post]
+
+    """
+    Random post or gallery
+    """
+    inspiration: Inspiration
   }
 
   scalar Date
@@ -230,5 +247,60 @@ test('handle query params in POST requests', async () => {
     items: {
       type: 'string',
     },
+  });
+});
+
+test('handle union type', async () => {
+  const operation = buildOperationNodeForField({
+    schema,
+    kind: 'query' as OperationTypeNode,
+    field: 'inspiration',
+    models: [],
+    ignore: [],
+  });
+
+  const result = buildPathFromOperation({
+    url: '/api/inspiration',
+    operation: {
+      kind: Kind.DOCUMENT,
+      definitions: [operation],
+    },
+    schema,
+    useRequestBody: false,
+    customScalars: {
+      Date: { type: 'string', format: 'date' },
+    },
+  });
+  expect(result.operationId).toEqual('inspiration_query');
+  expect(result.parameters?.length).toEqual(2);
+  expect(result.parameters?.[0]).toEqual({
+    in: 'query',
+    name: 'inspiration_comments_filter',
+    required: true,
+    schema: {
+      type: 'string',
+    },
+  });
+  expect(result.parameters?.[1]).toEqual({
+    in: 'query',
+    name: 'inspiration_comments_date',
+    required: false,
+    schema: {
+      type: 'string',
+      format: 'date',
+    },
+  });
+
+  expect((result.responses[200] as any).description).toMatch(
+    'Random post or gallery'
+  );
+
+  const response = (result.responses[200] as any).content['application/json']
+    .schema;
+  expect(response).toEqual({
+    oneOf: [
+      { $ref: '#/components/schemas/Post' },
+      { $ref: '#/components/schemas/Gallery' },
+    ],
   });
 });

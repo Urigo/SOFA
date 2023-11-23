@@ -9,6 +9,7 @@ import {
   isScalarType,
   isEnumType,
   GraphQLType,
+  isUnionType,
 } from 'graphql';
 import { mapToPrimitive, mapToRef } from './utils';
 
@@ -86,6 +87,12 @@ export function resolveFieldType(
     return {
       type: 'string',
       enum: type.getValues().map((value) => value.name),
+    };
+  }
+
+  if (isUnionType(type)) {
+    return {
+      oneOf: type.getTypes().map((type) => resolveFieldType(type, opts)),
     };
   }
 
