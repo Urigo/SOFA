@@ -1,5 +1,20 @@
 # Change log
 
+## 0.18.1
+
+### Patch Changes
+
+- [#1372](https://github.com/Urigo/SOFA/pull/1372) [`dac1f7e`](https://github.com/Urigo/SOFA/commit/dac1f7eb93ecc251d068d19f5e150e888e64741d) Thanks [@gilgardosh](https://github.com/gilgardosh)! - Bug fix: Generate spec for Union types
+
+- [#1388](https://github.com/Urigo/SOFA/pull/1388) [`ffe6e67`](https://github.com/Urigo/SOFA/commit/ffe6e67894f40619d2ae8c99e16d23301a27756a) Thanks [@robertherber](https://github.com/robertherber)! - fix: add types to exports in package.json
+
+- [#1390](https://github.com/Urigo/SOFA/pull/1390) [`03b0ccf`](https://github.com/Urigo/SOFA/commit/03b0ccf585aaacb0aec87022151e1c126c9f225c) Thanks [@ardatan](https://github.com/ardatan)! - dependencies updates:
+
+  - Updated dependency [`@whatwg-node/fetch@^0.9.14` ↗︎](https://www.npmjs.com/package/@whatwg-node/fetch/v/0.9.14) (from `^0.9.0`, in `dependencies`)
+  - Updated dependency [`fets@^0.6.4` ↗︎](https://www.npmjs.com/package/fets/v/0.6.4) (from `^0.2.0`, in `dependencies`)
+
+- [#1370](https://github.com/Urigo/SOFA/pull/1370) [`028af74`](https://github.com/Urigo/SOFA/commit/028af7484889f64cd89e50b43186d15c968b4972) Thanks [@nathanchapman](https://github.com/nathanchapman)! - Handle nested query parameters
+
 ## 0.18.0
 
 ### Minor Changes
