@@ -39,25 +39,11 @@
 - `useSofa` now supports more server frameworks. It uses `itty-router` and `@whatwg-node/server` so it supports almost all JS environments;
   [See more](https://github.com/ardatan/whatwg-node/tree/master/packages/server#integrations)
   Documentation on SOFA's docs will be updated soon.
-- `OpenAPI` no longer has `.save` method. Use `.get` to get the schema;
+- `OpenAPI` no longer has `.save` method. Use `.openapiDocument` to get the schema;
 
 ```diff
-const openApi = OpenAPI({
-  schema,
-  servers: [
-    {
-      url: '/', // Specify Server's URL.
-      description: 'Development server',
-    },
-  ],
-  info: {
-    title: 'Example API',
-    version: '3.0.0',
-  },
-});
-
 - openApi.save('swagger.json');
-+ fs.writeFileSync('swagger.json', JSON.stringify(openApi.get(), null, 2));
++ fs.writeFileSync('swagger.json', JSON.stringify(sofa.openapiDocument, null, 2));
 ```
 
 ### v0.10.2
