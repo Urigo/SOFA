@@ -16,15 +16,6 @@ jobs:
       githubToken: ${{ secrets.GITHUB_TOKEN }}
       npmToken: ${{ secrets.NPM_TOKEN }}
 
-  algolia:
-    uses: the-guild-org/shared-config/.github/workflows/algolia-integrity.yml@main
-    with:
-      domain: https://www.the-guild.dev/graphql/sofa-api/
-      source: "SOFA"
-      setupEnvWorkingDirectory: "./website"
-    secrets:
-      githubToken: ${{ secrets.GITHUB_TOKEN }}
-
   dependencies:
     uses: the-guild-org/shared-config/.github/workflows/changesets-dependencies.yaml@main
     secrets:
