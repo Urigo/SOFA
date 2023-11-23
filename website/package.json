@@ -24,6 +24,6 @@
     "typescript": "5.3.2"
   },
   "resolutions": {
-    "hast-util-to-estree": "^2.3.3"
+    "hast-util-to-estree": "^3.0.0"
   }
 }
