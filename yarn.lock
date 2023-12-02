@@ -952,9 +952,9 @@
   integrity sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==
 
 "@babel/runtime@^7.18.3", "@babel/runtime@^7.20.1", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.4":
-  version "7.23.4"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.4.tgz#36fa1d2b36db873d25ec631dcc4923fdc1cf2e2e"
-  integrity sha512-2Yv65nlWnWlSpe3fXEyX5i7fx5kIKo4Qbcj+hMO0odwaneFjfXw5fdum+4yL20O0QiaHpia0cYQ9xpNMqrBwHg==
+  version "7.23.5"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.5.tgz#11edb98f8aeec529b82b211028177679144242db"
+  integrity sha512-NdUTHcPe4C99WxPub+K9l9tK5/lV4UXIoaHSYgzco9BCyjKAAwzdBI+wWtYqHt7LJdbo74ZjRPJgzVweq1sz0w==
   dependencies:
     regenerator-runtime "^0.14.0"
 
@@ -1908,10 +1908,10 @@
   resolved "https://registry.npmjs.org/@types/minimist/-/minimist-1.2.2.tgz"
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
-"@types/node@*", "@types/node@20.10.0":
-  version "20.10.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.10.0.tgz#16ddf9c0a72b832ec4fcce35b8249cf149214617"
-  integrity sha512-D0WfRmU9TQ8I9PFx9Yc+EBHw+vSpIub4IDvQivcp26PtPrdMGAq5SDcpXEo/epqa/DXotVpekHiLNTg3iaKXBQ==
+"@types/node@*", "@types/node@20.10.2":
+  version "20.10.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.10.2.tgz#32a5e8228357f57714ad28d52229ab04880c2814"
+  integrity sha512-37MXfxkb0vuIlRKHNxwCkb60PNBpR94u4efQuN4JgIAm66zfCDXGSAFCef9XUWFovX2R1ok6Z7MHhtdVXXkkIw==
   dependencies:
     undici-types "~5.26.4"
 
@@ -2007,9 +2007,9 @@
     tslib "^2.3.1"
 
 "@whatwg-node/server@^0.9.1", "@whatwg-node/server@^0.9.15":
-  version "0.9.17"
-  resolved "https://registry.yarnpkg.com/@whatwg-node/server/-/server-0.9.17.tgz#eecbd64d5072bfd31b074f7981a7f5149bc7c00e"
-  integrity sha512-nSWPFHElEG9k8KAfWgn09JWjVMfsZIRg1aOYVWeBUTh9e61V7aidS3uJ0qwSA3QgsDJb4SqsNjsWRiQQDINNiA==
+  version "0.9.18"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/server/-/server-0.9.18.tgz#5194822b4280a33251bfd082cd967561be31f8e7"
+  integrity sha512-rfI2ZhKWakfkhyVA4v95cnkMF5k5B4k57yLH4bYkEORnLJj+SL7sger0q4hyA47bdp1KOY1raeIBIBEXSpwTvw==
   dependencies:
     "@whatwg-node/fetch" "^0.9.10"
     tslib "^2.3.1"
@@ -2952,9 +2952,9 @@ fb-watchman@^2.0.0:
     bser "2.1.1"
 
 fets@^0.6.4:
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/fets/-/fets-0.6.5.tgz#a9bd26478135b1a140ad00f4bc78b5b70838ee11"
-  integrity sha512-Opz5QmyK5ldVsAYeRfUvMdrxhspFu3lbyR2KE3iXXXMN8S+XYtVY7IF7IYo/dBt4nP2FsQHsZJQgHLchRhlndA==
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/fets/-/fets-0.6.6.tgz#d93e48be844c07a55f78c283d9c6db81d95a5802"
+  integrity sha512-3755C8c2Bb/peJbmNHmB6vpmM3IPgGg02ejKA6J+73e/l6vo87wSzoLAI4dYvJP1L6AsuBiXeG5T2ouhZ1qikg==
   dependencies:
     "@sinclair/typebox" "^0.31.23"
     "@whatwg-node/cookie-store" "^0.2.0"
@@ -3181,10 +3181,10 @@ graphql-scalars@1.22.4:
   dependencies:
     tslib "^2.5.0"
 
-graphql-yoga@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.0.0.tgz#446c9cc1d336b550394b6a17703d7fc1acdda18e"
-  integrity sha512-ZvZlO8MHMDWuLRoDhvJQnXg8SOJD0iDaCA+M/zWuD26AlhEugOEbpnhw/645oqXTYtvHsM91WyxtV7p5XJWYMg==
+graphql-yoga@5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.0.1.tgz#255fb63a2398ce49c73d2c0feaef9d64bf835ff8"
+  integrity sha512-tcdJOjEv5am5TOGX6TcKDyLT5azrnZ38Y+WUgnbYSYeYX12AKuEju94Sr1ixACvruQo6EyogfKpUGwtb7LQYCw==
   dependencies:
     "@envelop/core" "^5.0.0"
     "@graphql-tools/executor" "^1.0.0"
