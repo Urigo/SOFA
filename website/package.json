@@ -21,7 +21,7 @@
     "@theguild/tailwind-config": "0.3.0",
     "@types/node": "20.10.2",
     "@types/react": "18.2.40",
-    "typescript": "5.3.2"
+    "typescript": "5.3.3"
   },
   "resolutions": {
     "hast-util-to-estree": "^3.0.0"
