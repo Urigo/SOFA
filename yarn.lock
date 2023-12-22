@@ -1774,10 +1774,10 @@
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.27.8.tgz#6667fac16c436b5434a387a34dedb013198f6e6e"
   integrity sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==
 
-"@sinclair/typebox@^0.31.23":
-  version "0.31.28"
-  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.31.28.tgz#b68831e7bc7d09daac26968ea32f42bedc968ede"
-  integrity sha512-/s55Jujywdw/Jpan+vsy6JZs1z2ZTGxTmbZTPiuSL2wz9mfzA2gN1zzaqmvfi4pq+uOt7Du85fkiwv5ymW84aQ==
+"@sinclair/typebox@^0.32.0":
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.32.0.tgz#17b6003a99f34686cc28d50c3ee2a68c9b3d6099"
+  integrity sha512-FdBgO+ib0JCSPtq55cDva/5xd55vfAAyTXWVLCaTAFzNjVPaR5lNRKoEzMHTtArELEaHNs4E6WmdNJIY+gUoZw==
 
 "@sinonjs/commons@^2.0.0":
   version "2.0.0"
@@ -1926,10 +1926,10 @@
   resolved "https://registry.npmjs.org/@types/normalize-package-data/-/normalize-package-data-2.4.1.tgz"
   integrity sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==
 
-"@types/qs@*", "@types/qs@6.9.10":
-  version "6.9.10"
-  resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.10.tgz#0af26845b5067e1c9a622658a51f60a3934d51e8"
-  integrity sha512-3Gnx08Ns1sEoCrWssEgTSJs/rsT2vhGP+Ja9cnnk9k4ALxinORlQneLXFeFKOTJMOeZUFD1s7w+w2AphTpvzZw==
+"@types/qs@*", "@types/qs@6.9.11":
+  version "6.9.11"
+  resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.11.tgz#208d8a30bc507bd82e03ada29e4732ea46a6bbda"
+  integrity sha512-oGk0gmhnEJK4Yyk+oI7EfXsLayXatCWPHary1MtcmbAifkobT9cM9yutG/hZKIseOU0MqbIwQ/u2nn/Gb+ltuQ==
 
 "@types/range-parser@*":
   version "1.2.4"
@@ -2940,17 +2940,17 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-fets@^0.6.4:
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/fets/-/fets-0.6.8.tgz#b62e496ba59f532f4f4052e86f9e1120ac161151"
-  integrity sha512-3UJ8yXuMDwxI563wr91JA0jTtOcL8KEnSFHbp7ETuukRL/PMoKYilqyce49pLMc/tTfhK7Ok4mnHRSBSN30xbw==
+fets@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/fets/-/fets-0.7.0.tgz#b035fc2c355a2ed68d3faef7917680a2ca020931"
+  integrity sha512-wJLIAPfv/FQS7PkiXfDTraAXdHXkOa8BQqzK2wCU3j1u3x1RqeRg1EMjLmHw7KbKB14NjJwBAAJRySwTSD014Q==
   dependencies:
-    "@sinclair/typebox" "^0.31.23"
+    "@sinclair/typebox" "^0.32.0"
     "@whatwg-node/cookie-store" "^0.2.0"
     "@whatwg-node/fetch" "^0.9.4"
     "@whatwg-node/server" "^0.9.15"
     hotscript "^1.0.11"
-    json-schema-to-ts "^2.9.1"
+    json-schema-to-ts "^3.0.0"
     qs "^6.11.2"
     ts-toolbelt "^9.6.0"
     tslib "^2.3.1"
@@ -3175,10 +3175,10 @@ graphql-scalars@1.22.4:
   dependencies:
     tslib "^2.5.0"
 
-graphql-yoga@5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.0.2.tgz#2c61b7c3ef1e09b5e844cdfd9d882d61d260bce3"
-  integrity sha512-+r0aZ5sBQaWTFEwmDdPR+XcsYaIIh40IA34F7rhnyY57KXgs18ZkCZ9NPvfi6XEuqkHEvc2PFox05c5NRSJ26g==
+graphql-yoga@5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.1.0.tgz#27979689b0e8462dad01a1cee01aa04180c93443"
+  integrity sha512-Ee5uJkNSI7ZRS8X79OlPEuF8m2+HCn/dmjvbMNpsz5Yq+sqsLXTEFhKjhjK6hyqrTl1pQwGwJTbl9f886hDMDg==
   dependencies:
     "@envelop/core" "^5.0.0"
     "@graphql-tools/executor" "^1.0.0"
@@ -3976,14 +3976,14 @@ json-parse-even-better-errors@^2.3.0:
   resolved "https://registry.npmjs.org/json-parse-even-better-errors/-/json-parse-even-better-errors-2.3.1.tgz"
   integrity sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==
 
-json-schema-to-ts@^2.9.1:
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/json-schema-to-ts/-/json-schema-to-ts-2.9.2.tgz#a054bc6410f13c7a2fc51aeabac52292e885b98d"
-  integrity sha512-h9WqLkTVpBbiaPb5OmeUpz/FBLS/kvIJw4oRCPiEisIu2WjMh+aai0QIY2LoOhRFx5r92taGLcerIrzxKBAP6g==
+json-schema-to-ts@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/json-schema-to-ts/-/json-schema-to-ts-3.0.0.tgz#f97eaa14a412bbf7c3cde523703d93907386a439"
+  integrity sha512-2adDesYifYEXYxNySx3gG0RR69rDWIjqAFzK/JPXdOvjHLZ/UP6d2rkpy6a+AxyhtRp2SvFPZ4+EW36jBinUbA==
   dependencies:
     "@babel/runtime" "^7.18.3"
     "@types/json-schema" "^7.0.9"
-    ts-algebra "^1.2.0"
+    ts-algebra "^1.2.2"
 
 json5@^2.2.3:
   version "2.2.3"
@@ -5206,7 +5206,7 @@ trim-newlines@^3.0.0:
   resolved "https://registry.npmjs.org/trim-newlines/-/trim-newlines-3.0.1.tgz"
   integrity sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==
 
-ts-algebra@^1.2.0:
+ts-algebra@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/ts-algebra/-/ts-algebra-1.2.2.tgz#b75d301c28cd4126cd344760a47b43e48e2872e0"
   integrity sha512-kloPhf1hq3JbCPOTYoOWDKxebWjNb2o/LKnNfkWhxVVisFFmMJPPdJeGoGmM+iRLyoXAR61e08Pb+vUXINg8aA==
