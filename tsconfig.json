@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
+    
     "experimentalDecorators": true,
     "module": "esnext",
     "target": "es2021",
     "lib": ["esnext"],
-    "rootDir": ".",
     "moduleResolution": "node",
     "sourceMap": false,
     "declaration": true,
