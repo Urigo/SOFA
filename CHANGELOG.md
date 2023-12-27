@@ -1,5 +1,14 @@
 # Change log
 
+## 0.18.2
+
+### Patch Changes
+
+- [#1413](https://github.com/Urigo/SOFA/pull/1413) [`ef9ffb6`](https://github.com/Urigo/SOFA/commit/ef9ffb658da7301e31cbec2c4865be78ce04c085) Thanks [@mhayes](https://github.com/mhayes)! - Fix release
+
+- [#1410](https://github.com/Urigo/SOFA/pull/1410) [`4999686`](https://github.com/Urigo/SOFA/commit/49996861148d96657f707f565e32a0f87d3abd21) Thanks [@renovate](https://github.com/apps/renovate)! - dependencies updates:
+  - Updated dependency [`fets@^0.7.0` ↗︎](https://www.npmjs.com/package/fets/v/0.7.0) (from `^0.6.4`, in `dependencies`)
+
 ## 0.18.1
 
 ### Patch Changes
@@ -67,11 +76,11 @@ In this release express is removed as dependency. New `basePath` option is requi
 
 ```js
 app.use(
-  '/api',
+  "/api",
   useSofa({
-    basePath: '/api',
+    basePath: "/api",
     schema,
-  })
+  }),
 );
 ```
 
