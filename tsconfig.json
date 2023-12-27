@@ -4,7 +4,6 @@
     "module": "esnext",
     "target": "es2021",
     "lib": ["esnext"],
-    "rootDir": ".",
     "moduleResolution": "node",
     "sourceMap": false,
     "declaration": true,
@@ -16,6 +15,5 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }
