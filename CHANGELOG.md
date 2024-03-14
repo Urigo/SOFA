@@ -1,5 +1,11 @@
 # Change log
 
+## 0.18.3
+
+### Patch Changes
+
+- [`5c3528e`](https://github.com/Urigo/SOFA/commit/5c3528eec41c35e1b6a09fd54751fc69f744f7a2) Thanks [@ardatan](https://github.com/ardatan)! - Resolve enums correctly
+
 ## 0.18.2
 
 ### Patch Changes
