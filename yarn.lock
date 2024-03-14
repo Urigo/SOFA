@@ -952,9 +952,9 @@
   integrity sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==
 
 "@babel/runtime@^7.18.3", "@babel/runtime@^7.20.1", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.4":
-  version "7.23.7"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.7.tgz#dd7c88deeb218a0f8bd34d5db1aa242e0f203193"
-  integrity sha512-w06OXVOFso7LcbzMiDGt+3X7Rh7Ho8MmgPoWU3rarH+8upf+wSU/grlGbWzQyr3DkdN6ZeuMFjpdwW0Q+HxobA==
+  version "7.24.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.24.0.tgz#584c450063ffda59697021430cb47101b085951e"
+  integrity sha512-Chk32uHMg6TnQdvw2e9IlqPpFX/6NLuK0Ys2PqLb7/gL5uFn9mXvK715FGLlOLQrcO4qIkNHkvPGktzzXexsFw==
   dependencies:
     regenerator-runtime "^0.14.0"
 
@@ -1774,9 +1774,9 @@
   integrity sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==
 
 "@sinclair/typebox@^0.32.0":
-  version "0.32.4"
-  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.32.4.tgz#94b8744215c1f54f38df9bd33626ef821ce66ca3"
-  integrity sha512-Q2Pex6H+HGuyxIGuFadkpqwtjZFXiVZlvy1rVX9XgAzUrDmUDEM69M2c4CkWUgMJ1NaFPvUf+cMBljY96GJVNQ==
+  version "0.32.15"
+  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.32.15.tgz#92dcdc12907f7c0f6d954ba3700b5bb888d2eb34"
+  integrity sha512-5Lrwo7VOiWEBJBhHmqNmf3TPB9ll8gcEshvYJyAIJyCZ2PF48MFOtiDHJNj8+FsNcqImaQYmxVkKBCBlyAa/wg==
 
 "@sinonjs/commons@^2.0.0":
   version "2.0.0"
@@ -1893,11 +1893,6 @@
     expect "^29.0.0"
     pretty-format "^29.0.0"
 
-"@types/json-schema@^7.0.9":
-  version "7.0.15"
-  resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.15.tgz#596a1747233694d50f6ad8a7869fcb6f56cf5841"
-  integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
-
 "@types/mime@*":
   version "3.0.1"
   resolved "https://registry.npmjs.org/@types/mime/-/mime-3.0.1.tgz"
@@ -1987,7 +1982,7 @@
   resolved "https://registry.yarnpkg.com/@whatwg-node/events/-/events-0.1.1.tgz#0ca718508249419587e130da26d40e29d99b5356"
   integrity sha512-AyQEn5hIPV7Ze+xFoXVU3QTHXVbWPrzaOkxtENMPMuNL6VVHrp4hHfDt9nrQpjO7BgvuM95dMtkycX5M/DZR3w==
 
-"@whatwg-node/fetch@^0.9.10", "@whatwg-node/fetch@^0.9.14", "@whatwg-node/fetch@^0.9.4", "@whatwg-node/fetch@^0.9.7":
+"@whatwg-node/fetch@^0.9.14", "@whatwg-node/fetch@^0.9.17", "@whatwg-node/fetch@^0.9.4", "@whatwg-node/fetch@^0.9.7":
   version "0.9.17"
   resolved "https://registry.yarnpkg.com/@whatwg-node/fetch/-/fetch-0.9.17.tgz#10e4ea2392926c8d41ff57e3156857e885317d3f"
   integrity sha512-TDYP3CpCrxwxpiNY0UMNf096H5Ihf67BK1iKGegQl5u9SlpEDYrvnV71gWBGJm+Xm31qOy8ATgma9rm8Pe7/5Q==
@@ -2007,11 +2002,11 @@
     tslib "^2.3.1"
 
 "@whatwg-node/server@^0.9.1", "@whatwg-node/server@^0.9.15":
-  version "0.9.23"
-  resolved "https://registry.yarnpkg.com/@whatwg-node/server/-/server-0.9.23.tgz#0f8b90fba6356b33c5a8c0a89b7397121695c416"
-  integrity sha512-B4SkvwXq0dNFQC/9r6UjMeE1MG0zxxFqSCljasgq/HYtY8Sm/blr7F2vZorIsjtz3nv/RDyrh1sM1MG7PUS6Vg==
+  version "0.9.29"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/server/-/server-0.9.29.tgz#69d4c6b4f31ab4044d2a8f19f9f6afc1669a6a80"
+  integrity sha512-YB0i658fBj/GmgdAEo/AzwMvWHFnGC+oxdBFuPnLgq6REiDLvWs/qIkppUDg8rABZXHsIxNt3HPrPcuqqpagBw==
   dependencies:
-    "@whatwg-node/fetch" "^0.9.10"
+    "@whatwg-node/fetch" "^0.9.17"
     tslib "^2.3.1"
 
 ansi-colors@^4.1.1, ansi-colors@^4.1.3:
@@ -2964,9 +2959,9 @@ fb-watchman@^2.0.0:
     bser "2.1.1"
 
 fets@^0.7.0:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/fets/-/fets-0.7.1.tgz#f28cbd41a9270628315c3e5e02874374bfd9fe10"
-  integrity sha512-bumR3sx3swjts3MpwfI/gqserRSxZ4RHhy8D6T0OvngixU1KcaaOOm2uBKNSA0accKKPwTzeKh7XD7Lb9ATZNQ==
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/fets/-/fets-0.7.2.tgz#4c68d8a7b94546b2e1044ce967037c82de33b153"
+  integrity sha512-t274naOfamd7FQwREER9XBx/gxHzFS4PHnYdms821cr0htoGcT4N0BWHtzPetPhHaBzP4P1nrk5i66L9F6arjA==
   dependencies:
     "@sinclair/typebox" "^0.32.0"
     "@whatwg-node/cookie-store" "^0.2.0"
@@ -4007,12 +4002,11 @@ json-parse-even-better-errors@^2.3.0:
   integrity sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==
 
 json-schema-to-ts@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/json-schema-to-ts/-/json-schema-to-ts-3.0.0.tgz#f97eaa14a412bbf7c3cde523703d93907386a439"
-  integrity sha512-2adDesYifYEXYxNySx3gG0RR69rDWIjqAFzK/JPXdOvjHLZ/UP6d2rkpy6a+AxyhtRp2SvFPZ4+EW36jBinUbA==
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/json-schema-to-ts/-/json-schema-to-ts-3.0.1.tgz#bd2760144e4a44fc8a4ffedc96291bf6c76f7921"
+  integrity sha512-ANphQxnKbzLWPeYDmdoci8C9g9ttpfMx8etTlJJ8UCEmNXH9jxGkn3AAbMe+lR4N5OG/01nYxPrDyugLdsRt+A==
   dependencies:
     "@babel/runtime" "^7.18.3"
-    "@types/json-schema" "^7.0.9"
     ts-algebra "^1.2.2"
 
 json5@^2.2.3:
