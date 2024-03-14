@@ -1,6 +1,11 @@
 export const typeDefs = /* GraphQL */ `
+  enum Dough {
+    THIN
+    THICK
+  }
+  
   type Pizza {
-    dough: String!
+    dough: Dough!
     toppings: [String!]
   }
 

@@ -6,6 +6,7 @@ import {
   OperationTypeNode,
   isIntrospectionType,
   isInputObjectType,
+  isEnumType,
 } from 'graphql';
 import { buildOperationNodeForField, createGraphQLError } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast.js';
@@ -95,13 +96,20 @@ export function createRouter(sofa: Sofa) {
   for (const typeName in types) {
     const type = types[typeName];
 
-    if (
-      (isObjectType(type) || isInputObjectType(type)) &&
-      !isIntrospectionType(type)
-    ) {
-      sofa.openAPI!.components!.schemas![typeName] = buildSchemaObjectFromType(type, {
-        customScalars: sofa.customScalars,
-      });
+    if (!isIntrospectionType(type)) {
+      if (
+        (isObjectType(type) || isInputObjectType(type))
+      ) {
+        sofa.openAPI!.components!.schemas![typeName] = buildSchemaObjectFromType(type, {
+          customScalars: sofa.customScalars,
+        });
+      } else if (isEnumType(type)) {
+        sofa.openAPI!.components!.schemas![typeName] = {
+          title: type.name,
+          type: 'string',
+          enum: type.getValues().map((value) => value.name),
+        }
+      }
     }
   }
 
