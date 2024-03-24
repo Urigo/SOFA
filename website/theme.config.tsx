@@ -1,8 +1,9 @@
 /* eslint sort-keys: error */
-import { defineConfig, Giscus, useTheme } from '@theguild/components';
+import { defineConfig, Giscus, PRODUCTS, useTheme } from '@theguild/components';
 import { useRouter } from 'next/router';
 
 export default defineConfig({
+  description: 'Generate RESTful APIs from your GraphQL schema',
   docsRepositoryBase: 'https://github.com/Urigo/SOFA/tree/master/website',
   main({ children }) {
     const { resolvedTheme } = useTheme();
@@ -27,5 +28,6 @@ export default defineConfig({
       </>
     );
   },
-  siteName: 'SOFA',
+  logo: PRODUCTS.SOFA.logo({ className: 'w-8' }),
+  websiteName: 'SOFA',
 });

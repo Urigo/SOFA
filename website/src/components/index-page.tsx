@@ -1,6 +1,12 @@
 import { ReactElement } from 'react'
 import { InfoList } from '@theguild/components'
-import { Hero } from './hero'
+import dynamic from 'next/dynamic'
+ 
+const Hero = dynamic(() =>
+  import('./hero').then((mod) => mod.Hero), {
+    ssr: false
+  }
+);
 
 export function IndexPage(): ReactElement {
   return (
