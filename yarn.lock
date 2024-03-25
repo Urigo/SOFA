@@ -2958,10 +2958,10 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-fets@^0.7.0:
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/fets/-/fets-0.7.2.tgz#4c68d8a7b94546b2e1044ce967037c82de33b153"
-  integrity sha512-t274naOfamd7FQwREER9XBx/gxHzFS4PHnYdms821cr0htoGcT4N0BWHtzPetPhHaBzP4P1nrk5i66L9F6arjA==
+fets@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/fets/-/fets-0.8.0.tgz#2cf9e2ffbb7b3e0e689df373d274ae7257141bee"
+  integrity sha512-Nv+a4w06cTo8mifghqxrmn/Gm/+bvox4HEzuaN5070dkm+upM0i/1+FMOFaOvmm9oG9y6932N3VHTdG63khjQQ==
   dependencies:
     "@sinclair/typebox" "^0.32.0"
     "@whatwg-node/cookie-store" "^0.2.0"
