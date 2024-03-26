@@ -1,5 +1,12 @@
 # Change log
 
+## 0.18.4
+
+### Patch Changes
+
+- [#1439](https://github.com/Urigo/SOFA/pull/1439) [`428522d`](https://github.com/Urigo/SOFA/commit/428522d490f8d057904e1e4fd27ba51d5fd8e479) Thanks [@renovate](https://github.com/apps/renovate)! - dependencies updates:
+  - Updated dependency [`fets@^0.8.0` ↗︎](https://www.npmjs.com/package/fets/v/0.8.0) (from `^0.7.0`, in `dependencies`)
+
 ## 0.18.3
 
 ### Patch Changes
