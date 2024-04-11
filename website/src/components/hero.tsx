@@ -64,7 +64,7 @@ export const Hero = (): ReactElement => {
 
   return (
     <div
-      className="-mx-72 lg:mx-0 max-h-[calc(100vh-var(--nextra-navbar-height)*2)] md:max-h-min relative opacity-0"
+      className="-mx-72 lg:mx-0 h-[calc(100dvh-var(--nextra-navbar-height))] relative opacity-0"
       ref={container}
     >
       <Anchor
