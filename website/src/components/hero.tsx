@@ -16,7 +16,7 @@ export const Hero = (): ReactElement => {
 
   useEffect(() => {
     if (!container.current) return;
-    container.current.classList.remove('opacity-0')
+    container.current.classList.remove('opacity-0');
     // For some reason there is 2 svg elements, and first don't have animation
     // so I removed him and keep only 2nd svg with animation
     container.current.querySelector('svg')?.remove();
@@ -27,6 +27,7 @@ export const Hero = (): ReactElement => {
       autoplay: false,
       animationData,
       rendererSettings: {
+        viewBoxOnly: true,
         preserveAspectRatio: 'xMidYMid meet',
         progressiveLoad: false, // Boolean, only svg renderer, loads dom elements when needed. Might speed up initialization for large number of elements.
         hideOnTransparent: true,
@@ -63,10 +64,7 @@ export const Hero = (): ReactElement => {
   };
 
   return (
-    <div
-      className="-mx-72 lg:mx-0 h-[calc(100dvh-var(--nextra-navbar-height))] relative opacity-0"
-      ref={container}
-    >
+    <div className="relative" ref={container}>
       <Anchor
         href="/docs"
         className={[
