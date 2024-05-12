@@ -5,7 +5,7 @@ import { createSofa } from './sofa';
 export { OpenAPI } from './open-api';
 
 export function useSofa(config: SofaConfig) {
-  return createRouter(
-    createSofa(config)
-  );
+  return createRouter(createSofa(config));
 }
+
+export { createRouter, createSofa };
