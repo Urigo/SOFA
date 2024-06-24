@@ -18,3 +18,9 @@ export type ContextFn = (serverContext: DefaultSofaServerContext) => Promise<Con
 export type DefaultSofaServerContext = {
   request: Request;
 }
+
+export interface ObjectJSONSchema {
+  type: 'object';
+  properties: Record<string, any>;
+  required: string[];
+}
