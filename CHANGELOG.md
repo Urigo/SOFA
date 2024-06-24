@@ -1,5 +1,11 @@
 # Change log
 
+## 0.18.5
+
+### Patch Changes
+
+- [#1468](https://github.com/Urigo/SOFA/pull/1468) [`a7144f9`](https://github.com/Urigo/SOFA/commit/a7144f9e689599729dbcf762bbe6164283e41152) Thanks [@renovate](https://github.com/apps/renovate)! - Fix TypeScript issues
+
 ## 0.18.4
 
 ### Patch Changes
@@ -89,11 +95,11 @@ In this release express is removed as dependency. New `basePath` option is requi
 
 ```js
 app.use(
-  "/api",
+  '/api',
   useSofa({
-    basePath: "/api",
+    basePath: '/api',
     schema,
-  }),
+  })
 );
 ```
 
