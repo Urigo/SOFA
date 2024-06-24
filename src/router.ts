@@ -11,7 +11,7 @@ import {
 import { buildOperationNodeForField, createGraphQLError } from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast.js';
 import type { Sofa, Route } from './sofa.js';
-import type { RouteInfo, DefaultSofaServerContext } from './types.js';
+import type { RouteInfo, DefaultSofaServerContext, ObjectJSONSchema } from './types.js';
 import { convertName } from './common';
 import { parseVariable } from './parse.js';
 import { type StartSubscriptionEvent, SubscriptionManager } from './subscriptions.js';
@@ -299,13 +299,15 @@ function getRouteSchemas({
   responseStatus: StatusCode;
 }): RouteSchemas {
 
-  const params = {
-    properties: {} as Record<string, any>,
-    required: [] as string[],
+  const params: ObjectJSONSchema = {
+    type: 'object',
+    properties: {},
+    required: [],
   };
-  const query = {
-    properties: {} as Record<string, any>,
-    required: [] as string[],
+  const query: ObjectJSONSchema = {
+    type: 'object',
+    properties: {},
+    required: [],
   };
 
   for (const variable of info!.variables) {
