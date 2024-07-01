@@ -1400,9 +1400,9 @@
     value-or-promise "^1.0.12"
 
 "@graphql-tools/utils@^10.0.0", "@graphql-tools/utils@^10.0.10", "@graphql-tools/utils@^10.1.0", "@graphql-tools/utils@^10.1.1":
-  version "10.2.2"
-  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-10.2.2.tgz#6477295fae051ffb5d6c28253aa6d8a449d4a820"
-  integrity sha512-ueoplzHIgFfxhFrF4Mf/niU/tYHuO6Uekm2nCYU72qpI+7Hn9dA2/o5XOBvFXDk27Lp5VSvQY5WfmRbqwVxaYQ==
+  version "10.2.3"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-10.2.3.tgz#262359e230e8e16fd15b996217ab4cac8ce0d5d3"
+  integrity sha512-j7x0sO0VtWVhD3FubyY42abx+g61/at5W5Y3DSOckPkBo7yVjkcnAsXoB4jiUnznhGme/o+uX5VgA8HrjyR5ZQ==
   dependencies:
     "@graphql-typed-document-node/core" "^3.1.1"
     cross-inspect "1.0.0"
@@ -3009,10 +3009,10 @@ graphql-scalars@1.23.0:
   dependencies:
     tslib "^2.5.0"
 
-graphql-yoga@5.5.0:
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.5.0.tgz#62df520b2b259529cad05e6cea6577674500fc45"
-  integrity sha512-GrF1GfR5RJb/iHEcRQakXSSoqXb2dgGa0UCU0CXsfYnuUstSog6nF5oCUKlXz1UnFbpNAlVhU++rd088S4VAtg==
+graphql-yoga@5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.6.0.tgz#2e3e354e33bae5ade1a67c1dc3b8e94274f1bc03"
+  integrity sha512-MqzHRPmiMSilYLDbJtAnXN7oyggd446a4F9dyj/H4gCmM/3YllCYw3vtKcmsykorsfiSKCYpCf5CimNXIVaHHg==
   dependencies:
     "@envelop/core" "^5.0.0"
     "@graphql-tools/executor" "^1.2.5"
