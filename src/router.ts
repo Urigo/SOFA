@@ -12,7 +12,7 @@ import { buildOperationNodeForField, createGraphQLError } from '@graphql-tools/u
 import { getOperationInfo, OperationInfo } from './ast.js';
 import type { Sofa, Route } from './sofa.js';
 import type { RouteInfo, DefaultSofaServerContext, ObjectJSONSchema } from './types.js';
-import { convertName } from './common';
+import { convertName } from './common.js';
 import { parseVariable } from './parse.js';
 import { type StartSubscriptionEvent, SubscriptionManager } from './subscriptions.js';
 import { logger } from './logger.js';

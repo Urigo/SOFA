@@ -1,6 +1,6 @@
-import { createRouter } from './router';
-import type { SofaConfig } from './sofa';
-import { createSofa } from './sofa';
+import { createRouter } from './router.js';
+import type { SofaConfig } from './sofa.js';
+import { createSofa } from './sofa.js';
 
 export { OpenAPI } from './open-api';
 

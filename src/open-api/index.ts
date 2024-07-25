@@ -5,11 +5,11 @@ import {
   isIntrospectionType,
 } from 'graphql';
 
-import { buildSchemaObjectFromType } from './types';
-import { buildPathFromOperation } from './operations';
-import { RouteInfo } from '../types';
+import { buildSchemaObjectFromType } from './types.js';
+import { buildPathFromOperation } from './operations.js';
+import { RouteInfo } from '../types.js';
 import { OpenAPIV3 } from 'openapi-types';
-import { normalizePathParamForOpenAPI } from './utils';
+import { normalizePathParamForOpenAPI } from './utils.js';
 
 export function OpenAPI({
   schema,

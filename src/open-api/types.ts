@@ -11,7 +11,7 @@ import {
   GraphQLType,
   isUnionType,
 } from 'graphql';
-import { mapToPrimitive, mapToRef } from './utils';
+import { mapToPrimitive, mapToRef } from './utils.js';
 
 export function buildSchemaObjectFromType(
   type: GraphQLObjectType | GraphQLInputObjectType,

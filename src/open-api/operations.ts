@@ -12,9 +12,9 @@ import {
   VariableDefinitionNode,
 } from 'graphql';
 
-import { getOperationInfo } from '../ast';
-import { mapToPrimitive, mapToRef } from './utils';
-import { resolveFieldType } from './types';
+import { getOperationInfo } from '../ast.js';
+import { mapToPrimitive, mapToRef } from './utils.js';
+import { resolveFieldType } from './types.js';
 import { titleCase } from 'title-case';
 import { OpenAPIV3 } from 'openapi-types';
 
