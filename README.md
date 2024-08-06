@@ -1,4 +1,7 @@
-[![sofa](https://user-images.githubusercontent.com/25294569/63839869-bfac8300-c988-11e9-978e-6b6c16c350de.gif)](https://www.sofa-api.com)
+[![GraphQLConf 2024 Banner: September 10-12, San Francisco. Hosted by the GraphQL Foundation](https://github.com/user-attachments/assets/bdb8cd5d-5186-4ece-b06b-b00a499b7868)](https://graphql.org/conf/2024/?utm_source=github&utm_medium=sofa&utm_campaign=readme)
+
+<!-- Uncomment when we remove GraphQL Conf banner -->
+<!-- [![sofa](https://user-images.githubusercontent.com/25294569/63839869-bfac8300-c988-11e9-978e-6b6c16c350de.gif)](https://www.sofa-api.com) -->
 
 [![npm version](https://badge.fury.io/js/sofa-api.svg)](https://npmjs.com/package/sofa-api)
 [![Discord Chat](https://img.shields.io/discord/625400653321076807)](https://discord.gg/xud7bH9)
