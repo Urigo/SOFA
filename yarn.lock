@@ -1387,9 +1387,9 @@
     value-or-promise "^1.0.12"
 
 "@graphql-tools/utils@^10.0.0", "@graphql-tools/utils@^10.3.2", "@graphql-tools/utils@^10.3.4", "@graphql-tools/utils@^10.4.0":
-  version "10.5.1"
-  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-10.5.1.tgz#940727976e0a5ce5af19501e8f73210c3a5681c1"
-  integrity sha512-tyDpYKmVPfzKyEr+9y6s79RKtmomOq7dV8NcOxpMxwLw19lk2RNU34S/O6gni29AekKzOIQLQ0jZvzQQH34dsA==
+  version "10.5.2"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-10.5.2.tgz#71a6cd9f63f38e0d8a92917abf583ab70aa1b7bd"
+  integrity sha512-VZpw7wxwmQGcCGt8epw6fDb8LkoySbTJ/MU565ibKivPqCkH96XK36Et/N0RlRCYGN6QAXn5UIaSbOYYHrnpAA==
   dependencies:
     "@graphql-typed-document-node/core" "^3.1.1"
     cross-inspect "1.0.1"
