@@ -1822,9 +1822,9 @@
   integrity sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==
 
 "@sinclair/typebox@^0.33.0":
-  version "0.33.4"
-  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.33.4.tgz#0afe3910a940fa08266a316900826169fe91dfb1"
-  integrity sha512-IUMFWdOtTqJ5F/rCjy2f3InRS9i4EWaCAMRsXVpUUQVi8hVByz/ifOi41Qt0Law8lz01/6zTz67vT70sB1VZbw==
+  version "0.33.7"
+  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.33.7.tgz#4356b69f566ef8862848c24dabb5cd64ba025111"
+  integrity sha512-et38XPs6GMoB6XugH+Spp/HRv5gHYffw7rXC3caen/dIKC7Q6sqs6eEH9Yd9UKziUkOQdrLr9OXUULAc+pRMng==
 
 "@sinonjs/commons@^3.0.0":
   version "3.0.1"
@@ -2883,9 +2883,9 @@ fb-watchman@^2.0.0:
     bser "2.1.1"
 
 fets@^0.8.0:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/fets/-/fets-0.8.2.tgz#3cea7b8f30c609e68bef380b36d127aadfd4d4c1"
-  integrity sha512-uwdpwCUoIW+DalF2RZRXBYeikYnx74s3mEsTSGOr1a3GpVQg2M7bNYHdMyWyv+bdMQUm8fFUK6MNIfyiESMaOg==
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/fets/-/fets-0.8.3.tgz#030f813262a05e2a36c6b6185e8ff50a4e8bd515"
+  integrity sha512-zWg3VVwf11nn9hX+VTEr/qu2ZnU8QW6kGuJ02qqdBQ9mxb8qhqEYX+zih8UXZHz/uh1T4wYBborPC8hfyuzF3A==
   dependencies:
     "@sinclair/typebox" "^0.33.0"
     "@whatwg-node/cookie-store" "^0.2.0"
