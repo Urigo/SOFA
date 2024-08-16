@@ -2042,7 +2042,7 @@
   dependencies:
     tslib "^2.6.3"
 
-"@whatwg-node/fetch@^0.9.14", "@whatwg-node/fetch@^0.9.18", "@whatwg-node/fetch@^0.9.19", "@whatwg-node/fetch@^0.9.4":
+"@whatwg-node/fetch@^0.9.14", "@whatwg-node/fetch@^0.9.18", "@whatwg-node/fetch@^0.9.20", "@whatwg-node/fetch@^0.9.4":
   version "0.9.20"
   resolved "https://registry.yarnpkg.com/@whatwg-node/fetch/-/fetch-0.9.20.tgz#f217153c173d9632a0f76f995513dfc435ff2778"
   integrity sha512-bayE8tJBVw3QRg5vDqGIOfBmdxCV6HHUqCxMhZ1pOHukUk1TrfNH3tViivJErhmtSN0bbvjWaBQpJllAOpgSxA==
@@ -2060,12 +2060,12 @@
     fast-querystring "^1.1.1"
     tslib "^2.6.3"
 
-"@whatwg-node/server@^0.9.15", "@whatwg-node/server@^0.9.41":
-  version "0.9.46"
-  resolved "https://registry.yarnpkg.com/@whatwg-node/server/-/server-0.9.46.tgz#8502faff05b8d1388430eeff7f1f039133974c7f"
-  integrity sha512-vUKCMPP6f2BLtOxnK2c98QmK0rb24RlmXb2enbEg8nXttQLvlKfMOfaY7uNAtaMXejjR2ku/ww9EEeiWXV3Q9A==
+"@whatwg-node/server@^0.9.15", "@whatwg-node/server@^0.9.44":
+  version "0.9.47"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/server/-/server-0.9.47.tgz#e11a0c441ca6d86f4f78c40c0ddf8159acb2e5f8"
+  integrity sha512-xmqGFNSvq9nA6lDHCBMGvgtjS9nDJMTNNswan9Wvi7gDlCREycivqm7R3QIkDjwb4FFi5g6cx01lee/Bx77bew==
   dependencies:
-    "@whatwg-node/fetch" "^0.9.19"
+    "@whatwg-node/fetch" "^0.9.20"
     tslib "^2.6.3"
 
 ansi-colors@^4.1.1, ansi-colors@^4.1.3:
@@ -3104,10 +3104,10 @@ graphql-scalars@1.23.0:
   dependencies:
     tslib "^2.5.0"
 
-graphql-yoga@5.6.3:
-  version "5.6.3"
-  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.6.3.tgz#6f50c11b81294ef89824cec91606b4e6709687a7"
-  integrity sha512-JtZ3r/QdkGpdi+8XfPuG+6Nb+V5wNMg2LYChSIATes5LhcIx3pbOkm/nWoGT/SA5LqlRyp+e0sxmVNEz8qN5TQ==
+graphql-yoga@5.7.0:
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.7.0.tgz#7c9a6e14cd9483cf04d26b5a189f2eed4a8a7111"
+  integrity sha512-QyGVvFAvGhMrzjJvhjsxsyoE+e4lNrj5f5qOsRYJuWIjyw7tHfbBvybZIwzNOGY0aB5sgA8BlVvu5hxjdKJ5tQ==
   dependencies:
     "@envelop/core" "^5.0.1"
     "@graphql-tools/executor" "^1.3.0"
@@ -3116,7 +3116,7 @@ graphql-yoga@5.6.3:
     "@graphql-yoga/logger" "^2.0.0"
     "@graphql-yoga/subscription" "^5.0.1"
     "@whatwg-node/fetch" "^0.9.18"
-    "@whatwg-node/server" "^0.9.41"
+    "@whatwg-node/server" "^0.9.44"
     dset "^3.1.1"
     lru-cache "^10.0.0"
     tslib "^2.5.2"
