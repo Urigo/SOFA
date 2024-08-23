@@ -93,7 +93,7 @@
     "lint-staged": "15.2.9",
     "prettier": "3.3.3",
     "swagger-ui-dist": "5.17.14",
-    "ts-jest": "29.2.4",
+    "ts-jest": "29.2.5",
     "tsup": "8.2.4",
     "typescript": "5.5.4"
   },
