@@ -81,7 +81,7 @@
     "@types/node": "20.16.5",
     "@types/swagger-ui-dist": "3.30.5",
     "@types/yamljs": "0.2.34",
-    "@types/qs": "6.9.15",
+    "@types/qs": "6.9.16",
     "babel-jest": "29.7.0",
     "bob-the-bundler": "7.0.1",
     "chalk": "^5.0.0",
