@@ -4758,10 +4758,10 @@ tslib@^2.0.0, tslib@^2.0.3, tslib@^2.3.1, tslib@^2.4.0, tslib@^2.5.0, tslib@^2.5
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.0.tgz#d124c86c3c05a40a91e6fdea4021bd31d377971b"
   integrity sha512-jWVzBLplnCmoaTr13V9dYbiQ99wvZRd0vNWaDRg+aVYRcjDF3nDksxFDE/+fkXnKhpnUUkmx5pK/v8mCtLVqZA==
 
-tsup@8.3.4:
-  version "8.3.4"
-  resolved "https://registry.yarnpkg.com/tsup/-/tsup-8.3.4.tgz#bb97c5061343ff199fcb79d733d9e131341c0e6a"
-  integrity sha512-0uCsxLADTFwGsEfSMx5fBFtXNw1mZJBAU6ZJe6xMeGfLT6o/12JDigvBIrQJEZlK01YBsocRxU3i+YY6QduShQ==
+tsup@8.3.5:
+  version "8.3.5"
+  resolved "https://registry.yarnpkg.com/tsup/-/tsup-8.3.5.tgz#d55344e4756e924bf6f442e54e7d324b4471eee0"
+  integrity sha512-Tunf6r6m6tnZsG9GYWndg0z8dEV7fD733VBFzFJ5Vcm1FtlXB8xBD/rtrBi2a3YKEV7hHtxiZtW5EAVADoe1pA==
   dependencies:
     bundle-require "^5.0.0"
     cac "^6.7.14"
