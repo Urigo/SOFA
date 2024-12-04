@@ -1,5 +1,12 @@
 # Change log
 
+## 0.18.8
+
+### Patch Changes
+
+- [#1596](https://github.com/Urigo/SOFA/pull/1596) [`390ecd2`](https://github.com/Urigo/SOFA/commit/390ecd21202948935a58df191b7c3095a23e3899) Thanks [@renovate](https://github.com/apps/renovate)! - dependencies updates:
+  - Updated dependency [`@whatwg-node/fetch@^0.10.0` ↗︎](https://www.npmjs.com/package/@whatwg-node/fetch/v/0.10.0) (from `^0.9.14`, in `dependencies`)
+
 ## 0.18.5
 
 ### Patch Changes
