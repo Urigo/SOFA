@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node_version: [18, 20, 21]
+        node_version: [18, 20, 22, 23]
     steps:
       - uses: actions/checkout@master
       - name: Use Node.js ${{ matrix.node_version }}
@@ -25,15 +25,3 @@ jobs:
         run: yarn build
       - name: Test
         run: yarn test
-      - name: Publish Canary
-        env: # Or as an environment variable
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-        run: |
-          echo "Fork PR: ${{github.repository}}"
-          if [ "${{github.repository}}" == "Urigo/SOFA" ] && [ "${{ secrets.NODE_AUTH_TOKEN }}" != "" ]
-          then
-              echo "//registry.npmjs.org/:_authToken=${{ secrets.NODE_AUTH_TOKEN }}" > .npmrc
-              npm run release
-          else    
-              echo "Skipping canary publish due to a fork/PR..."
-          fi

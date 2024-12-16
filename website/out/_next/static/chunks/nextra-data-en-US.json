@@ -1,0 +1,77 @@
+{
+  "/docs/api/context": {
+    "title": "Using Context",
+    "data": {
+      "": "Here's how you provide a context to a GraphQL Schema.",
+      "using-a-function#Using a Function": "Sofa allows to build a context object through a factory function. You get an access to a request object through the req field.\napi.use(\n  '/api',\n  useSofa({\n    schema,\n    async context({ req }) {\n      return {\n        req,\n        ...yourContext,\n      };\n    },\n  })\n);",
+      "using-an-object#Using an Object": "You can also pass any data, directly, without using a function.\napi.use(\n  '/api',\n  useSofa({\n    schema,\n    context: yourContext,\n  })\n);"
+    }
+  },
+  "/docs/api/execute": {
+    "title": "Custom Execute Phase",
+    "data": {
+      "": "By default, Sofa uses graphql function from graphql-js package to resolve an operation but it's very straightforward to pass your own logic. Thanks to that you can even use a remote GraphQL Server (with Fetch or through Apollo Links).\napi.use(\n  '/api',\n  useSofa({\n    schema,\n    async execute(args) {\n      return yourOwnLogicHere(args);\n    },\n  })\n);"
+    }
+  },
+  "/docs/api/error-handler": {
+    "title": "Error Handling",
+    "data": {
+      "": "By default, Sofa returns a response that includes JSON representation of thrown error object from GraphQL with HTTP status code 500. But, you can enhance error handler by adding your errorHandler function.\napi.use(\n  '/api',\n  useSofa({\n    schema,\n    errorHandler(errs) {\n      logErrors(errors);\n      return new Response(formatError(errs[0]), {\n        status: 500,\n        headers: { 'Content-Type': 'application/json' },\n      });\n    },\n  })\n);"
+    }
+  },
+  "/docs/api/method": {
+    "title": "Customize Endpoint's HTTP Method",
+    "data": {
+      "": "Sofa allows you to customize the http method. For example, in case you need POST instead of GET method in one of your query, you do the following:\napi.use(\n  '/api',\n  useSofa({\n    schema,\n    routes: {\n      'Query.feed': { method: 'POST' }\n    }\n  })\n)\nWhen Sofa tries to define a route for feed of Query, instead of exposing it under GET (default for Query type) it will use POST method.\nPattern is easy: Type.field where Type is your query or mutation type."
+    }
+  },
+  "/docs/api/ignore": {
+    "title": "Using objects instead of IDs",
+    "data": {
+      "": "There are some cases where sending a full object makes more sense than passing only the ID. Sofa allows you to easily define where to ignore the default behavior:\napi.use(\n  '/api',\n  useSofa({\n    schema,\n    ignore: ['Message.author'],\n  })\n);\nWhenever Sofa tries to resolve an author of a message, instead of exposing an ID it will pass whole data.\nPattern is easy: Type.field or Type"
+    }
+  },
+  "/docs/essentials/subscriptions": {
+    "title": "Subscription",
+    "data": {
+      "": "Sofa enables you to run GraphQL Subscriptions through WebHooks. It has a special API to start, update, and stop a subscription.\nPOST /webhook - starts a subscription\nDELETE /webhook/:id - stops it\nPOST /webhook/:id- updates it",
+      "starting-a-subscription#Starting a subscription": "To start a new subscription you need to include following data in request's body:\nsubscription - subscription's name, matches the name in GraphQL Schema\nvariables - variables passed to run a subscription (optional)\nurl - an url of your webhook receiving endpoint\nAfter sending it to POST /webhook you're going to get in return a unique ID that is your started subscription's identifier.\n{\n  \"id\": \"SUBSCRIPTION-UNIQUE-ID\"\n}",
+      "stoping-a-subscription#Stoping a subscription": "In order to stop a subscription, you need to pass its id and hit DELETE /webhook/:id.",
+      "updating-a-subscription#Updating a subscription": "Updating a subscription looks very similar to how you start one. Your request's body should contain:\nvariables - variables passed to run a subscription (optional)\nAfter sending it to POST /webhook/:id you're going to get in return a new ID:\n{\n  \"id\": \"SUBSCRIPTION-UNIQUE-ID\"\n}",
+      "example#Example": "Given the following schema:\ntype Subscription {\n  onBook: Book\n}\nLet's start a subscription by sending that to POST /webhook:\n{\n  \"subscription\": \"onBook\",\n  \"variables\": {},\n  \"url\": \"https://app.com/new-book\"\n}\nIn return we get an id that we later on use to stop or update subscription:\nDELETE /webhook/:id"
+    }
+  },
+  "/docs/api/models": {
+    "title": "Nested data and Models",
+    "data": {
+      "": "Sofa treats some types differently than others, those are called Models.The idea behind Models is to not expose full objects in every response, especially if it's a nested, not first-level data.For example, when fetching a list of chats you don't want to include all messages in the response, you want them to be just IDs (or links). Those messages would have to have their own endpoint. We call this type of data, a Model. In REST you probably call them Resources.In order to treat particular types as Models you need to provide two queries, one that exposes a list (with no non-optional arguments) and the other to fetch a single entity (id field as an argument). The model itself has to have an id field. Those are the only requirements.\n# Message is treated as a Model\ntype Query {\n  messages: [Message]\n  message(id: ID): Message\n}\ntype Message {\n  id: ID\n  # other fields ...\n}"
+    }
+  },
+  "/docs/essentials/queries": {
+    "title": "Queries",
+    "data": {
+      "": "Queries are transformed into GET requests.Given the following example:\ntype Comment {\n  id: ID\n  text: String\n}\ntype Query {\n  comments: [Comment]\n}\nSofa will create a GET /comments route.\ncurl http://localhost:3000/api/comments"
+    }
+  },
+  "/docs/essentials/mutations": {
+    "title": "Mutations",
+    "data": {
+      "": "Mutations are transformed into POST requests.Given the following example:\ntype Comment {\n  id: ID\n  text: String\n}\ntype Mutation {\n  addComment(text: String!) Comment\n}\nSofa will create a POST /add-comment route that accepts a { text } body.\ncurl --header \"Content-Type: application/json\" \\\n  --request POST \\\n  --data '{\"text\":\"Sofa is awesome!\"}' \\\n  http://localhost:3000/api/add-comment\nFor mutations to properly work with JSON bodies, you will need to have bodyParser.json() or a similar module as a middleware, else you will have to pass arguments via url paramaters.Heres an example of without body-parser:\ntype Comment {\n  id: ID\n  text: String\n}\ntype Mutation {\n  addComment(text: String!) Comment\n}\nWill mean that you will have to access it like this:\ncurl --header \"Content-Type: application/json\" \\\n  --request POST \\\n  http://localhost:3000/api/add-comment?text=Sofa%20is%20awesome%21\nHow to enable body-parser:\nnpm i body-parser\npnpm add body-parser\nyarn add body-parser\nbun add body-parser\nThen you can simply initialise it like this:\nimport bodyParser from \"body-parser\";\napp.use(bodyParser.json());"
+    }
+  },
+  "/docs": {
+    "title": "GraphQL vs REST",
+    "data": {
+      "": "An open source library you install on your GraphQL server to create a fully RESTful and configurable API gateway.\nDon’t choose between REST and GraphQL\nGet most of the benefits of GraphQL on the backend and frontend, while using and exposing REST\nSupport all your existing clients with REST while improving your backend stack with GraphQL\nCreate custom, perfectly client-aligned REST endpoints for your frontend simply by naming a route and attaching a query\nIn the other way around (REST to GraphQL) you won’t get the best of both worlds. Instead just less powerful, harder-to-maintain server implementations with a some of the benefits of GraphQL. It can be a good and fast start for a migration though.\nFully generated documentation that is always up-to-date\nGraphQL Subscriptions as Webhooks",
+      "installation#Installation": "Install Sofa:\nnpm i sofa-api\npnpm add sofa-api\nyarn add sofa-api\nbun add sofa-api",
+      "usage#Usage": "import { useSofa } from 'sofa-api';\nimport express from 'express';\nconst app = express();\napp.use('/api', useSofa({ schema }));\n// GET  /api/messages\n// POST /api/add-message"
+    }
+  },
+  "/docs/recipes/open-api": {
+    "title": "OpenAPI (Swagger)",
+    "data": {
+      "": "Thanks to GraphQL's Type System Sofa is able to generate OpenAPI (Swagger) definitions out of it. Possibilities are endless here. You get all the information you need in order to write your own definitions or create a plugin that follows any specification.\nimport { useSofa } from 'sofa-api';\napp.use(\n  '/api',\n  useSofa({\n    schema,\n    basePath: '/',\n    openAPI: {\n      info: {\n        title: 'Example API',\n        version: '3.0.0',\n      }\n      endpoint: '/openapi.json',\n    },\n    swaggerUI: {\n      path: '/docs',\n    }\n  })\n);\nYou can find swagger definitions in /api/openapi.json route."
+    }
+  },
+  "/": { "title": "Home", "data": {} }
+}

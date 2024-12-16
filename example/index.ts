@@ -23,9 +23,9 @@ const app = useSofa({
       title: 'Example API',
       description: 'Example API Description',
       version: '3.0.0',
-    }
-  }
-})
+    },
+  },
+});
 
 app.route({
   path: '/collect-book',
@@ -38,8 +38,8 @@ app.route({
       status: 200,
       statusText: 'OK',
     });
-  }
-})
+  },
+});
 
 const yoga = createYoga({
   schema,
@@ -48,7 +48,7 @@ const yoga = createYoga({
 app.route({
   path: yoga.graphqlEndpoint,
   handler: yoga as any,
-})
+});
 
 const port = 4000;
 
@@ -74,7 +74,7 @@ server.listen(port, () => {
 
     ${chalk.bold('Mutations:')}
       addBook:      ${printUrl('/add-book')} ${chalk.italic.gray(
-    'POST: {title}'
-  )}
+        'POST: {title}'
+      )}
   `);
 });

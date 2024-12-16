@@ -654,7 +654,7 @@ test('should respect tags and descriptions', () => {
 
   expect(sofa.openAPIDocument.paths?.['/foo']?.get?.tags).toEqual(['foo']);
   expect(sofa.openAPIDocument.paths?.['/bar']?.post?.tags).toEqual(['bar']);
-})
+});
 
 // test('should catch json parsing errors on query params and return Bad Request/400 error', async () => {
 //   const spy = jest.fn();

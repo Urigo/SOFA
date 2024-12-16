@@ -3,7 +3,7 @@ export const typeDefs = /* GraphQL */ `
     THIN
     THICK
   }
-  
+
   type Pizza {
     dough: Dough!
     toppings: [String!]

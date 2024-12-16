@@ -13,57 +13,57 @@ import { createSchema } from 'graphql-yoga';
 test('handle ObjectType', async () => {
   const schema = createSchema({
     typeDefs: /* GraphQL */ `
-    """
-    Address Object
-    """
-    type Address {
       """
-      Street Name
+      Address Object
       """
-      street: String
-      city: String
-    }
+      type Address {
+        """
+        Street Name
+        """
+        street: String
+        city: String
+      }
 
-    type Profile {
-      email: EmailAddress!
-      address: [Address]
-    }
+      type Profile {
+        email: EmailAddress!
+        address: [Address]
+      }
 
-    enum UserRole {
-      ADMIN
-      NORMAL
-    }
+      enum UserRole {
+        ADMIN
+        NORMAL
+      }
 
-    type User {
-      role: UserRole!
-      name: String!
-      age: PositiveInt!
-      profile: Profile
-      """
-      User's birthday
-      """
-      birthday: Date!
-      """
-      User's registration date
-      """
-      registrationDate: Date!
-    }
+      type User {
+        role: UserRole!
+        name: String!
+        age: PositiveInt!
+        profile: Profile
+        """
+        User's birthday
+        """
+        birthday: Date!
+        """
+        User's registration date
+        """
+        registrationDate: Date!
+      }
 
-    input UserInput {
-      name: String!
-      age: PositiveInt!
-      profile: Profile
-    }
+      input UserInput {
+        name: String!
+        age: PositiveInt!
+        profile: Profile
+      }
 
-    scalar Date
-    scalar EmailAddress
-    scalar PositiveInt
-  `,
-  resolvers: {
-    EmailAddress: GraphQLEmailAddress,
-    PositiveInt: GraphQLPositiveInt,
-  }
-  })
+      scalar Date
+      scalar EmailAddress
+      scalar PositiveInt
+    `,
+    resolvers: {
+      EmailAddress: GraphQLEmailAddress,
+      PositiveInt: GraphQLPositiveInt,
+    },
+  });
 
   const userType = schema.getType('User') as GraphQLObjectType;
   const profileType = schema.getType('Profile') as GraphQLObjectType;
@@ -90,7 +90,7 @@ test('handle ObjectType', async () => {
       age: {
         type: 'integer',
         minimum: 1,
-        title: "PositiveInt"
+        title: 'PositiveInt',
       },
       birthday: {
         type: 'string',
@@ -149,7 +149,7 @@ test('handle ObjectType', async () => {
       age: {
         type: 'integer',
         minimum: 1,
-        title: "PositiveInt"
+        title: 'PositiveInt',
       },
       profile: {
         $ref: '#/components/schemas/Profile',

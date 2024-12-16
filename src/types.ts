@@ -1,3 +1,4 @@
+import { RouterRequest } from 'fets';
 import type { HTTPMethod } from 'fets/typings/typed-fetch';
 import type { DocumentNode } from 'graphql';
 
@@ -13,11 +14,13 @@ export interface RouteInfo {
   description?: string;
 }
 
-export type ContextFn = (serverContext: DefaultSofaServerContext) => Promise<ContextValue> | ContextValue;
+export type ContextFn = (
+  serverContext: DefaultSofaServerContext
+) => Promise<ContextValue> | ContextValue;
 
 export type DefaultSofaServerContext = {
-  request: Request;
-}
+  request: RouterRequest;
+};
 
 export interface ObjectJSONSchema {
   type: 'object';

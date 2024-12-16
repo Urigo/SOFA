@@ -1,7 +1,8 @@
 ---
 description: "Customize your GraphQL endpoint's HTTP method with Sofa. Learn how to easily switch between GET and POST using the routes parameter for specific queries or mutations. #GraphQL #Sofa"
 ---
-import { Callout } from '@theguild/components'
+
+import { Callout } from '@theguild/components';
 
 # Customize Endpoint's HTTP Method
 
@@ -13,14 +14,14 @@ api.use(
   useSofa({
     schema,
     routes: {
-      'Query.feed': { method: 'POST' }
-    }
+      'Query.feed': { method: 'POST' },
+    },
   })
-)
+);
 ```
 
 When Sofa tries to define a route for `feed` of `Query`, instead of exposing it under `GET` (default for Query type) it will use `POST` method.
 
 <Callout type="info">
-Pattern is easy: `Type.field` where `Type` is your query or mutation type.
+  Pattern is easy: `Type.field` where `Type` is your query or mutation type.
 </Callout>

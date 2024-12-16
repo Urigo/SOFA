@@ -1,7 +1,8 @@
 ---
-description: "Simplify GraphQL object handling with Sofa. Learn how to ignore the default ID behavior and send entire objects using the ignore parameter. #GraphQL #Sofa"
+description: 'Simplify GraphQL object handling with Sofa. Learn how to ignore the default ID behavior and send entire objects using the ignore parameter. #GraphQL #Sofa'
 ---
-import { Callout } from '@theguild/components'
+
+import { Callout } from '@theguild/components';
 
 # Using objects instead of IDs
 
@@ -19,6 +20,4 @@ api.use(
 
 Whenever Sofa tries to resolve an author of a message, instead of exposing an ID it will pass whole data.
 
-<Callout type="info">
-Pattern is easy: `Type.field` or `Type`
-</Callout>
+<Callout type="info">Pattern is easy: `Type.field` or `Type`</Callout>

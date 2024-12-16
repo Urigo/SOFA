@@ -1,6 +1,6 @@
 import {
   type DocumentNode,
- type VariableDefinitionNode,
+  type VariableDefinitionNode,
   type ExecutionResult,
   Kind,
   type OperationTypeNode,
@@ -73,7 +73,7 @@ export class SubscriptionManager {
 
   public async start(
     event: StartSubscriptionEvent,
-    contextValue: ContextValue,
+    contextValue: ContextValue
   ) {
     const id = crypto.randomUUID();
     const name = event.subscription;
@@ -119,7 +119,7 @@ export class SubscriptionManager {
 
   public async update(
     event: UpdateSubscriptionEvent,
-    contextValue: ContextValue,
+    contextValue: ContextValue
   ) {
     const { variables, id } = event;
 
@@ -139,7 +139,7 @@ export class SubscriptionManager {
         subscription,
         variables,
       },
-      contextValue,
+      contextValue
     );
   }
 
@@ -156,7 +156,11 @@ export class SubscriptionManager {
     variables: Record<string, any>;
     contextValue: ContextValue;
   }) {
-    const { document, operationName, variables: variableNodes } = this.operations.get(name)!;
+    const {
+      document,
+      operationName,
+      variables: variableNodes,
+    } = this.operations.get(name)!;
 
     const variableValues = variableNodes.reduce((values, variable) => {
       const value = parseVariable({

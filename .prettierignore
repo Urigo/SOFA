@@ -1,2 +1,5 @@
 dist/
 .bob
+.next
+out
+node_modules

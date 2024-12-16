@@ -1,5 +1,5 @@
 export default {
-  "queries": "Queries",
-  "mutations": "Mutations",
-  "subscriptions": "Subscriptions"
-}
+  queries: 'Queries',
+  mutations: 'Mutations',
+  subscriptions: 'Subscriptions',
+};

@@ -82,9 +82,7 @@ export function OpenAPI({
       }
     ) {
       const basePath = config?.basePath || '';
-      const path =
-        basePath +
-        normalizePathParamForOpenAPI(info.path);
+      const path = basePath + normalizePathParamForOpenAPI(info.path);
 
       if (!swagger.paths[path]) {
         swagger.paths[path] = {};
@@ -92,15 +90,16 @@ export function OpenAPI({
 
       const pathsObj = swagger.paths[path] as OpenAPIV3.PathItemObject;
 
-      pathsObj[info.method.toLowerCase() as OpenAPIV3.HttpMethods] = buildPathFromOperation({
-        url: path,
-        operation: info.document,
-        schema,
-        useRequestBody: ['POST', 'PUT', 'PATCH'].includes(info.method),
-        tags: info.tags || [],
-        description: info.description || '',
-        customScalars,
-      });
+      pathsObj[info.method.toLowerCase() as OpenAPIV3.HttpMethods] =
+        buildPathFromOperation({
+          url: path,
+          operation: info.document,
+          schema,
+          useRequestBody: ['POST', 'PUT', 'PATCH'].includes(info.method),
+          tags: info.tags || [],
+          description: info.description || '',
+          customScalars,
+        });
     },
     get() {
       return swagger;
