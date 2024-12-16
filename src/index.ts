@@ -7,3 +7,5 @@ export { OpenAPI } from './open-api/index.js';
 export function useSofa(config: SofaConfig) {
   return createRouter(createSofa(config));
 }
+
+export { createRouter, createSofa };
