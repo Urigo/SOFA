@@ -1,5 +1,6 @@
-import { buildSchema } from 'graphql';
+import { buildSchema, GraphQLError } from 'graphql';
 import { useSofa } from '../src';
+import { createSchema } from 'graphql-yoga';
 
 function generateObjectType(
   name: string,
@@ -117,3 +118,50 @@ test('memory issue', async () => {
 
   useSofa({ basePath: '/api', schema });
 });
+
+test('error extensions', async () => {
+  const router = useSofa({
+    basePath: '/api',
+    schema: createSchema({
+      typeDefs: /* GraphQL */ `
+        type Query {
+          me: Account
+        }
+
+        type Account {
+          id: ID!
+          name: String!
+        }
+      `,
+      resolvers: {
+        Query: {
+          me: () => {
+            throw new GraphQLError("account not found", {
+              extensions: {
+                code: "ACCOUNT_NOT_FOUND",
+                http: { status: 404 }
+              }
+            });
+          },
+        },
+      }
+    })
+  });
+
+  for (let i = 0; i < 10; i++) {
+    const res = await router.fetch('http://localhost/api/me');
+    expect(res.status).toBe(404);
+    const json = await res.json();
+    expect(json).toEqual({
+      errors: [
+        {
+          message: 'account not found',
+          extensions: {
+            code: 'ACCOUNT_NOT_FOUND',
+          },
+          path: ['me']
+        }
+      ]
+    });
+  }
+})
