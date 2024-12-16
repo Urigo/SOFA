@@ -98,7 +98,7 @@ function useRequestBody(
   return method === 'POST' || method === 'PUT' || method === 'PATCH';
 }
 
-export function createRouter(sofa: Sofa) {
+export function createSofaRouter(sofa: Sofa) {
   logger.debug('[Sofa] Creating router');
 
   sofa.openAPI ||= {};

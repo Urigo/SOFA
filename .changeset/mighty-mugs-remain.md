@@ -2,4 +2,4 @@
 "sofa-api": patch
 ---
 
-Export `createSofa` and `createRoute` for custom intermediate configuration
+Export `createSofa` and `createSofaRouter` for custom intermediate configuration
