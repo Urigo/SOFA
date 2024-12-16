@@ -64,12 +64,10 @@ export function buildPathFromOperation({
           requestBody: {
             content: {
               'application/json': {
-                schema: resolveRequestBody(
-                  bodyParams,
-                  schema,
-                  info.operation,
-                  { customScalars, enumTypes }
-                ),
+                schema: resolveRequestBody(bodyParams, schema, info.operation, {
+                  customScalars,
+                  enumTypes,
+                }),
               },
             },
           },
@@ -101,8 +99,7 @@ export function buildPathFromOperation({
 }
 
 function resolveEnumTypes(schema: GraphQLSchema): Record<string, any> {
-  const enumTypes = Object.values(schema.getTypeMap())
-    .filter(isEnumType)
+  const enumTypes = Object.values(schema.getTypeMap()).filter(isEnumType);
   return Object.fromEntries(
     enumTypes.map((type) => [
       type.name,

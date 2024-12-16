@@ -1,5 +1,5 @@
 ---
-description: "Learn how to use mutations in Sofa, which transform into POST requests and require body-parser.json() middleware or URL parameters. #GraphQL"
+description: 'Learn how to use mutations in Sofa, which transform into POST requests and require body-parser.json() middleware or URL parameters. #GraphQL'
 ---
 
 # Mutations
@@ -51,7 +51,6 @@ curl --header "Content-Type: application/json" \
   http://localhost:3000/api/add-comment?text=Sofa%20is%20awesome%21
 ```
 
-
 How to enable `body-parser`:
 
 ```sh npm2yarn
@@ -59,12 +58,9 @@ npm i body-parser
 ```
 
 Then you can simply initialise it like this:
+
 ```js
-import bodyParser from "body-parser";
+import bodyParser from 'body-parser';
 
 app.use(bodyParser.json());
 ```
-
-
-
-

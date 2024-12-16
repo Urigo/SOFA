@@ -58,7 +58,7 @@ export interface SofaConfig {
   context?: ContextFn | ContextValue;
   customScalars?: Record<string, any>;
   enumTypes?: Record<string, any>;
-  
+
   openAPI?: RouterOpenAPIOptions<any>;
   swaggerUI?: RouterSwaggerUIOptions;
 }
@@ -74,8 +74,8 @@ export interface Sofa {
   subscribe: typeof subscribe;
   errorHandler?: ErrorHandler;
   contextFactory: ContextFn;
-  customScalars: Record<string, any>
-  enumTypes: Record<string, any>
+  customScalars: Record<string, any>;
+  enumTypes: Record<string, any>;
 
   openAPI?: RouterOpenAPIOptions<any>;
   swaggerUI?: RouterSwaggerUIOptions;

@@ -9,7 +9,7 @@ jest.mock('@whatwg-node/fetch', () => {
 });
 
 import { fetch } from '@whatwg-node/fetch';
-import { createSchema, createPubSub, filter, pipe } from 'graphql-yoga'
+import { createSchema, createPubSub, filter, pipe } from 'graphql-yoga';
 import { useSofa } from '../src';
 
 const delay = (ms: number) => {
@@ -36,7 +36,7 @@ const typeDefs = /* GraphQL */ `
     author: String!
   }
   type Subscription {
-    onBook: Book!,
+    onBook: Book!
     onBookBy(author: String!): Book!
   }
   type Query {
@@ -81,7 +81,13 @@ test('should start subscriptions', async () => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      data: { onBook: { id: 'book-id-1', title: 'Test Book 1', author: 'Test Author 1' } },
+      data: {
+        onBook: {
+          id: 'book-id-1',
+          title: 'Test Book 1',
+          author: 'Test Author 1',
+        },
+      },
     }),
   });
   pubsub.publish(BOOK_ADDED, { onBook: testBook2 });
@@ -94,8 +100,12 @@ test('should start subscriptions', async () => {
     },
     body: JSON.stringify({
       data: {
-        onBook: { id: 'book-id-2', title: 'Test Book 2', author: 'Test Author 2' } 
-      }
+        onBook: {
+          id: 'book-id-2',
+          title: 'Test Book 2',
+          author: 'Test Author 2',
+        },
+      },
     }),
   });
 });
@@ -151,21 +161,25 @@ test('should start subscriptions with parameters', async () => {
       resolvers: {
         Subscription: {
           onBookBy: {
-            subscribe: (root, args, context, info) => pipe(
-              pubsub.subscribe(BOOK_ADDED),
-            filter((payload) => payload.onBookBy.author === args.author)
-              )
+            subscribe: (root, args, context, info) =>
+              pipe(
+                pubsub.subscribe(BOOK_ADDED),
+                filter((payload) => payload.onBookBy.author === args.author)
+              ),
           },
         },
       },
     }),
   });
 
-
   const response = await sofa.fetch('http://localhost:4000/api/webhook', {
     method: 'POST',
-    body: JSON.stringify({ subscription: 'onBookBy', url: '/bookBy', variables: { author: 'Test Author 1' } })
-  })
+    body: JSON.stringify({
+      subscription: 'onBookBy',
+      url: '/bookBy',
+      variables: { author: 'Test Author 1' },
+    }),
+  });
   expect(response.status).toBe(200);
   const resBody = await response.json();
   expect(resBody).toEqual({ id: expect.any(String) });
@@ -178,7 +192,13 @@ test('should start subscriptions with parameters', async () => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      data: { onBookBy: { id: 'book-id-1', title: 'Test Book 1', author: 'Test Author 1' } },
+      data: {
+        onBookBy: {
+          id: 'book-id-1',
+          title: 'Test Book 1',
+          author: 'Test Author 1',
+        },
+      },
     }),
   });
   pubsub.publish(BOOK_ADDED, { onBookBy: testBook2 });

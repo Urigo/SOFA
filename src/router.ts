@@ -8,13 +8,23 @@ import {
   isInputObjectType,
   isEnumType,
 } from 'graphql';
-import { buildOperationNodeForField, createGraphQLError } from '@graphql-tools/utils';
+import {
+  buildOperationNodeForField,
+  createGraphQLError,
+} from '@graphql-tools/utils';
 import { getOperationInfo, OperationInfo } from './ast.js';
 import type { Sofa, Route } from './sofa.js';
-import type { RouteInfo, DefaultSofaServerContext, ObjectJSONSchema } from './types.js';
+import type {
+  RouteInfo,
+  DefaultSofaServerContext,
+  ObjectJSONSchema,
+} from './types.js';
 import { convertName } from './common.js';
 import { parseVariable } from './parse.js';
-import { type StartSubscriptionEvent, SubscriptionManager } from './subscriptions.js';
+import {
+  type StartSubscriptionEvent,
+  SubscriptionManager,
+} from './subscriptions.js';
 import { logger } from './logger.js';
 import {
   Response,
@@ -25,7 +35,13 @@ import {
   type RouteSchemas,
 } from 'fets';
 import type { HTTPMethod, StatusCode } from 'fets/typings/typed-fetch';
-import { isInPath, resolveParamSchema, resolveRequestBody, resolveResponse, resolveVariableDescription } from './open-api/operations.js';
+import {
+  isInPath,
+  resolveParamSchema,
+  resolveRequestBody,
+  resolveResponse,
+  resolveVariableDescription,
+} from './open-api/operations.js';
 import { buildSchemaObjectFromType } from './open-api/types.js';
 import { parse as qsParse } from 'qs';
 
@@ -49,11 +65,7 @@ const defaultErrorHandler: ErrorHandler = (errors) => {
   };
 
   for (const error of errors) {
-    if (
-      typeof error === 'object' &&
-      error != null &&
-      error.extensions?.http
-    ) {
+    if (typeof error === 'object' && error != null && error.extensions?.http) {
       if (
         error.extensions.http.status &&
         (!status || error.extensions.http.status > status)
@@ -71,13 +83,18 @@ const defaultErrorHandler: ErrorHandler = (errors) => {
     status = 500;
   }
 
-  return Response.json({ errors }, {
-    status,
-    headers,
-  })
+  return Response.json(
+    { errors },
+    {
+      status,
+      headers,
+    }
+  );
 };
 
-function useRequestBody(method: HTTPMethod): method is 'POST' | 'PUT' | 'PATCH' {
+function useRequestBody(
+  method: HTTPMethod
+): method is 'POST' | 'PUT' | 'PATCH' {
   return method === 'POST' || method === 'PUT' || method === 'PATCH';
 }
 
@@ -97,22 +114,20 @@ export function createRouter(sofa: Sofa) {
     const type = types[typeName];
 
     if (!isIntrospectionType(type)) {
-      if (
-        (isObjectType(type) || isInputObjectType(type))
-      ) {
-        sofa.openAPI!.components!.schemas![typeName] = buildSchemaObjectFromType(type, {
-          customScalars: sofa.customScalars,
-        });
+      if (isObjectType(type) || isInputObjectType(type)) {
+        sofa.openAPI!.components!.schemas![typeName] =
+          buildSchemaObjectFromType(type, {
+            customScalars: sofa.customScalars,
+          });
       } else if (isEnumType(type)) {
         sofa.openAPI!.components!.schemas![typeName] = {
           title: type.name,
           type: 'string',
           enum: type.getValues().map((value) => value.name),
-        }
+        };
       }
     }
   }
-
 
   const router = createRouterInstance<any>({
     base: sofa.basePath,
@@ -144,9 +159,12 @@ export function createRouter(sofa: Sofa) {
       const { subscription, variables, url }: StartSubscriptionEvent =
         await request.json();
       try {
-        const sofaContext: DefaultSofaServerContext = Object.assign(serverContext, {
-          request,
-        })
+        const sofaContext: DefaultSofaServerContext = Object.assign(
+          serverContext,
+          {
+            request,
+          }
+        );
         const result = await subscriptionManager.start(
           {
             subscription,
@@ -162,8 +180,8 @@ export function createRouter(sofa: Sofa) {
           statusText: 'Subscription failed' as any,
         });
       }
-    }
-  })
+    },
+  });
 
   router.route({
     path: '/webhook/:id',
@@ -191,8 +209,8 @@ export function createRouter(sofa: Sofa) {
           statusText: 'Subscription failed to update' as any,
         });
       }
-    }
-  })
+    },
+  });
 
   router.route({
     path: '/webhook/:id',
@@ -208,9 +226,8 @@ export function createRouter(sofa: Sofa) {
           statusText: 'Subscription failed to stop' as any,
         });
       }
-    }
-
-  })
+    },
+  });
 
   return router;
 }
@@ -249,7 +266,7 @@ function createQueryRoute({
 
   const graphqlPath = `${queryType.name}.${fieldName}`;
   const routeConfig = sofa.routes?.[graphqlPath];
-  const route = <Route> {
+  const route = <Route>{
     method: routeConfig?.method ?? 'GET',
     path: routeConfig?.path ?? getPath(fieldName, isSingle && hasIdArgument),
     responseStatus: routeConfig?.responseStatus ?? 200,
@@ -267,11 +284,10 @@ function createQueryRoute({
       info,
       sofa,
       responseStatus: route.responseStatus,
-
     }),
     tags: route.tags,
     handler: useHandler({ info, route, fieldName, sofa, operation }),
-  })
+  });
 
   logger.debug(
     `[Router] ${fieldName} query available at ${route.method} ${route.path}`
@@ -281,7 +297,6 @@ function createQueryRoute({
     document: operation,
     path: route.path,
     method: route.method.toUpperCase() as HTTPMethod,
-
   };
 }
 
@@ -298,7 +313,6 @@ function getRouteSchemas({
   sofa: Sofa;
   responseStatus: StatusCode;
 }): RouteSchemas {
-
   const params: ObjectJSONSchema = {
     type: 'object',
     properties: {},
@@ -314,8 +328,12 @@ function getRouteSchemas({
     const varSchema = resolveParamSchema(variable.type, {
       customScalars: sofa.customScalars,
       enumTypes: sofa.enumTypes,
-    })
-    varSchema.description = resolveVariableDescription(sofa.schema, info!.operation, variable);
+    });
+    varSchema.description = resolveVariableDescription(
+      sofa.schema,
+      info!.operation,
+      variable
+    );
     const varName = variable.variable.name.value;
     const varObj = isInPath(path, varName) ? params : query;
     varObj.properties[varName] = varSchema;
@@ -325,15 +343,12 @@ function getRouteSchemas({
   }
   return {
     request: {
-      json: useRequestBody(method) ? resolveRequestBody(
-        info!.variables,
-        sofa.schema,
-        info!.operation,
-        {
-          customScalars: sofa.customScalars,
-          enumTypes: sofa.enumTypes,
-        }
-      ) : undefined,
+      json: useRequestBody(method)
+        ? resolveRequestBody(info!.variables, sofa.schema, info!.operation, {
+            customScalars: sofa.customScalars,
+            enumTypes: sofa.enumTypes,
+          })
+        : undefined,
       params,
       query,
     },
@@ -344,10 +359,10 @@ function getRouteSchemas({
         opts: {
           customScalars: sofa.customScalars,
           enumTypes: sofa.enumTypes,
-        }
-      })
-    }
-  }
+        },
+      }),
+    },
+  };
 }
 
 function createMutationRoute({
@@ -391,8 +406,7 @@ function createMutationRoute({
     responseStatus,
     tags,
     description,
-
-  }
+  };
 
   router.route({
     method,
@@ -407,7 +421,7 @@ function createMutationRoute({
     tags: route.tags,
     description: route.description,
     handler: useHandler({ info, route, fieldName, sofa, operation }),
-  })
+  });
 
   logger.debug(`[Router] ${fieldName} mutation available at ${method} ${path}`);
 
@@ -429,13 +443,9 @@ function useHandler(config: {
 }): RouteHandler<{}, RouterRequest, any> {
   const { sofa, operation, fieldName } = config;
   const info = config.info!;
-  const errorHandler: ErrorHandler =
-    sofa.errorHandler || defaultErrorHandler;
+  const errorHandler: ErrorHandler = sofa.errorHandler || defaultErrorHandler;
 
-  return async (
-    request: RouterRequest,
-    serverContext: {},
-  ) => {
+  return async (request: RouterRequest, serverContext: {}) => {
     try {
       let body = {};
       if (request.body != null) {
@@ -448,8 +458,8 @@ function useHandler(config: {
               extensions: {
                 http: {
                   status: 400,
-                }
-              }
+                },
+              },
             });
           }
         }
@@ -484,9 +494,9 @@ function useHandler(config: {
           extensions: {
             http: {
               status: 400,
-            }
-          }
-        })
+            },
+          },
+        });
       }
 
       const sofaContext = Object.assign(serverContext, {
@@ -507,7 +517,7 @@ function useHandler(config: {
 
       return Response.json(result.data?.[fieldName], {
         status: config.route.responseStatus,
-      })
+      });
     } catch (error: any) {
       return errorHandler([error]);
     }

@@ -1,3 +1,3 @@
 export default {
-  "open-api": "OpenAPI (Swagger)"
-}
+  'open-api': 'OpenAPI (Swagger)',
+};

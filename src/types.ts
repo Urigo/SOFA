@@ -14,11 +14,13 @@ export interface RouteInfo {
   description?: string;
 }
 
-export type ContextFn = (serverContext: DefaultSofaServerContext) => Promise<ContextValue> | ContextValue;
+export type ContextFn = (
+  serverContext: DefaultSofaServerContext
+) => Promise<ContextValue> | ContextValue;
 
 export type DefaultSofaServerContext = {
   request: RouterRequest;
-}
+};
 
 export interface ObjectJSONSchema {
   type: 'object';

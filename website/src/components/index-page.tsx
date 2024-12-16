@@ -1,12 +1,10 @@
-import { ReactElement } from 'react'
-import { InfoList } from '@theguild/components'
-import dynamic from 'next/dynamic'
- 
-const Hero = dynamic(() =>
-  import('./hero').then((mod) => mod.Hero), {
-    ssr: false
-  }
-);
+import { ReactElement } from 'react';
+import { InfoList } from '@theguild/components';
+import dynamic from 'next/dynamic';
+
+const Hero = dynamic(() => import('./hero').then((mod) => mod.Hero), {
+  ssr: false,
+});
 
 export function IndexPage(): ReactElement {
   return (
@@ -25,12 +23,12 @@ export function IndexPage(): ReactElement {
               'Setup Sofa within a single line of code and start using REST API right away.',
           },
           {
-            title: 'Let\'s Work Together',
+            title: "Let's Work Together",
             description:
               'We want to hear from you, our community of fellow engineers, come to be collaborators.',
           },
         ]}
       />
     </>
-  )
+  );
 }
