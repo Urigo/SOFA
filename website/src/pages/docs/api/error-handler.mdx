@@ -22,6 +22,24 @@ api.use(
 );
 ```
 
+By default, it always returns a response with `200` if the request is valid.
+If the request is invalid, it returns a response with `400` status code and the error message.
+
+```ts
+fetch('http://localhost:4000/api', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ query: '{ invalidQuery }' }),
+}).then((res) => {
+  console.log(res.status); // 400
+  res.json().then((json) => {
+    console.log(json.errors[0].message); // Cannot query field "invalidQuery" on type "Query".
+  });
+});
+```
+
 ## HTTP Error Extensions
 
 Just like GraphQL Yoga's [error handling](https://the-guild.dev/graphql/yoga-server/docs/features/error-masking#modifying-http-status-codes-and-headers) , SOFA respects the status code and headers provided in the error extensions.
@@ -35,12 +53,81 @@ throw new GraphQLError(
       http: {
         status: 400,
         headers: {
-          'x-custom-header': 'some-value'
-        }
-      }
-    }
+          'x-custom-header': 'some-value',
+        },
+      },
+    },
   }
-)
+);
 ```
 
 In this case, you returns a response with `400` status code and `x-custom-header` in the response headers.
+
+Let's say you have a simple GraphQL API like below;
+
+```ts
+import { createServer } from 'node:http';
+import { useSofa } from 'sofa-api';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+
+createServer(
+  useSofa({
+    basePath: '/api',
+    schema: makeExecutableSchema({
+      typeDefs: /* GraphQL */ `
+        type Query {
+          me: User
+        }
+        type User {
+          id: ID!
+          name: String!
+        }
+      `,
+      resolvers: {
+        Query: {
+          me: (_, __, { request }) => {
+            const userId = request.headers.get('x-user-id');
+            if (!userId) {
+              throw new GraphQLError(`Unauthorized`, {
+                extensions: {
+                  http: {
+                    status: 401,
+                    headers: {
+                      'x-custom-header': 'some-value',
+                    },
+                  },
+                },
+              });
+            }
+            return {
+              /* user data */
+            };
+          },
+        },
+      },
+    }),
+  })
+).listen(4000);
+```
+
+In this case if you make a request to `/api/me` without `x-user-id` header, you will get a response with `401` status code and `x-custom-header` in the response headers.
+
+```ts
+fetch('http://localhost:4000/api/me').then((res) => {
+  console.log(res.status); // 401
+  console.log(res.headers.get('x-custom-header')); // some-value
+});
+```
+
+However if you make a request to `/api/me` with `x-user-id` header, you will get a response with `200` status code and `x-custom-header` in the response headers.
+
+```ts
+fetch('http://localhost:4000/api/me', {
+  headers: {
+    'x-user-id': '123',
+  },
+}).then((res) => {
+  console.log(res.status); // 200
+  console.log(res.headers.get('x-custom-header')); // some-value
+});
+```
