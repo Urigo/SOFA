@@ -21,3 +21,26 @@ api.use(
   })
 );
 ```
+
+## HTTP Error Extensions
+
+Just like GraphQL Yoga's [error handling](https://the-guild.dev/graphql/yoga-server/docs/features/error-masking#modifying-http-status-codes-and-headers) , SOFA respects the status code and headers provided in the error extensions.
+
+```ts filename="GraphQL Error with http extensions." {6-11}
+throw new GraphQLError(
+  `User with id '${args.byId}' not found.`,
+  // error extensions
+  {
+    extensions: {
+      http: {
+        status: 400,
+        headers: {
+          'x-custom-header': 'some-value'
+        }
+      }
+    }
+  }
+)
+```
+
+In this case, you returns a response with `400` status code and `x-custom-header` in the response headers.
