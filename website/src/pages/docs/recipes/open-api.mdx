@@ -9,23 +9,55 @@ Thanks to GraphQL's Type System Sofa is able to generate OpenAPI (Swagger) defin
 ```ts
 import { useSofa } from 'sofa-api';
 
-app.use(
-  '/api',
-  useSofa({
-    schema,
-    basePath: '/',
-    openAPI: {
-      info: {
-        title: 'Example API',
-        version: '3.0.0',
-      }
-      endpoint: '/openapi.json',
-    },
-    swaggerUI: {
-      path: '/docs',
+useSofa({
+  schema,
+  basePath: '/api',
+  openAPI: {
+    info: {
+      title: 'Example API',
+      version: '3.0.0',
     }
-  })
-);
+    endpoint: '/openapi.json',
+  },
+  swaggerUI: {
+    path: '/docs',
+  }
+})
 ```
 
 > You can find swagger definitions in `/api/openapi.json` route.
+
+## Extending OpenAPI
+
+If you want to extend your OpenAPI document with [security schemes etc](https://swagger.io/docs/specification/v3_0/authentication/).
+You can use `openAPI` option like below;
+
+```ts
+import { useSofa } from 'sofa-api';
+
+useSofa({
+  schema,
+  basePath: '/api',
+  openAPI: {
+    info: {
+      title: 'Example API',
+      version: '3.0.0',
+    }
+    endpoint: '/openapi.json',
+    servers: [{ url: 'https://my-production.com', description: 'Production' }],
+    components: {
+      securitySchemes: {
+        bearerAuthorization: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          name: 'Authorization',
+        },
+      },
+    },
+  },
+  swaggerUI: {
+    path: '/docs',
+  }
+})
+```

@@ -136,16 +136,16 @@ test('error extensions', async () => {
       resolvers: {
         Query: {
           me: () => {
-            throw new GraphQLError("account not found", {
+            throw new GraphQLError('account not found', {
               extensions: {
-                code: "ACCOUNT_NOT_FOUND",
-                http: { status: 404 }
-              }
+                code: 'ACCOUNT_NOT_FOUND',
+                http: { status: 404 },
+              },
             });
           },
         },
-      }
-    })
+      },
+    }),
   });
 
   for (let i = 0; i < 10; i++) {
@@ -159,9 +159,9 @@ test('error extensions', async () => {
           extensions: {
             code: 'ACCOUNT_NOT_FOUND',
           },
-          path: ['me']
-        }
-      ]
+          path: ['me'],
+        },
+      ],
     });
   }
-})
+});
