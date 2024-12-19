@@ -11,9 +11,12 @@ api.use(
   '/api',
   useSofa({
     schema,
-    errorHandler(errs) {
-      logErrors(errors);
-      return new Response(formatError(errs[0]), {
+    // `errors` is the array containing the `Error` objects
+    errorHandler(errors) {
+      for (const error of errors) {
+        console.error(`Error: ${error.message}`);
+      }
+      return new Response(errs[0].message, {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -26,18 +29,19 @@ By default, it always returns a response with `200` if the request is valid.
 If the request is invalid, it returns a response with `400` status code and the error message.
 
 ```ts
-fetch('http://localhost:4000/api', {
+const res = await fetch('http://localhost:4000/api/createUser', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
-  body: JSON.stringify({ query: '{ invalidQuery }' }),
-}).then((res) => {
-  console.log(res.status); // 400
-  res.json().then((json) => {
-    console.log(json.errors[0].message); // Cannot query field "invalidQuery" on type "Query".
-  });
+  body: JSON.stringify({
+    name: 1, // Invalid name
+  }),
 });
+
+console.log(res.status); // 400
+const data = await res.json();
+console.log(data); // {"errors":[{"message":"Expected type String, found 1."}]}
 ```
 
 ## HTTP Error Extensions
@@ -76,32 +80,61 @@ createServer(
     schema: makeExecutableSchema({
       typeDefs: /* GraphQL */ `
         type Query {
-          me: User
+          posts: [Post!]!
         }
-        type User {
+        type Post {
           id: ID!
-          name: String!
+          title: String!
+          secret: String!
         }
       `,
       resolvers: {
         Query: {
-          me: (_, __, { request }) => {
-            const userId = request.headers.get('x-user-id');
-            if (!userId) {
-              throw new GraphQLError(`Unauthorized`, {
+          posts() {
+            return getPosts();
+          },
+        },
+        Post: {
+          async secret(_, __, { request }) {
+            const authHeader = request.headers.get('Authorization');
+            if (!authHeader) {
+              throw new GraphQLError('Unauthorized', {
                 extensions: {
                   http: {
                     status: 401,
                     headers: {
-                      'x-custom-header': 'some-value',
+                      'WWW-Authenticate': 'Bearer',
                     },
                   },
                 },
               });
             }
-            return {
-              /* user data */
-            };
+            const [type, token] = authHeader.split(' ');
+            if (type !== 'Bearer') {
+              throw new GraphQLError('Invalid token type', {
+                extensions: {
+                  http: {
+                    status: 401,
+                    headers: {
+                      'WWW-Authenticate': 'Bearer',
+                    },
+                  },
+                },
+              });
+            }
+            if (token !== 'secret') {
+              throw new GraphQLError('Invalid token', {
+                extensions: {
+                  http: {
+                    status: 401,
+                    headers: {
+                      'WWW-Authenticate': 'Bearer',
+                    },
+                  },
+                },
+              });
+            }
+            return 'Secret value';
           },
         },
       },
@@ -110,24 +143,65 @@ createServer(
 ).listen(4000);
 ```
 
-In this case if you make a request to `/api/me` without `x-user-id` header, you will get a response with `401` status code and `x-custom-header` in the response headers.
+In this case if you make a request to `/api/posts` without a valid `Authorization` header, 
+you will get a response with `401` status code and `WWW-Authenticate` in the response headers.
+But the response body will contain the data and errors.
 
 ```ts
-fetch('http://localhost:4000/api/me').then((res) => {
-  console.log(res.status); // 401
-  console.log(res.headers.get('x-custom-header')); // some-value
+const res = await fetch('http://localhost:4000/api/posts');
+console.log(res.status); // 401
+console.log(res.headers.get('WWW-Authenticate')); // Bearer
+const data = await res.json();
+expect(data).toEqual({
+  data: {
+    posts: [
+      {
+        id: '1',
+        title: 'Post 1',
+        secret: null,
+      },
+      {
+        id: '2',
+        title: 'Post 2',
+        secret: null,
+      },
+    ],
+  },
+  errors: [
+    {
+      message: 'Unauthorized',
+      path: ['posts', 'secret'],
+    },
+  ],
 });
 ```
+
+In this case only errored fields will be `null` in the response body.
 
 However if you make a request to `/api/me` with `x-user-id` header, you will get a response with `200` status code and `x-custom-header` in the response headers.
 
 ```ts
-fetch('http://localhost:4000/api/me', {
+const res = await fetch('http://localhost:4000/api/posts', {
   headers: {
-    'x-user-id': '123',
+    Authorization: 'Bearer secret',
   },
-}).then((res) => {
-  console.log(res.status); // 200
-  console.log(res.headers.get('x-custom-header')); // some-value
+});
+console.log(res.status); // 200
+const data = await res.json();
+expect(data).toEqual({
+  data: {
+    posts: [
+      {
+        id: '1',
+        title: 'Post 1',
+        secret: 'Secret value',
+      },
+      {
+        id: '2',
+        title: 'Post 2',
+        secret: 'Secret value',
+      },
+    ],
+  },
 });
 ```
