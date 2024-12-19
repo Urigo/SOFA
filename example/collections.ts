@@ -1,3 +1,5 @@
+import { createGraphQLError } from 'graphql-yoga';
+
 const pizzas = [
   { id: 1, dough: 'pan', toppings: ['cheese'] },
   { id: 2, dough: 'classic', toppings: ['ham'] },
@@ -43,7 +45,17 @@ export const UsersCollection = {
   get(id: string | number) {
     const uid = typeof id === 'string' ? parseInt(id, 10) : id;
 
-    return users.find((u) => u.id === uid);
+    const user = users.find((u) => u.id === uid);
+    if (!user) {
+      return createGraphQLError('User not found', {
+        extensions: {
+          http: {
+            status: 404,
+          },
+        },
+      });
+    }
+    return user;
   },
   all() {
     return users;
@@ -53,8 +65,17 @@ export const UsersCollection = {
 export const BooksCollection = {
   get(id: string | number) {
     const bid = typeof id === 'string' ? parseInt(id, 10) : id;
-
-    return books.find((u) => u.id === bid);
+    const book = books.find((u) => u.id === bid);
+    if (!book) {
+      return createGraphQLError('Book not found', {
+        extensions: {
+          http: {
+            status: 404,
+          },
+        },
+      });
+    }
+    return book;
   },
   all() {
     return books;
