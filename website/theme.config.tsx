@@ -28,6 +28,7 @@ export default defineConfig({
       </>
     );
   },
+  // @ts-expect-error - Typings are not correct
   logo: PRODUCTS.SOFA.logo({ className: 'w-8' }),
   websiteName: 'SOFA',
 });
