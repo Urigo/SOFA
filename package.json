@@ -83,7 +83,7 @@
     "@types/qs": "6.9.17",
     "babel-jest": "29.7.0",
     "bob-the-bundler": "7.0.1",
-    "chalk": "^5.0.0",
+    "chalk": "^5.4.1",
     "graphql": "16.10.0",
     "graphql-scalars": "1.24.0",
     "graphql-yoga": "5.10.8",
