@@ -1605,11 +1605,6 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@kamilkisiela/fast-url-parser@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@kamilkisiela/fast-url-parser/-/fast-url-parser-1.1.4.tgz#9d68877a489107411b953c54ea65d0658b515809"
-  integrity sha512-gbkePEBupNydxCelHCESvFSFM8XPh1Zs/OAVRW/rKpEqPAl5PbOM90Si8mv9bvnR53uPD2s/FiRxdvSejpRJew==
-
 "@manypkg/find-root@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@manypkg/find-root/-/find-root-1.1.0.tgz#a62d8ed1cd7e7d4c11d9d52a8397460b5d4ad29f"
@@ -1992,22 +1987,20 @@
     tslib "^2.6.3"
 
 "@whatwg-node/fetch@^0.10.0", "@whatwg-node/fetch@^0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@whatwg-node/fetch/-/fetch-0.10.1.tgz#ca08b2b9928a465f6e562d6cc460840340c15d14"
-  integrity sha512-gmPOLrsjSZWEZlr9Oe5+wWFBq3CG6fN13rGlM91Jsj/vZ95G9CCvrORGBAxMXy0AJGiC83aYiHXn3JzTzXQmbA==
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/fetch/-/fetch-0.10.3.tgz#b19883b8a1568c5ae09abd550589ec597e685f4b"
+  integrity sha512-jCTL/qYcIW2GihbBRHypQ/Us7saWMNZ5fsumsta+qPY0Pmi1ccba/KRQvgctmQsbP69FWemJSs8zVcFaNwdL0w==
   dependencies:
-    "@whatwg-node/node-fetch" "^0.7.1"
+    "@whatwg-node/node-fetch" "^0.7.7"
     urlpattern-polyfill "^10.0.0"
 
-"@whatwg-node/node-fetch@^0.7.1":
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/@whatwg-node/node-fetch/-/node-fetch-0.7.5.tgz#b81e9d5f4b9032e480032c73e7bac284c4e3bdb8"
-  integrity sha512-t7kGrt2fdfNvzy1LCAE9/OnIyMtizgFhgJmk7iLJwQsLmR7S86F8Q4aDRPbCfo7pISJP6Fx/tPdfFNjHS23WTA==
+"@whatwg-node/node-fetch@^0.7.7":
+  version "0.7.7"
+  resolved "https://registry.yarnpkg.com/@whatwg-node/node-fetch/-/node-fetch-0.7.7.tgz#6c1752e2e16cfac93fdef2ef4f852b7a50dd15ed"
+  integrity sha512-BDbIMOenThOTFDBLh1WscgBNAxfDAdAdd9sMG8Ff83hYxApJVbqEct38bUAj+zn8bTsfBx/lyfnVOTyq5xUlvg==
   dependencies:
-    "@kamilkisiela/fast-url-parser" "^1.1.4"
     "@whatwg-node/disposablestack" "^0.0.5"
     busboy "^1.6.0"
-    fast-querystring "^1.1.1"
     tslib "^2.6.3"
 
 "@whatwg-node/server@^0.9.55", "@whatwg-node/server@^0.9.64":
@@ -2750,11 +2743,6 @@ external-editor@^3.1.0:
     iconv-lite "^0.4.24"
     tmp "^0.0.33"
 
-fast-decode-uri-component@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/fast-decode-uri-component/-/fast-decode-uri-component-1.0.1.tgz#46f8b6c22b30ff7a81357d4f59abfae938202543"
-  integrity sha512-WKgKWg5eUxvRZGwW8FvfbaH7AXSh2cL+3j5fMGzUMCxWBJ3dV3a7Wz8y2f/uQ0e3B6WmodD3oS54jTQ9HVTIIg==
-
 fast-glob@^3.2.9, fast-glob@^3.3.0:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.3.3.tgz#d06d585ce8dba90a16b0505c543c3ccfb3aeb818"
@@ -2770,13 +2758,6 @@ fast-json-stable-stringify@2.x, fast-json-stable-stringify@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/fast-json-stable-stringify/-/fast-json-stable-stringify-2.1.0.tgz#874bf69c6f404c2b5d99c481341399fd55892633"
   integrity sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==
-
-fast-querystring@^1.1.1:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/fast-querystring/-/fast-querystring-1.1.2.tgz#a6d24937b4fc6f791b4ee31dcb6f53aeafb89f53"
-  integrity sha512-g6KuKWmFXc0fID8WWH0jit4g0AGBoJhCkJMb1RmbsSEUNvQ+ZC8D6CUZ+GtF8nMzSPXnhiePyyqqipzNNEnHjg==
-  dependencies:
-    fast-decode-uri-component "^1.0.1"
 
 fastq@^1.6.0:
   version "1.18.0"
