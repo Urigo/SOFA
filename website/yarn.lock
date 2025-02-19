@@ -2330,9 +2330,9 @@ hast-util-raw@^9.0.0:
     zwitch "^2.0.0"
 
 hast-util-to-estree@^3.0.0, hast-util-to-estree@^3.1.0:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/hast-util-to-estree/-/hast-util-to-estree-3.1.1.tgz#b7f0b247d9f62127bb5db34e3a86c93d17279071"
-  integrity sha512-IWtwwmPskfSmma9RpzCappDUitC8t5jhAynHhc1m2+5trOgsrp7txscUSavc5Ic8PATyAjfrCK1wgtxh2cICVQ==
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/hast-util-to-estree/-/hast-util-to-estree-3.1.2.tgz#29dc022d47483e53ed28de0a2831a079aba932e8"
+  integrity sha512-94SDoKOfop5gP8RHyw4vV1aj+oChuD42g08BONGAaWFbbO6iaWUqxk7SWfGybgcVzhK16KifZr3zD2dqQgx3jQ==
   dependencies:
     "@types/estree" "^1.0.0"
     "@types/estree-jsx" "^1.0.0"
@@ -2345,7 +2345,7 @@ hast-util-to-estree@^3.0.0, hast-util-to-estree@^3.1.0:
     mdast-util-mdx-expression "^2.0.0"
     mdast-util-mdx-jsx "^3.0.0"
     mdast-util-mdxjs-esm "^2.0.0"
-    property-information "^6.0.0"
+    property-information "^7.0.0"
     space-separated-tokens "^2.0.0"
     style-to-object "^1.0.0"
     unist-util-position "^5.0.0"
@@ -3964,6 +3964,11 @@ property-information@^6.0.0:
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/property-information/-/property-information-6.5.0.tgz#6212fbb52ba757e92ef4fb9d657563b933b7ffec"
   integrity sha512-PgTgs/BlvHxOu8QuEN7wi5A0OmXaBcHpmCSTehcs6Uuu9IkDIEo13Hy7n898RHfrQ49vKCoGeWZSaAK01nwVig==
+
+property-information@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/property-information/-/property-information-7.0.0.tgz#3508a6d6b0b8eb3ca6eb2c6623b164d2ed2ab112"
+  integrity sha512-7D/qOz/+Y4X/rzSB6jKxKUsQnphO046ei8qxG59mtM3RG3DHgTK81HrxrmoDVINJb8NKT5ZsRbwHvQ6B68Iyhg==
 
 punycode@^2.1.0:
   version "2.3.1"
