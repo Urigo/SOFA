@@ -1283,10 +1283,10 @@
   resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.24.2.tgz#34aa0b52d0fbb1a654b596acfa595f0c7b77a77b"
   integrity sha512-7VTgWzgMGvup6aSqDPLiW5zHaxYJGTO4OokMjIlrCtf+VpEL+cXKtCvg723iguPYI5oaUNdS+/V7OU2gvXVWEg==
 
-"@graphql-tools/executor@^1.3.7":
-  version "1.3.14"
-  resolved "https://registry.yarnpkg.com/@graphql-tools/executor/-/executor-1.3.14.tgz#0f6f776c4ba621b2f314b737593018c3db046fbe"
-  integrity sha512-tDk8bYIgbVmGNh7cYewi5/yNCq6UoVl9ugDU4rF//+E1R5TxkXNe9nu6AonE+j6XkA/z+FofVawOqCCiJhJ40g==
+"@graphql-tools/executor@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/executor/-/executor-1.4.0.tgz#1c01596c24f4dbcb13d158acdf407f4261e115fb"
+  integrity sha512-sQN54cCDV9s0ur993/VtQF0hslOubSTMJlN0WaouiJCEgMqE5aXN27kmZvF0oXj0GxbWMC+bPNWEZH1TJVsLxw==
   dependencies:
     "@graphql-tools/utils" "^10.8.1"
     "@graphql-typed-document-node/core" "^3.2.0"
@@ -2994,13 +2994,13 @@ graphql-scalars@1.24.1:
   dependencies:
     tslib "^2.5.0"
 
-graphql-yoga@5.11.0:
-  version "5.11.0"
-  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.11.0.tgz#d8e87cc9a5a26e52defd1275ea4bb9c5235fbf94"
-  integrity sha512-zyeXE79hKBzEvb/jYK3bnouoPsNNtv+pyNR6BeMHyeGmavimSvi1LH3vqSlh1sjxUTMXZu715X0L4T8RrexCcA==
+graphql-yoga@5.12.0:
+  version "5.12.0"
+  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.12.0.tgz#880d59db0216f4fbeaf71b310ca921f7ddc4e8d2"
+  integrity sha512-JKsGnXlrqoF2wdnE99EvETqBbvkPa6aa6T+PqMbegnTFpYrVNuhCXpzGgSEFroqR1VGHMlFrsmHYdHPZb/TbAA==
   dependencies:
     "@envelop/core" "^5.0.2"
-    "@graphql-tools/executor" "^1.3.7"
+    "@graphql-tools/executor" "^1.4.0"
     "@graphql-tools/schema" "^10.0.11"
     "@graphql-tools/utils" "^10.6.2"
     "@graphql-yoga/logger" "^2.0.1"
