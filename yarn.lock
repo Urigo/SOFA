@@ -1315,9 +1315,9 @@
     tslib "^2.4.0"
 
 "@graphql-tools/utils@^10.0.0", "@graphql-tools/utils@^10.6.2", "@graphql-tools/utils@^10.8.3":
-  version "10.8.3"
-  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-10.8.3.tgz#bbe80a7bee4255e5188d6dee6e23c5f4399c571c"
-  integrity sha512-4QCvx3SWRsbH7wnktl51mBek+zE9hsjsv796XVlJlOUdWpAghJmA3ID2P7/Vwuy7BivVNfuAKe4ucUdE1fG7vA==
+  version "10.8.4"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-10.8.4.tgz#59dc5ea949e26c6bae28b91ad9f5c00e992de072"
+  integrity sha512-HpHBgcmLIE79jWk1v5Bm0Eb8MaPiwSJT/Iy5xIJ+GMe7yAKpCYrbjf7wb+UMDMkLkfEryvo3syCx8k+TMAZ9bA==
   dependencies:
     "@graphql-typed-document-node/core" "^3.1.1"
     "@whatwg-node/promise-helpers" "^1.0.0"
