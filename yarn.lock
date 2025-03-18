@@ -3018,10 +3018,10 @@ graphql-scalars@1.24.1:
   dependencies:
     tslib "^2.5.0"
 
-graphql-yoga@5.13.1:
-  version "5.13.1"
-  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.13.1.tgz#6cdc824d881a7c0ad07da1ef647a027d55ee087d"
-  integrity sha512-djkKskQlQu9Vk/1KyRxfwEOJgUnNTnutb0PLMIQvyTcR8sJF6vGORvNSRx8c4H32jqVTiLQNdhmwAhLpbcnhqQ==
+graphql-yoga@5.13.2:
+  version "5.13.2"
+  resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.13.2.tgz#015c2c038c51b5da55e114a12b72cd152185ba33"
+  integrity sha512-ZXhIoAPCV2K2ozwpxDL1ZXhhI2SvIp3hJMaSRaHcojLGE9w9iV8oYGPnZKcV5eisF3VE13RcIF4Ys6TTkU338Q==
   dependencies:
     "@envelop/core" "^5.2.3"
     "@envelop/instrumentation" "^1.0.0"
